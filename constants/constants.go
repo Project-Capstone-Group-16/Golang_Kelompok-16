@@ -5,4 +5,5 @@ const (
 	Admin  = "ADMIN"
 	Male   = "Male"
 	Female = "Female"
+	SECRET_JWT = "secret"
 )
