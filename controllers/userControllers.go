@@ -29,6 +29,26 @@ func RegisterUserController(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, payload.Response{
 		Message: "success register user",
-		Data: response,
+		Data:    response,
+	})
+}
+
+func LoginUserController(c echo.Context) error {
+	payloadUser := payload.LoginUserRequest{}
+
+	c.Bind(&payloadUser)
+
+	if err := c.Validate(&payloadUser); err != nil {
+		return c.JSON(http.StatusBadRequest, "Field can't be empty")
+	}
+
+	response, err := usecase.LoginUser(&payloadUser)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(200, payload.Response{
+		Message: "Success Login",
+		Data:    response,
 	})
 }

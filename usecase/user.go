@@ -10,6 +10,9 @@ import (
 )
 
 func CreateUser(req *payload.CreateUserRequest) (resp payload.CreateUserResponse, err error) {
+	if req.ConfirmPassword != req.Password {
+		return resp, errors.New("Password not match")
+	}
 
 	passwordHash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
