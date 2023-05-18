@@ -52,3 +52,19 @@ func LoginUserController(c echo.Context) error {
 		Data:    response,
 	})
 }
+
+func GenerateOTPController(c echo.Context) error {
+	payloadUser := payload.ForgotPasswordRequest{}
+
+	c.Bind(&payloadUser)
+
+	if err := c.Validate(&payloadUser); err != nil {
+		return c.JSON(http.StatusBadRequest, "Field can't be empty")
+	}
+
+	err := usecase.GenerateOTPEndpoint(&payloadUser)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, "OTP sent successfully, please check your email for the OTP  token ")
+}

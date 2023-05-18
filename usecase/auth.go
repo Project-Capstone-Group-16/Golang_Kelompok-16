@@ -1,14 +1,25 @@
 package usecase
 
 import (
+	"Capstone/constants"
 	"Capstone/middleware"
 	"Capstone/models/payload"
 	"Capstone/repository/database"
+	"Capstone/utils"
 	"errors"
+	"fmt"
+	"log"
 
+	// "os"
+
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo"
+	"github.com/sendgrid/sendgrid-go"
+	"github.com/sendgrid/sendgrid-go/helpers/mail"
 	"golang.org/x/crypto/bcrypt"
 )
+
+var generatedOTP string
 
 func LoginUser(req *payload.LoginUserRequest) (res payload.LoginUserResponse, err error) {
 
@@ -37,4 +48,46 @@ func LoginUser(req *payload.LoginUserRequest) (res payload.LoginUserResponse, er
 	}
 
 	return
+}
+
+func SendOTPByEmail(emailAddress, otp string) error {
+	err := godotenv.Load("utils.env")
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	from := mail.NewEmail(constants.SEND_FROM_NAME, constants.SEND_FROM_ADDRESS)
+	subject := "INVENTORN OTP RESET PASSWORD"
+	to := mail.NewEmail("Recipient Name", emailAddress)
+	plainTextContent := fmt.Sprintf("dont you dare to give this code to other people, Your OTP is: %s", otp)
+	htmlContent := fmt.Sprintf("<strong>Your OTP is: %s </strong>", plainTextContent)
+
+	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
+
+	client := sendgrid.NewSendClient(constants.SENDGRID_API_KEY)
+	response, err := client.Send(message)
+	if err != nil {
+		fmt.Println("Unable to send your email")
+		log.Fatal(err)
+	}
+
+	statusCode := response.StatusCode
+	if statusCode == 200 || statusCode == 201 || statusCode == 202 {
+		fmt.Println("Email sent!")
+	}
+	return nil
+}
+
+func GenerateOTPEndpoint(req *payload.ForgotPasswordRequest) error {
+	user, err := database.GetuserByEmail(req.Email)
+	if err != nil {
+		return errors.New("Email not registered")
+	}
+	generatedOTP = utils.GenerateOTP()
+
+	err = SendOTPByEmail(user.Email, generatedOTP)
+	if err != nil {
+		return errors.New("Failed to send OTP")
+	}
+	return nil
 }
