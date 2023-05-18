@@ -15,4 +15,5 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	e.Pre(mid.RemoveTrailingSlash())
 
 	e.POST("/register", controllers.RegisterUserController)
+	e.POST("/login", controllers.LoginUserController)
 }
