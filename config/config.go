@@ -21,9 +21,9 @@ type Config struct {
 func InitDB() *gorm.DB {
 	config := Config{
 		DB_Username: "root",
-		DB_Password: "",
+		DB_Password: "subaruputra13",
 		DB_Port:     "3306",
-		DB_Host:     "localhost",
+		DB_Host:     "database-mariadb.covxu3uwiatv.ap-southeast-2.rds.amazonaws.com",
 		DB_Name:     "inventron",
 	}
 
