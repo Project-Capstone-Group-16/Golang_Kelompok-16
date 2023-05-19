@@ -3,6 +3,7 @@ package config
 import (
 	"Capstone/models"
 	"fmt"
+	"os"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -20,10 +21,10 @@ type Config struct {
 
 func InitDB() *gorm.DB {
 	config := Config{
-		DB_Username: "doadmin",
-		DB_Password: "AVNS_FY3AFcMESs6TsD-hfFc",
-		DB_Port:     "25060",
-		DB_Host:     "inventron-do-user-13944740-0.b.db.ondigitalocean.com",
+		DB_Username: "root",
+		DB_Password: os.Getenv("DB_PASSWORD"),
+		DB_Port:     os.Getenv("DB_PORT"),
+		DB_Host:     os.Getenv("DB_HOST"),
 		DB_Name:     "inventron",
 	}
 
