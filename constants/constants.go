@@ -6,7 +6,8 @@ const (
 	Male       = "Male"
 	Female     = "Female"
 	SECRET_JWT = "secret"
-	SENDGRID_API_KEY = ""
+	MJ_APIKEY_PUBLIC =""
 	SEND_FROM_NAME = "Inventron_Support"
-	SEND_FROM_ADDRESS = "madhiemw@gmail.com"
+	MJ_APIKEY_PRIVATE = ""
+	MJ_FROM_EMAIL = "madhiemw@gmail.com"
 )
