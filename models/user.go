@@ -22,5 +22,8 @@ type UserDetail struct {
 	BirthDate   time.Time `json:"birth_date" form:"birth_date"`
 	PhoneNumber int       `json:"phone_number" form:"phone_number" gorm:"not null"`
 	Address     string    `json:"address" form:"address" gorm:"not null"`
-	UserId      int       `json:"user_id" form:"user_id"`
+
+	Token       string    `json:"-" form:"-"`
+	Role        string    `json:"role" form:"role" gorm:"type:enum('USER', 'ADMIN');default:'USER'"`
 }
+

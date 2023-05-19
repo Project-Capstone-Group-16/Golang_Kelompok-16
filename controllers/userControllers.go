@@ -21,7 +21,7 @@ func RegisterUserController(c echo.Context) error {
 
 	response, err := usecase.CreateUser(&payloadUser)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"messages": "error create user",
 			"error":    err.Error(),
 		})

@@ -7,16 +7,10 @@ import (
 	"Capstone/repository/database"
 	"Capstone/utils"
 	"errors"
-	"fmt"
-	// "log"
-	// "os"
-	// "os"
-	"github.com/mailjet/mailjet-apiv3-go/v4"
+	"net/http"
 
-	// "github.com/joho/godotenv"
 	"github.com/labstack/echo"
-	// "github.com/sendgrid/sendgrid-go"
-	// "github.com/sendgrid/sendgrid-go/helpers/mail"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -26,8 +20,7 @@ func LoginUser(req *payload.LoginUserRequest) (res payload.LoginUserResponse, er
 
 	user, err := database.GetuserByEmail(req.Email)
 	if err != nil {
-		echo.NewHTTPError(400, "Email not registered")
-		return
+		return res, echo.NewHTTPError(http.StatusBadRequest, "Email not registered")
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
@@ -37,8 +30,7 @@ func LoginUser(req *payload.LoginUserRequest) (res payload.LoginUserResponse, er
 
 	token, err := middleware.CreateToken(int(user.ID))
 	if err != nil {
-		echo.NewHTTPError(400, "Failed to generate token")
-		return
+		return res, echo.NewHTTPError(http.StatusBadRequest, "Failed to generate token")
 	}
 
 	user.Token = token
