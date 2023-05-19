@@ -5,6 +5,7 @@ import (
 	"Capstone/models/payload"
 	"Capstone/repository/database"
 	"errors"
+	"net/http"
 
 	"github.com/labstack/echo"
 	"golang.org/x/crypto/bcrypt"
@@ -14,8 +15,7 @@ func LoginUser(req *payload.LoginUserRequest) (res payload.LoginUserResponse, er
 
 	user, err := database.GetuserByEmail(req.Email)
 	if err != nil {
-		echo.NewHTTPError(400, "Email not registered")
-		return
+		return res, echo.NewHTTPError(http.StatusBadRequest, "Email not registered")
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
@@ -25,8 +25,7 @@ func LoginUser(req *payload.LoginUserRequest) (res payload.LoginUserResponse, er
 
 	token, err := middleware.CreateToken(int(user.ID))
 	if err != nil {
-		echo.NewHTTPError(400, "Failed to generate token")
-		return
+		return res, echo.NewHTTPError(http.StatusBadRequest, "Failed to generate token")
 	}
 
 	user.Token = token

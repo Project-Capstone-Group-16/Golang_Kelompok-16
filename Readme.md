@@ -6,10 +6,10 @@
 
 1. User Register terlebih dahulu
 
-   ![image](./screenshots/Routes%20Register.JPG)
+   ![image](./screenshots)
 
 2. Setelah Register User wajib melakukan login untuk mengakses routes yang sudah di sediakan
 
-   ![image](./screenshots/Routes%20Login.JPG)
+   ![image](./screenshots)
 
 <br>
