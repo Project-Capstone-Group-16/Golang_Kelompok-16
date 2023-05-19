@@ -2,6 +2,7 @@ package routes
 
 import (
 	"Capstone/controllers"
+	"Capstone/middleware"
 	"Capstone/utils"
 
 	"github.com/go-playground/validator"
@@ -17,8 +18,8 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	e.POST("/register", controllers.RegisterUserController)
 	e.POST("/login", controllers.LoginUserController)
 
-
 	fp := e.Group("/forgot-password")
 	fp.POST("/generate", controllers.GenerateOTPController)
-}	
-
+	fp.POST("/verify", controllers.VerifyngOtpController)
+	fp.PUT("/update", controllers.UpdatePasswordController, middleware.IsLoggedIn)
+}

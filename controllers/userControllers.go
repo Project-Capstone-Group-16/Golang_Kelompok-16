@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"Capstone/middleware"
 	"Capstone/models/payload"
 	"Capstone/usecase"
 	"net/http"
@@ -69,3 +70,42 @@ func GenerateOTPController(c echo.Context) error {
 	return c.JSON(http.StatusOK, "OTP sent successfully, please check your email for the OTP  token ")
 }
 
+func VerifyngOtpController(c echo.Context) error {
+	payloadUser := payload.VerifyngOtp{}
+
+	c.Bind(&payloadUser)
+
+	if err := c.Validate(&payloadUser); err != nil {
+		return c.JSON(http.StatusBadRequest, "OTP has to be 6 digit")
+	}
+	
+	err := usecase.VerifyOTP(&payloadUser)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, "OTP confirmed")
+}
+
+func UpdatePasswordController(c echo.Context) error {
+	payloadUser := payload.UpdatePasswordRequest{}
+	
+	userId, err := middleware.IsUser(c)
+	if err != nil{
+		return c.JSON(http.StatusNotFound,"User not found")
+	} 
+
+	c.Bind(&payloadUser)
+
+	if err := c.Validate(&payloadUser); err != nil {
+		return c.JSON(http.StatusBadRequest, "Field cannot be empty")
+	}
+
+	err = usecase.UpdatePassword(userId, &payloadUser)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}	
+	
+	return c.JSON(http.StatusOK, "Change password success")
+
+}

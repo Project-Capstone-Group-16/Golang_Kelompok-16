@@ -25,8 +25,8 @@ func InitDB() *gorm.DB {
 		DB_Password: os.Getenv("DB_PASSWORD"),
 		DB_Port:     os.Getenv("DB_PORT"),
 		DB_Host:     os.Getenv("DB_HOST"),
-
-
+		DB_Name:     "inventron",
+	}
 
 	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True",
 		config.DB_Username,
@@ -53,6 +53,7 @@ func InitDB() *gorm.DB {
 func InitMigrate() {
 	// Migrate the schema
 	err := DB.AutoMigrate(&models.User{})
-
+	if err != nil {
+		panic("failed to migrate database")
 	}
 }
