@@ -68,3 +68,4 @@ func GenerateOTPController(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, "OTP sent successfully, please check your email for the OTP  token ")
 }
+

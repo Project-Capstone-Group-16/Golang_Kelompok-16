@@ -8,13 +8,19 @@ import (
 
 type User struct {
 	gorm.Model
-	Email       string    `json:"email" form:"email" gorm:"unique;not null"`
-	Password    string    `json:"password" form:"password"`
+	Email       string `json:"email" form:"email" gorm:"unique;not null"`
+	Password    string `json:"password" form:"password"`
+	Token       string `json:"-" form:"-"`
+	Role        string `json:"role" form:"role" gorm:"type:enum('USER', 'ADMIN');default:'USER'"`
+	UserDetails UserDetail
+}
+
+type UserDetail struct {
+	gorm.Model
 	Fullname    string    `json:"fullname" form:"fullname" gorm:"not null"`
 	Gender      string    `json:"gender" form:"gender" gorm:"type:enum('MALE','FEMALE')"`
-	Token       string    `json:"-" form:"-"`
 	BirthDate   time.Time `json:"birth_date" form:"birth_date"`
 	PhoneNumber int       `json:"phone_number" form:"phone_number" gorm:"not null"`
 	Address     string    `json:"address" form:"address" gorm:"not null"`
-	Role        string    `json:"role" form:"role" gorm:"type:enum('USER', 'ADMIN');default:'USER'"`
+	UserId      int       `json:"user_id" form:"user_id"`
 }

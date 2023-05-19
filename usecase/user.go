@@ -40,3 +40,4 @@ func CreateUser(req *payload.CreateUserRequest) (resp payload.CreateUserResponse
 
 	return
 }
+

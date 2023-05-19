@@ -8,14 +8,15 @@ import (
 	"Capstone/utils"
 	"errors"
 	"fmt"
-	"log"
-
+	// "log"
 	// "os"
+	// "os"
+	"github.com/mailjet/mailjet-apiv3-go/v4"
 
-	"github.com/joho/godotenv"
+	// "github.com/joho/godotenv"
 	"github.com/labstack/echo"
-	"github.com/sendgrid/sendgrid-go"
-	"github.com/sendgrid/sendgrid-go/helpers/mail"
+	// "github.com/sendgrid/sendgrid-go"
+	// "github.com/sendgrid/sendgrid-go/helpers/mail"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -51,33 +52,35 @@ func LoginUser(req *payload.LoginUserRequest) (res payload.LoginUserResponse, er
 }
 
 func SendOTPByEmail(emailAddress, otp string) error {
-	err := godotenv.Load("utils.env")
-	if err != nil {
-		log.Fatal("Error loading .env file")
+	mailjetClient := mailjet.NewMailjetClient(constants.MJ_APIKEY_PUBLIC, constants.MJ_APIKEY_PRIVATE)
+	messagesInfo := []mailjet.InfoMessagesV31{
+		{
+			From: &mailjet.RecipientV31{
+				Email: constants.MJ_FROM_EMAIL,
+				Name:  "INVENTRON support",
+			},
+			To: &mailjet.RecipientsV31{
+				mailjet.RecipientV31{
+					Email: emailAddress,
+					Name:  "",
+				},
+			},
+			Subject:  "OTP for reset password",
+			TextPart: "Dear our costumer, dont share below OTP code if you have ",
+			HTMLPart: "<h3>Your otp code otp : </h3> " + otp ,
+		},
 	}
+	messages := mailjet.MessagesV31{Info: messagesInfo}
 
-	from := mail.NewEmail(constants.SEND_FROM_NAME, constants.SEND_FROM_ADDRESS)
-	subject := "INVENTORN OTP RESET PASSWORD"
-	to := mail.NewEmail("Recipient Name", emailAddress)
-	plainTextContent := fmt.Sprintf("dont you dare to give this code to other people, Your OTP is: %s", otp)
-	htmlContent := fmt.Sprintf("<strong>Your OTP is: %s </strong>", plainTextContent)
-
-	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
-
-	client := sendgrid.NewSendClient(constants.SENDGRID_API_KEY)
-	response, err := client.Send(message)
+	res, err := mailjetClient.SendMailV31(&messages)
 	if err != nil {
-		fmt.Println("Unable to send your email")
-		log.Fatal(err)
-	}
-
-	statusCode := response.StatusCode
-	if statusCode == 200 || statusCode == 201 || statusCode == 202 {
-		fmt.Println("Email sent!")
+		fmt.Println(err)
+	} else {
+		fmt.Println("Success")
+		fmt.Println(res)
 	}
 	return nil
 }
-
 func GenerateOTPEndpoint(req *payload.ForgotPasswordRequest) error {
 	user, err := database.GetuserByEmail(req.Email)
 	if err != nil {
