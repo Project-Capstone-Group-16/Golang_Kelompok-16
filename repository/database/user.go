@@ -75,3 +75,10 @@ func LoginUser(user *models.User) error {
 	}
 	return nil
 }
+
+func UpdatePassword(user *models.User) error{
+	if err :=  config.DB.Where("email = ?", user.Email).First(&user).Error; err != nil {
+		return err
+}
+	return nil
+}

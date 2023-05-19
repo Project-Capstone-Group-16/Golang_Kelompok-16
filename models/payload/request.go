@@ -11,3 +11,11 @@ type LoginUserRequest struct {
 	Email    string `json:"email" form:"email" validate:"required,email"`
 	Password string `json:"password" form:"password" validate:"required,min=5"`
 }
+
+type ForgotPasswordRequest struct {
+	Email string `json:"email" form:"email" validate:"required,email"`
+}
+
+type UpdatePasswordRequest struct {
+	Password string `json:"password" form:"password" validate:"required,min=5"`
+}
