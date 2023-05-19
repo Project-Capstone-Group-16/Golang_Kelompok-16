@@ -78,7 +78,7 @@ func VerifyngOtpController(c echo.Context) error {
 	if err := c.Validate(&payloadUser); err != nil {
 		return c.JSON(http.StatusBadRequest, "OTP has to be 6 digit")
 	}
-	
+
 	err := usecase.VerifyOTP(&payloadUser)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
@@ -89,11 +89,11 @@ func VerifyngOtpController(c echo.Context) error {
 
 func UpdatePasswordController(c echo.Context) error {
 	payloadUser := payload.UpdatePasswordRequest{}
-	
+
 	userId, err := middleware.IsUser(c)
-	if err != nil{
-		return c.JSON(http.StatusNotFound,"User not found")
-	} 
+	if err != nil {
+		return c.JSON(http.StatusNotFound, "User not found")
+	}
 
 	c.Bind(&payloadUser)
 
@@ -104,8 +104,8 @@ func UpdatePasswordController(c echo.Context) error {
 	err = usecase.UpdatePassword(userId, &payloadUser)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
-	}	
-	
+	}
+
 	return c.JSON(http.StatusOK, "Change password success")
 
 }

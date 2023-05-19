@@ -60,8 +60,8 @@ func SendOTPByEmail(emailAddress, otp string) error {
 				},
 			},
 			Subject:  "OTP for reset password",
-			TextPart: "Dear our costumer, dont share below OTP code if you have ",
-			HTMLPart: "<h3>Your otp code otp : </h3> " + otp,
+			TextPart: "Dear our costumer, dont share below OTP code if you have",
+			HTMLPart: fmt.Sprintf("<h3>Kode OTP kamu adalah <span>%s</span>, berlaku selama 5 menit.</h3>", otp),
 		},
 	}
 	messages := mailjet.MessagesV31{Info: messagesInfo}
