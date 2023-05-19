@@ -3,6 +3,7 @@ package config
 import (
 	"Capstone/models"
 	"fmt"
+	"os"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -21,9 +22,9 @@ type Config struct {
 func InitDB() *gorm.DB {
 	config := Config{
 		DB_Username: "root",
-		DB_Password: "",
-		DB_Port:     "3306",
-		DB_Host:     "localhost",
+		DB_Password: os.Getenv("DB_PASSWORD"),
+		DB_Port:     os.Getenv("DB_PORT"),
+		DB_Host:     os.Getenv("DB_HOST"),
 		DB_Name:     "inventron",
 	}
 
@@ -52,7 +53,6 @@ func InitDB() *gorm.DB {
 func InitMigrate() {
 	// Migrate the schema
 	err := DB.AutoMigrate(&models.User{})
-
 	if err != nil {
 		panic("Failed to migrate database")
 	}
