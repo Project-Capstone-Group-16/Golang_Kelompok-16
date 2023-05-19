@@ -15,5 +15,5 @@ func main() {
 	routes.Routes(e, db)
 	middleware.Logmiddleware(e)
 
-	e.Logger.Fatal(e.Start(":25060"))
+	e.Logger.Fatal(e.Start(":8080"))
 }
