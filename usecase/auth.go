@@ -1,15 +1,17 @@
 package usecase
 
 import (
-	"Capstone/constants"
 	"Capstone/middleware"
 	"Capstone/models/payload"
 	"Capstone/repository/database"
 	"Capstone/utils"
 	"errors"
+	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/labstack/echo"
+	"github.com/mailjet/mailjet-apiv3-go"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -44,11 +46,11 @@ func LoginUser(req *payload.LoginUserRequest) (res payload.LoginUserResponse, er
 }
 
 func SendOTPByEmail(emailAddress, otp string) error {
-	mailjetClient := mailjet.NewMailjetClient(constants.MJ_APIKEY_PUBLIC, constants.MJ_APIKEY_PRIVATE)
+	mailjetClient := mailjet.NewMailjetClient(os.Getenv("MJ_APIKEY_PUBLIC"), os.Getenv("MJ_APIKEY_PRIVATE"))
 	messagesInfo := []mailjet.InfoMessagesV31{
 		{
 			From: &mailjet.RecipientV31{
-				Email: constants.MJ_FROM_EMAIL,
+				Email: os.Getenv("MJ_FROM_EMAIL"),
 				Name:  "INVENTRON support",
 			},
 			To: &mailjet.RecipientsV31{
@@ -59,7 +61,7 @@ func SendOTPByEmail(emailAddress, otp string) error {
 			},
 			Subject:  "OTP for reset password",
 			TextPart: "Dear our costumer, dont share below OTP code if you have ",
-			HTMLPart: "<h3>Your otp code otp : </h3> " + otp ,
+			HTMLPart: "<h3>Your otp code otp : </h3> " + otp,
 		},
 	}
 	messages := mailjet.MessagesV31{Info: messagesInfo}
@@ -85,4 +87,12 @@ func GenerateOTPEndpoint(req *payload.ForgotPasswordRequest) error {
 		return errors.New("Failed to send OTP")
 	}
 	return nil
+}
+
+func VerifyOTP(req *payload.VerifyngOtp) error {
+	if req.Otp != generatedOTP {
+		return errors.New("OTP verification failed.")
+	}
+
+	return errors.New("OTP verification successful!")
 }

@@ -40,4 +40,27 @@ func CreateUser(req *payload.CreateUserRequest) (resp payload.CreateUserResponse
 
 	return
 }
+func UpdatePassword(id int, req *payload.UpdatePasswordRequest) error {
 
+	user, err := database.GetuserByID(id)
+	if err != nil {
+		return err
+	}
+
+	if req.ConfirmPassword != req.Password {
+		return errors.New("Password not match")
+	}
+
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+
+	user.Password = string(passwordHash)
+
+	err = database.UpdateUser(user)
+	if err != nil {
+		return errors.New("Can't update password")
+	}
+	return nil
+}

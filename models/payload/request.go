@@ -18,4 +18,9 @@ type ForgotPasswordRequest struct {
 
 type UpdatePasswordRequest struct {
 	Password string `json:"password" form:"password" validate:"required,min=5"`
+	ConfirmPassword string `json:"confirm_password" form:"confirm_password"`
+}
+
+type VerifyngOtp struct {
+	Otp string `json:"otp" validate:"required,min=6"`
 }

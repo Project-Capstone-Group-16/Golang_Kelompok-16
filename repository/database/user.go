@@ -55,8 +55,8 @@ func GetUserWithBlog(id uint) (user models.User, err error) {
 	return
 }
 
-func UpdateUser(user *models.User) error {
-	if err := config.DB.Updates(user).Error; err != nil {
+func UpdateUser(user  *models.User) error {
+	if err := config.DB.Updates(&user).Error; err != nil {
 		return err
 	}
 	return nil
@@ -76,9 +76,9 @@ func LoginUser(user *models.User) error {
 	return nil
 }
 
-func UpdatePassword(user *models.User) error{
-	if err :=  config.DB.Where("email = ?", user.Email).First(&user).Error; err != nil {
-		return err
-}
-	return nil
+func GetuserByID(id int) (user *models.User, err error) {
+	if err := config.DB.Where("id = ?", id).First(&user).Error; err != nil {
+		return nil, err
+	}
+	return user, nil
 }
