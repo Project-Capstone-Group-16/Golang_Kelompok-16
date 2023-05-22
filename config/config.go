@@ -54,6 +54,6 @@ func InitMigrate() {
 	// Migrate the schema
 	err := DB.AutoMigrate(&models.User{})
 	if err != nil {
-		panic("Failed to migrate database")
+		panic("failed to migrate database")
 	}
 }

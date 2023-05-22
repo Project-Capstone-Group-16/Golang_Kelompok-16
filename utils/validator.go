@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo"
+
 )
 
 type CustomValidator struct {
@@ -17,3 +18,5 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 	}
 	return nil
 }
+
+
