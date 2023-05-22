@@ -51,7 +51,7 @@ func SendOTPByEmail(emailAddress, otp string) error {
 		{
 			From: &mailjet.RecipientV31{
 				Email: os.Getenv("MJ_FROM_EMAIL"),
-				Name:  "INVENTRON support",
+				Name:  "INVENTRON-no-replay",
 			},
 			To: &mailjet.RecipientsV31{
 				mailjet.RecipientV31{
