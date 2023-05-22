@@ -23,3 +23,7 @@ type CreateAdminResponse struct {
 	PhoneNumber int    `json:"phone_number"`
 	Password    string `json:"password"`
 }
+type LoginAdminResponse struct {
+	Email string `json:"email"`
+	Token string `json:"token"`
+}
