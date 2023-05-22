@@ -1,15 +1,5 @@
 # Documentasi API
 
-## Flow Penggunaan Route
-
 <br>
 
-1. User Register terlebih dahulu
-
-   ![image](./screenshots)
-
-2. Setelah Register User wajib melakukan login untuk mengakses routes yang sudah di sediakan
-
-   ![image](./screenshots)
-
-<br>
+[API Warehouse Management System](https://documenter.getpostman.com/view/24582718/2s93m1a4WE)
