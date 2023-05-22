@@ -15,3 +15,11 @@ type LoginUserResponse struct {
 	Token string `json:"token"`
 }
 
+// Admin Response
+
+type CreateAdminResponse struct {
+	Fullname    string `json:"fullname"`
+	Email       string `json:"email"`
+	PhoneNumber int    `json:"phone_number"`
+	Password    string `json:"password"`
+}
