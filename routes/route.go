@@ -16,6 +16,7 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	e.Pre(mid.RemoveTrailingSlash())
 
 	e.POST("/register", controllers.RegisterUserController)
+	e.POST("/register/admin", controllers.RegisterAdminController)
 	e.POST("/login", controllers.LoginUserController)
 
 	fp := e.Group("/forgot-password")

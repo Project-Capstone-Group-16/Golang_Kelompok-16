@@ -109,3 +109,28 @@ func UpdatePasswordController(c echo.Context) error {
 	return c.JSON(http.StatusOK, "Change password success")
 
 }
+
+func RegisterAdminController(c echo.Context) error {
+	payloadUser := payload.CreateAdminRequest{}
+	c.Bind(&payloadUser)
+
+	if err := c.Validate(payloadUser); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"messages": "error payload create user",
+			"error":    "password minimum length has to be 5 character",
+		})
+	}
+
+	response, err := usecase.CreateAdmin(&payloadUser)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"messages": "error create user",
+			"error":    err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, payload.Response{
+		Message: "success register user",
+		Data:    response,
+	})
+}
