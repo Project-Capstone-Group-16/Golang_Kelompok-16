@@ -5,6 +5,7 @@ import (
 	"Capstone/models"
 )
 
+
 func GetAllWarehouses() (warehouse []models.Warehouse, err error) {
 	if err := config.DB.Find(&warehouse).Error; err != nil {
 		return nil, err
@@ -36,15 +37,16 @@ func CreateWarehouse(warehouse *models.Warehouse) error {
 	return nil
 }
 
-// update warehouse query database
-func UpdateWarehouse(warehouse *models.Warehouse) error {
+//update warehouse query database
+func UpdateWarehouse(warehouse  *models.Warehouse) error {
+
 	if err := config.DB.Model(&warehouse).Updates(&warehouse).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-// get all warehouse query database
+//get all warehouse query database
 func GetWarehouses() (warehouses []models.Warehouse, err error) {
 	if err = config.DB.Model(&models.Warehouse{}).Find(&warehouses).Error; err != nil {
 		return

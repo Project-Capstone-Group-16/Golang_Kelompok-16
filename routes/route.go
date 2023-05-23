@@ -15,6 +15,8 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	e.Validator = &utils.CustomValidator{Validator: validator.New()}
 	e.Pre(mid.RemoveTrailingSlash())
 
+	e.Static("/images/warehouse", "./images/warehouse")
+
 	e.POST("/register", controllers.RegisterUserController)
 	e.POST("/register/admin", controllers.RegisterAdminController)
 	e.POST("/login", controllers.LoginUserController)
@@ -31,4 +33,5 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	adm.PUT("/warehouse/:id", controllers.UpdateWarehouseController)
 	adm.DELETE("/warehouse/:id", controllers.DeleteWarehouse)
 	adm.GET("/warehouse", controllers.GetAllWarehouse)
+
 }

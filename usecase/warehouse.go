@@ -6,6 +6,48 @@ import (
 	"Capstone/models/payload"
 	"Capstone/repository/database"
 	"errors"
+	"fmt"
+	"io"
+	"mime/multipart"
+	"os"
+
+	"github.com/gosimple/slug"
+)
+
+func UploadImage(file *multipart.FileHeader, warehouseName string) (string, error) {
+	slugWarehouse := slug.Make(warehouseName)
+	slugFileName := slug.Make(file.Filename)
+	path := fmt.Sprintf("images/warehouse/%s-%s.png", slugWarehouse, slugFileName)
+
+	//upload the avatar
+	src, err := file.Open()
+	if err != nil {
+		return "", err
+	}
+	defer src.Close()
+	// Create a new file on disk
+	dst, err := os.Create(path)
+	if err != nil {
+		return "", err
+	}
+	defer dst.Close()
+	// Copy the uploaded file to the destination file
+	if _, err = io.Copy(dst, src); err != nil {
+		return "", err
+	}
+	return path, nil
+}
+
+// logic create new warehouse
+func CreateWarehouse(file *multipart.FileHeader, req *payload.CreateWarehouseRequest) (resp payload.CreateWarehouseResponse, err error) {
+
+	req.WarehouseImage, err = UploadImage(file, req.Name)
+	if err != nil {
+		return
+	}
+
+	path := fmt.Sprintf("%s/%s", constants.Base_Url, req.WarehouseImage)
+
 )
 
 func DeleteWarehouse(warehouses *models.Warehouse) error {
@@ -42,6 +84,8 @@ func CreateWarehouse(req *payload.CreateWarehouseRequest) (resp payload.CreateWa
 		Name:     req.Name,
 		Location: req.Location,
 		Status:   constants.Available,
+		ImageURL: path,
+
 	}
 
 	err = database.CreateWarehouse(newWarehouse)
@@ -53,6 +97,8 @@ func CreateWarehouse(req *payload.CreateWarehouseRequest) (resp payload.CreateWa
 		Name:     newWarehouse.Name,
 		Location: newWarehouse.Location,
 		Status:   newWarehouse.Status,
+		ImageURL: newWarehouse.ImageURL,
+
 	}
 
 	return
@@ -70,6 +116,8 @@ func UpdateWarehouse(warehouse *models.Warehouse) (resp payload.UpdateWarehouseR
 		Name:     warehouse.Name,
 		Location: warehouse.Location,
 		Status:   warehouse.Status,
+		ImageURL: warehouse.ImageURL,
+
 	}
 
 	return resp, nil
