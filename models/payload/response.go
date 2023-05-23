@@ -32,10 +32,12 @@ type CreateWarehouseResponse struct {
 	Name     string `json:"name"`
 	Location string `json:"location"`
 	Status   string `json:"status"`
+	ImageURL string `json:"image_url"`
 }
 
 type UpdateWarehouseResponse struct {
 	Name     string `json:"name" form:"name"`
 	Location string `json:"location" form:"location"`
 	Status   string `json:"status" form:"status"`
+	ImageURL string `json:"image_url" form:"image_url"`
 }

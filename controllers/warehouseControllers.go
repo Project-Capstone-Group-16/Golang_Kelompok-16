@@ -1,9 +1,11 @@
 package controllers
 
 import (
+	"Capstone/constants"
 	"Capstone/middleware"
 	"Capstone/models/payload"
 	"Capstone/usecase"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -15,8 +17,14 @@ func CreateWarehouseController(c echo.Context) error {
 		return c.JSON(401, "Unauthorized")
 	}
 
+	file, err := c.FormFile("warehouse_image")
+	if err != nil {
+		return err
+	}
+
 	payloadWarehouse := payload.CreateWarehouseRequest{}
 	c.Bind(&payloadWarehouse)
+	payloadWarehouse.WarehouseImage = file.Filename
 
 	if err := c.Validate(payloadWarehouse); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
@@ -25,7 +33,7 @@ func CreateWarehouseController(c echo.Context) error {
 		})
 	}
 
-	response, err := usecase.CreateWarehouse(&payloadWarehouse)
+	response, err := usecase.CreateWarehouse(file, &payloadWarehouse)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"messages": "error create warehouse",
@@ -50,7 +58,19 @@ func UpdateWarehouseController(c echo.Context) error {
 		return err
 	}
 
+	file, _ := c.FormFile("warehouse_image")
+
 	c.Bind(warehouse)
+
+	if file != nil {
+		warehouseImage, _ := usecase.UploadImage(file, warehouse.Name)
+
+		path := fmt.Sprintf("%s/%s", constants.Base_Url, warehouseImage)
+
+		if warehouseImage != "" {
+			warehouse.ImageURL = path
+		}
+	}
 
 	response, err := usecase.UpdateWarehouse(warehouse)
 	if err != nil {
