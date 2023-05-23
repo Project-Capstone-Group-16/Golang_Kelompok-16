@@ -10,6 +10,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// Logic Create User
 func CreateUser(req *payload.CreateUserRequest) (resp payload.CreateUserResponse, err error) {
 	if req.ConfirmPassword != req.Password {
 		return resp, errors.New("Password not match")
@@ -42,6 +43,7 @@ func CreateUser(req *payload.CreateUserRequest) (resp payload.CreateUserResponse
 	return
 }
 
+// Logic Create Admin
 func CreateAdmin(req *payload.CreateAdminRequest) (resp payload.CreateAdminResponse, err error) {
 	if req.ConfirmPassword != req.Password {
 		return resp, errors.New("Password not match")
@@ -79,6 +81,7 @@ func CreateAdmin(req *payload.CreateAdminRequest) (resp payload.CreateAdminRespo
 	return
 }
 
+// Logic Update Password User
 func UpdatePassword(id int, req *payload.UpdatePasswordRequest) error {
 
 	user, err := database.GetuserByID(id)
