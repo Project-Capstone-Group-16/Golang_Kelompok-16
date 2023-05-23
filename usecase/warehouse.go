@@ -91,6 +91,7 @@ func GetAllWarehouse() (resp []payload.GetAllWarehouseResponse, err error) {
 			Name:     warehouse.Name,
 			Location: warehouse.Location,
 			Status:   warehouse.Status,
+			ImageURL: warehouse.ImageURL,
 		})
 	}
 	return

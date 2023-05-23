@@ -5,6 +5,7 @@ import (
 	"Capstone/middleware"
 	"Capstone/models/payload"
 	"Capstone/usecase"
+	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -26,7 +27,6 @@ func CreateWarehouseController(c echo.Context) error {
 	c.Bind(&payloadWarehouse)
 	payloadWarehouse.WarehouseImage = file.Filename
 
-
 	if err := c.Validate(payloadWarehouse); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"messages": "error payload create Warehouse",
@@ -35,7 +35,7 @@ func CreateWarehouseController(c echo.Context) error {
 	}
 
 	response, err := usecase.CreateWarehouse(file, &payloadWarehouse)
-  
+
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"messages": "error create warehouse",
@@ -57,7 +57,7 @@ func UpdateWarehouseController(c echo.Context) error {
 	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
 	warehouse, err := usecase.GetWarehouseByID(id)
 	if err != nil {
-		return err
+		return errors.New("Warehouse not found")
 	}
 
 	file, _ := c.FormFile("warehouse_image")
@@ -66,9 +66,7 @@ func UpdateWarehouseController(c echo.Context) error {
 
 	if file != nil {
 		warehouseImage, _ := usecase.UploadImage(file, warehouse.Name)
-
 		path := fmt.Sprintf("%s/%s", constants.Base_Url, warehouseImage)
-
 		if warehouseImage != "" {
 			warehouse.ImageURL = path
 		}
