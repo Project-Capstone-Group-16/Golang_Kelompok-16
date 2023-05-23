@@ -1,18 +1,16 @@
 package usecase
 
 import (
+	"Capstone/constants"
+	"Capstone/models"
 	"Capstone/models/payload"
 	"Capstone/repository/database"
+	"errors"
 )
 
-func DeleteWarehouse(req *payload.DeleteWarehouseRequest) error {
+func DeleteWarehouse(warehouses *models.Warehouse) error {
 
-	warehouse, err := database.GetWarehouseByID(req.WarehouseID)
-	if err != nil {
-		return err
-	}
-
-	err = database.DeleteWarehouse(warehouse)
+	err := database.DeleteWarehouse(warehouses)
 	if err != nil {
 		return err
 	}
@@ -25,14 +23,18 @@ func GetAllWarehouse() (resp []payload.GetAllWarehouseResponse, err error) {
 		return resp, err
 	}
 
-	resp = make([]payload.GetAllWarehouseResponse, len(warehouses))
-	for i, warehouse := range warehouses {
-		resp[i] = payload.GetAllWarehouseResponse{
+	// resp = make([]payload.GetAllWarehouseResponse, len(warehouses))
+	resp = []payload.GetAllWarehouseResponse{}
+	for _, warehouse := range warehouses {
+		resp = append(resp, payload.GetAllWarehouseResponse{
 			Name:     warehouse.Name,
 			Location: warehouse.Location,
 			Status:   warehouse.Status,
-		}
+		})
 	}
+	return
+}
+
 // logic create new warehouse
 func CreateWarehouse(req *payload.CreateWarehouseRequest) (resp payload.CreateWarehouseResponse, err error) {
 

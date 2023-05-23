@@ -29,4 +29,6 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	adm := e.Group("admin", middleware.IsLoggedIn)
 	adm.POST("/warehouse", controllers.CreateWarehouseController)
 	adm.PUT("/warehouse/:id", controllers.UpdateWarehouseController)
+	adm.DELETE("/warehouse/:id", controllers.DeleteWarehouse)
+	adm.GET("/warehouse", controllers.GetAllWarehouse)
 }

@@ -25,9 +25,7 @@ type VerifyngOtp struct {
 	Otp string `json:"otp" validate:"required,min=6"`
 }
 
-type DeleteWarehouseRequest struct{
-	WarehouseID uint `json:"warehouse_id" form:"warehouse_id"`
-}
+
 // admin request
 
 type CreateAdminRequest struct {

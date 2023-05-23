@@ -62,19 +62,24 @@ func UpdateWarehouseController(c echo.Context) error {
 		Data:    response,
 	})
 }
+
 func DeleteWarehouse(c echo.Context) error {
-	payloadWarehouse := payload.DeleteWarehouseRequest{}
+	if _, err := middleware.IsAdmin(c); err != nil {
+		return c.JSON(401, "Unauthorized")
+	}
 
-	// adminID, err := middleware.IsAdmin(c)
-	// if err != nil {
-	// 	return c.JSON(http.StatusNotFound, "Admin not found")
-	// }
+	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
 
-	c.Bind(&payloadWarehouse)
-	err := usecase.DeleteWarehouse(&payloadWarehouse)
+	warehouse, err := usecase.GetWarehouseByID(id)
+	if err != nil {
+		return err
+	}
+
+	err = usecase.DeleteWarehouse(warehouse)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
+
 	return c.JSON(http.StatusOK, "delete complete")
 }
 

@@ -12,14 +12,15 @@ func GetAllWarehouses() (warehouse []models.Warehouse, err error) {
 	return warehouse, nil
 }
 
-// func GetWarehouseByID(id uint) (warehouse *models.Warehouse, err error) {
-// 	warehouse.ID = id
-// 	if err := config.DB.Where("id = ?", id).First(&warehouse).Error; err != nil {
-// 		return nil, err
-// 	}
+func GetWarehouseByid(id uint) (warehouse *models.Warehouse, err error) {
+	warehouse.ID = id
+	if err := config.DB.Where("id = ?", id).First(&warehouse).Error; err != nil {
+		return nil, err
+	}
 
-//		return warehouse, nil
-//	}
+		return warehouse, nil
+	}
+	
 func DeleteWarehouse(warehouse *models.Warehouse) error {
 	if err := config.DB.Delete(warehouse).Error; err != nil {
 		return err
