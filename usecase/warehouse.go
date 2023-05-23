@@ -48,11 +48,44 @@ func CreateWarehouse(file *multipart.FileHeader, req *payload.CreateWarehouseReq
 
 	path := fmt.Sprintf("%s/%s", constants.Base_Url, req.WarehouseImage)
 
+)
+
+func DeleteWarehouse(warehouses *models.Warehouse) error {
+
+	err := database.DeleteWarehouse(warehouses)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetAllWarehouse() (resp []payload.GetAllWarehouseResponse, err error) {
+	warehouses, err := database.GetAllWarehouses()
+	if err != nil {
+		return resp, err
+	}
+
+	// resp = make([]payload.GetAllWarehouseResponse, len(warehouses))
+	resp = []payload.GetAllWarehouseResponse{}
+	for _, warehouse := range warehouses {
+		resp = append(resp, payload.GetAllWarehouseResponse{
+			Name:     warehouse.Name,
+			Location: warehouse.Location,
+			Status:   warehouse.Status,
+		})
+	}
+	return
+}
+
+// logic create new warehouse
+func CreateWarehouse(req *payload.CreateWarehouseRequest) (resp payload.CreateWarehouseResponse, err error) {
+
 	newWarehouse := &models.Warehouse{
 		Name:     req.Name,
 		Location: req.Location,
 		Status:   constants.Available,
 		ImageURL: path,
+
 	}
 
 	err = database.CreateWarehouse(newWarehouse)
@@ -65,6 +98,7 @@ func CreateWarehouse(file *multipart.FileHeader, req *payload.CreateWarehouseReq
 		Location: newWarehouse.Location,
 		Status:   newWarehouse.Status,
 		ImageURL: newWarehouse.ImageURL,
+
 	}
 
 	return
@@ -83,6 +117,7 @@ func UpdateWarehouse(warehouse *models.Warehouse) (resp payload.UpdateWarehouseR
 		Location: warehouse.Location,
 		Status:   warehouse.Status,
 		ImageURL: warehouse.ImageURL,
+
 	}
 
 	return resp, nil

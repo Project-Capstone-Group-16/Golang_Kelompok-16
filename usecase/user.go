@@ -106,3 +106,4 @@ func UpdatePassword(id int, req *payload.UpdatePasswordRequest) error {
 	}
 	return nil
 }
+

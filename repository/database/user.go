@@ -48,6 +48,7 @@ func GetUser(user *models.User) (err error) {
 }
 
 func UpdateUser(user  *models.User) error {
+
 	if err := config.DB.Updates(&user).Error; err != nil {
 		return err
 	}

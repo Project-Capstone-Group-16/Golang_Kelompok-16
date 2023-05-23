@@ -26,6 +26,7 @@ func CreateWarehouseController(c echo.Context) error {
 	c.Bind(&payloadWarehouse)
 	payloadWarehouse.WarehouseImage = file.Filename
 
+
 	if err := c.Validate(payloadWarehouse); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"messages": "error payload create Warehouse",
@@ -34,6 +35,7 @@ func CreateWarehouseController(c echo.Context) error {
 	}
 
 	response, err := usecase.CreateWarehouse(file, &payloadWarehouse)
+  
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"messages": "error create warehouse",
@@ -81,4 +83,32 @@ func UpdateWarehouseController(c echo.Context) error {
 		Message: "success update warehouse",
 		Data:    response,
 	})
+}
+
+func DeleteWarehouse(c echo.Context) error {
+	if _, err := middleware.IsAdmin(c); err != nil {
+		return c.JSON(401, "Unauthorized")
+	}
+
+	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
+
+	warehouse, err := usecase.GetWarehouseByID(id)
+	if err != nil {
+		return err
+	}
+
+	err = usecase.DeleteWarehouse(warehouse)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, "delete complete")
+}
+
+func GetAllWarehouse(c echo.Context) error {
+	response, err := usecase.GetAllWarehouse()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, response)
 }

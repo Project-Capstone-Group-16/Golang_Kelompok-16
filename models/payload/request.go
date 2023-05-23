@@ -19,11 +19,13 @@ type ForgotPasswordRequest struct {
 type UpdatePasswordRequest struct {
 	Password        string `json:"password" form:"password" validate:"required,min=6"`
 	ConfirmPassword string `json:"confirm_password" form:"confirm_password" validate:"required"`
+
 }
 
 type VerifyngOtp struct {
 	Otp string `json:"otp" validate:"required,min=6"`
 }
+
 
 // admin request
 
@@ -44,5 +46,6 @@ type CreateWarehouseRequest struct {
 	Name     string `json:"name" form:"name" validate:"required"`
 	Location string `json:"location" form:"location" validate:"required"`
 	WarehouseImage string `json:"warehouse_image" form:"warehouse_image" validate:"required"`
+
 }
 

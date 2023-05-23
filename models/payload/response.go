@@ -15,6 +15,11 @@ type LoginUserResponse struct {
 	Token string `json:"token"`
 }
 
+type GetAllWarehouseResponse struct {
+	Name string `json:"name`
+	Location string `json:"location"`
+	Status string `json:"status"`
+}
 // Admin Response
 
 type CreateAdminResponse struct {
@@ -33,6 +38,7 @@ type CreateWarehouseResponse struct {
 	Location string `json:"location"`
 	Status   string `json:"status"`
 	ImageURL string `json:"image_url"`
+
 }
 
 type UpdateWarehouseResponse struct {
@@ -40,4 +46,5 @@ type UpdateWarehouseResponse struct {
 	Location string `json:"location" form:"location"`
 	Status   string `json:"status" form:"status"`
 	ImageURL string `json:"image_url" form:"image_url"`
+
 }
