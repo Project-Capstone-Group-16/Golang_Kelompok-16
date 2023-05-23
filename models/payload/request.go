@@ -18,7 +18,7 @@ type ForgotPasswordRequest struct {
 
 type UpdatePasswordRequest struct {
 	Password        string `json:"password" form:"password" validate:"required,min=6"`
-	ConfirmPassword string `json:"confirm_password" form:"confirm_password"`
+	ConfirmPassword string `json:"confirm_password" form:"confirm_password" validate:"required`
 }
 
 type VerifyngOtp struct {
@@ -28,3 +28,23 @@ type VerifyngOtp struct {
 type DeleteWarehouseRequest struct{
 	WarehouseID uint `json:"warehouse_id" form:"warehouse_id"`
 }
+// admin request
+
+type CreateAdminRequest struct {
+	Fullname        string `json:"full_name" form:"full_name" validate:"required"`
+	Email           string `json:"email" form:"email" validate:"required,email"`
+	PhoneNumber     int    `json:"phone_number" form:"phone_number" validate:"required,min=11"`
+	Password        string `json:"password" form:"password" validate:"required,min=6"`
+	ConfirmPassword string `json:"confirm_password" form:"confirm_password"`
+}
+
+type LoginAdminRequest struct {
+	Email    string `json:"email" form:"email" validate:"required,email"`
+	Password string `json:"password" form:"password" validate:"required,min=6"`
+}
+
+type CreateWarehouseRequest struct {
+	Name     string `json:"name" form:"name" validate:"required"`
+	Location string `json:"location" form:"location" validate:"required"`
+}
+

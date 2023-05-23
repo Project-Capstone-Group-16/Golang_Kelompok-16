@@ -16,10 +16,17 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	e.Pre(mid.RemoveTrailingSlash())
 
 	e.POST("/register", controllers.RegisterUserController)
+	e.POST("/register/admin", controllers.RegisterAdminController)
 	e.POST("/login", controllers.LoginUserController)
+	e.POST("/login/admin", controllers.LoginAdminController)
 
 	fp := e.Group("/forgot-password")
 	fp.POST("/generate", controllers.GenerateOTPController)
 	fp.POST("/verify", controllers.VerifyngOtpController)
 	fp.PUT("/update", controllers.UpdatePasswordController, middleware.IsLoggedIn)
+
+	//admin routes
+	adm := e.Group("admin", middleware.IsLoggedIn)
+	adm.POST("/warehouse", controllers.CreateWarehouseController)
+	adm.PUT("/warehouse/:id", controllers.UpdateWarehouseController)
 }

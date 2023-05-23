@@ -9,6 +9,7 @@ import (
 	"github.com/labstack/echo"
 )
 
+// Register User
 func RegisterUserController(c echo.Context) error {
 	payloadUser := payload.CreateUserRequest{}
 	c.Bind(&payloadUser)
@@ -34,6 +35,33 @@ func RegisterUserController(c echo.Context) error {
 	})
 }
 
+// Register Admin
+func RegisterAdminController(c echo.Context) error {
+	payloadUser := payload.CreateAdminRequest{}
+	c.Bind(&payloadUser)
+
+	if err := c.Validate(payloadUser); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"messages": "error payload create admin",
+			"error":    "password minimum length has to be 5 character",
+		})
+	}
+
+	response, err := usecase.CreateAdmin(&payloadUser)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"messages": "error create admin",
+			"error":    err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, payload.Response{
+		Message: "success register admin",
+		Data:    response,
+	})
+}
+
+// Logic User
 func LoginUserController(c echo.Context) error {
 	payloadUser := payload.LoginUserRequest{}
 
@@ -54,6 +82,28 @@ func LoginUserController(c echo.Context) error {
 	})
 }
 
+// Logic Admin
+func LoginAdminController(c echo.Context) error {
+	payloadUser := payload.LoginAdminRequest{}
+
+	c.Bind(&payloadUser)
+
+	if err := c.Validate(&payloadUser); err != nil {
+		return c.JSON(http.StatusBadRequest, "Field can't be empty")
+	}
+
+	response, err := usecase.LoginAdmin(&payloadUser)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(200, payload.Response{
+		Message: "Success Login",
+		Data:    response,
+	})
+}
+
+// Generate OTP
 func GenerateOTPController(c echo.Context) error {
 	payloadUser := payload.ForgotPasswordRequest{}
 
@@ -70,6 +120,7 @@ func GenerateOTPController(c echo.Context) error {
 	return c.JSON(http.StatusOK, "OTP sent successfully, please check your email for the OTP  token ")
 }
 
+// Verify OTP
 func VerifyngOtpController(c echo.Context) error {
 	payloadUser := payload.VerifyngOtp{}
 
@@ -87,6 +138,7 @@ func VerifyngOtpController(c echo.Context) error {
 	return c.JSON(http.StatusOK, "OTP confirmed")
 }
 
+// Update Password User
 func UpdatePasswordController(c echo.Context) error {
 	payloadUser := payload.UpdatePasswordRequest{}
 

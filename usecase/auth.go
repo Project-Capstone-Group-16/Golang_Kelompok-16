@@ -18,6 +18,7 @@ import (
 
 var generatedOTP string
 
+// Logic Login User
 func LoginUser(req *payload.LoginUserRequest) (res payload.LoginUserResponse, err error) {
 
 	user, err := database.GetuserByEmail(req.Email)
@@ -30,7 +31,7 @@ func LoginUser(req *payload.LoginUserRequest) (res payload.LoginUserResponse, er
 		return res, errors.New("Wrong Password")
 	}
 
-	token, err := middleware.CreateToken(int(user.ID))
+	token, err := middleware.CreateToken(int(user.ID), user.Role)
 	if err != nil {
 		return res, echo.NewHTTPError(http.StatusBadRequest, "Failed to generate token")
 	}
@@ -45,6 +46,35 @@ func LoginUser(req *payload.LoginUserRequest) (res payload.LoginUserResponse, er
 	return
 }
 
+// Logic Login Admin
+func LoginAdmin(req *payload.LoginAdminRequest) (res payload.LoginAdminResponse, err error) {
+
+	user, err := database.GetuserByEmail(req.Email)
+	if err != nil {
+		return res, echo.NewHTTPError(http.StatusBadRequest, "Email not registered")
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
+	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
+		return res, errors.New("Wrong Password")
+	}
+
+	token, err := middleware.CreateToken(int(user.ID), user.Role)
+	if err != nil {
+		return res, echo.NewHTTPError(http.StatusBadRequest, "Failed to generate token")
+	}
+
+	user.Token = token
+
+	res = payload.LoginAdminResponse{
+		Email: user.Email,
+		Token: user.Token,
+	}
+
+	return
+}
+
+// Logic OTP email
 func SendOTPByEmail(emailAddress, otp string) error {
 	mailjetClient := mailjet.NewMailjetClient(os.Getenv("MJ_APIKEY_PUBLIC"), os.Getenv("MJ_APIKEY_PRIVATE"))
 	messagesInfo := []mailjet.InfoMessagesV31{
@@ -75,6 +105,8 @@ func SendOTPByEmail(emailAddress, otp string) error {
 	}
 	return nil
 }
+
+// Logic Generate  OTP
 func GenerateOTPEndpoint(req *payload.ForgotPasswordRequest) error {
 	user, err := database.GetuserByEmail(req.Email)
 	if err != nil {
@@ -89,6 +121,7 @@ func GenerateOTPEndpoint(req *payload.ForgotPasswordRequest) error {
 	return nil
 }
 
+// Logic Verify OTP
 func VerifyOTP(req *payload.VerifyngOtp) error {
 	if req.Otp != generatedOTP {
 		return errors.New("OTP verification failed.")

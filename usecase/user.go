@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"Capstone/constants"
 	"Capstone/models"
 	"Capstone/models/payload"
 	"Capstone/repository/database"
@@ -9,6 +10,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// Logic Create User
 func CreateUser(req *payload.CreateUserRequest) (resp payload.CreateUserResponse, err error) {
 	if req.ConfirmPassword != req.Password {
 		return resp, errors.New("Password not match")
@@ -40,6 +42,46 @@ func CreateUser(req *payload.CreateUserRequest) (resp payload.CreateUserResponse
 
 	return
 }
+
+// Logic Create Admin
+func CreateAdmin(req *payload.CreateAdminRequest) (resp payload.CreateAdminResponse, err error) {
+	if req.ConfirmPassword != req.Password {
+		return resp, errors.New("Password not match")
+	}
+
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return
+	}
+
+	if !database.IsEmailAvailable(req.Email) {
+		return resp, errors.New("email is already registered")
+	}
+
+	newUser := &models.User{
+		Fullname:    req.Fullname,
+		Email:       req.Email,
+		PhoneNumber: req.PhoneNumber,
+		Password:    string(passwordHash),
+		Role:        constants.Admin,
+	}
+
+	err = database.CreateUser(newUser)
+	if err != nil {
+		return
+	}
+
+	resp = payload.CreateAdminResponse{
+		Fullname:    newUser.Fullname,
+		Email:       newUser.Email,
+		PhoneNumber: newUser.PhoneNumber,
+		Password:    newUser.Password,
+	}
+
+	return
+}
+
+// Logic Update Password User
 func UpdatePassword(id int, req *payload.UpdatePasswordRequest) error {
 
 	user, err := database.GetuserByID(id)
