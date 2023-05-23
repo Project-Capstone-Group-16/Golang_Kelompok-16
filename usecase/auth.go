@@ -30,7 +30,7 @@ func LoginUser(req *payload.LoginUserRequest) (res payload.LoginUserResponse, er
 		return res, errors.New("Wrong Password")
 	}
 
-	token, err := middleware.CreateToken(int(user.ID))
+	token, err := middleware.CreateToken(int(user.ID), user.Role)
 	if err != nil {
 		return res, echo.NewHTTPError(http.StatusBadRequest, "Failed to generate token")
 	}
@@ -109,7 +109,7 @@ func LoginAdmin(req *payload.LoginAdminRequest) (res payload.LoginAdminResponse,
 		return res, errors.New("Wrong Password")
 	}
 
-	token, err := middleware.CreateToken(int(user.ID))
+	token, err := middleware.CreateToken(int(user.ID), user.Role)
 	if err != nil {
 		return res, echo.NewHTTPError(http.StatusBadRequest, "Failed to generate token")
 	}
