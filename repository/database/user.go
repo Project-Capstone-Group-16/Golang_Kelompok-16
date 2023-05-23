@@ -55,7 +55,7 @@ func GetUserWithBlog(id uint) (user models.User, err error) {
 	return
 }
 
-func UpdateUser(user  *models.User) error {
+func UpdateUser(user *models.User) error {
 	if err := config.DB.Updates(&user).Error; err != nil {
 		return err
 	}
@@ -82,3 +82,4 @@ func GetuserByID(id int) (user *models.User, err error) {
 	}
 	return user, nil
 }
+
