@@ -24,4 +24,9 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	fp.POST("/generate", controllers.GenerateOTPController)
 	fp.POST("/verify", controllers.VerifyngOtpController)
 	fp.PUT("/update", controllers.UpdatePasswordController, middleware.IsLoggedIn)
+
+	//admin routes
+	adm := e.Group("admin", middleware.IsLoggedIn)
+	adm.POST("/warehouse", controllers.CreateWarehouseController)
+	adm.PUT("/warehouse/:id", controllers.UpdateWarehouseController)
 }

@@ -34,7 +34,7 @@ func GetuserByEmail(email string) (user models.User, err error) {
 }
 
 func GetUsers() (users []models.User, err error) {
-	if err = config.DB.Model(&models.User{}).Preload("Blogs").Find(&users).Error; err != nil {
+	if err = config.DB.Model(&models.User{}).Find(&users).Error; err != nil {
 		return
 	}
 	return
@@ -42,14 +42,6 @@ func GetUsers() (users []models.User, err error) {
 
 func GetUser(user *models.User) (err error) {
 	if err = config.DB.First(&user).Error; err != nil {
-		return
-	}
-	return
-}
-
-func GetUserWithBlog(id uint) (user models.User, err error) {
-	user.ID = id
-	if err = config.DB.Model(&models.User{}).Preload("Blogs").First(&user).Error; err != nil {
 		return
 	}
 	return

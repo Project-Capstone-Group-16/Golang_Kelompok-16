@@ -31,7 +31,7 @@ func LoginUser(req *payload.LoginUserRequest) (res payload.LoginUserResponse, er
 		return res, errors.New("Wrong Password")
 	}
 
-	token, err := middleware.CreateToken(int(user.ID))
+	token, err := middleware.CreateToken(int(user.ID), user.Role)
 	if err != nil {
 		return res, echo.NewHTTPError(http.StatusBadRequest, "Failed to generate token")
 	}
@@ -128,4 +128,31 @@ func VerifyOTP(req *payload.VerifyngOtp) error {
 	}
 
 	return errors.New("OTP verification successful!")
+}
+
+func LoginAdmin(req *payload.LoginAdminRequest) (res payload.LoginAdminResponse, err error) {
+
+	user, err := database.GetuserByEmail(req.Email)
+	if err != nil {
+		return res, echo.NewHTTPError(http.StatusBadRequest, "Email not registered")
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
+	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
+		return res, errors.New("Wrong Password")
+	}
+
+	token, err := middleware.CreateToken(int(user.ID), user.Role)
+	if err != nil {
+		return res, echo.NewHTTPError(http.StatusBadRequest, "Failed to generate token")
+	}
+
+	user.Token = token
+
+	res = payload.LoginAdminResponse{
+		Email: user.Email,
+		Token: user.Token,
+	}
+
+	return
 }

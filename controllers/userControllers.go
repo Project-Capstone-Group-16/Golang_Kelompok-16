@@ -42,7 +42,7 @@ func RegisterAdminController(c echo.Context) error {
 
 	if err := c.Validate(payloadUser); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
-			"messages": "error payload create user",
+			"messages": "error payload create admin",
 			"error":    "password minimum length has to be 5 character",
 		})
 	}
@@ -50,13 +50,13 @@ func RegisterAdminController(c echo.Context) error {
 	response, err := usecase.CreateAdmin(&payloadUser)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
-			"messages": "error create user",
+			"messages": "error create admin",
 			"error":    err.Error(),
 		})
 	}
 
 	return c.JSON(http.StatusOK, payload.Response{
-		Message: "success register user",
+		Message: "success register admin",
 		Data:    response,
 	})
 }
