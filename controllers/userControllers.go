@@ -9,6 +9,7 @@ import (
 	"github.com/labstack/echo"
 )
 
+// Register User
 func RegisterUserController(c echo.Context) error {
 	payloadUser := payload.CreateUserRequest{}
 	c.Bind(&payloadUser)
@@ -34,82 +35,7 @@ func RegisterUserController(c echo.Context) error {
 	})
 }
 
-func LoginUserController(c echo.Context) error {
-	payloadUser := payload.LoginUserRequest{}
-
-	c.Bind(&payloadUser)
-
-	if err := c.Validate(&payloadUser); err != nil {
-		return c.JSON(http.StatusBadRequest, "Field can't be empty")
-	}
-
-	response, err := usecase.LoginUser(&payloadUser)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
-	}
-
-	return c.JSON(200, payload.Response{
-		Message: "Success Login",
-		Data:    response,
-	})
-}
-
-func GenerateOTPController(c echo.Context) error {
-	payloadUser := payload.ForgotPasswordRequest{}
-
-	c.Bind(&payloadUser)
-
-	if err := c.Validate(&payloadUser); err != nil {
-		return c.JSON(http.StatusBadRequest, "Field can't be empty")
-	}
-
-	err := usecase.GenerateOTPEndpoint(&payloadUser)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
-	}
-	return c.JSON(http.StatusOK, "OTP sent successfully, please check your email for the OTP  token ")
-}
-
-func VerifyngOtpController(c echo.Context) error {
-	payloadUser := payload.VerifyngOtp{}
-
-	c.Bind(&payloadUser)
-
-	if err := c.Validate(&payloadUser); err != nil {
-		return c.JSON(http.StatusBadRequest, "OTP has to be 6 digit")
-	}
-
-	err := usecase.VerifyOTP(&payloadUser)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
-	}
-
-	return c.JSON(http.StatusOK, "OTP confirmed")
-}
-
-func UpdatePasswordController(c echo.Context) error {
-	payloadUser := payload.UpdatePasswordRequest{}
-
-	userId, err := middleware.IsUser(c)
-	if err != nil {
-		return c.JSON(http.StatusNotFound, "User not found")
-	}
-
-	c.Bind(&payloadUser)
-
-	if err := c.Validate(&payloadUser); err != nil {
-		return c.JSON(http.StatusBadRequest, "Field cannot be empty")
-	}
-
-	err = usecase.UpdatePassword(userId, &payloadUser)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
-	}
-
-	return c.JSON(http.StatusOK, "Change password success")
-
-}
-
+// Register Admin
 func RegisterAdminController(c echo.Context) error {
 	payloadUser := payload.CreateAdminRequest{}
 	c.Bind(&payloadUser)
@@ -135,6 +61,28 @@ func RegisterAdminController(c echo.Context) error {
 	})
 }
 
+// Logic User
+func LoginUserController(c echo.Context) error {
+	payloadUser := payload.LoginUserRequest{}
+
+	c.Bind(&payloadUser)
+
+	if err := c.Validate(&payloadUser); err != nil {
+		return c.JSON(http.StatusBadRequest, "Field can't be empty")
+	}
+
+	response, err := usecase.LoginUser(&payloadUser)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(200, payload.Response{
+		Message: "Success Login",
+		Data:    response,
+	})
+}
+
+// Logic Admin
 func LoginAdminController(c echo.Context) error {
 	payloadUser := payload.LoginAdminRequest{}
 
@@ -153,4 +101,63 @@ func LoginAdminController(c echo.Context) error {
 		Message: "Success Login",
 		Data:    response,
 	})
+}
+
+// Generate OTP
+func GenerateOTPController(c echo.Context) error {
+	payloadUser := payload.ForgotPasswordRequest{}
+
+	c.Bind(&payloadUser)
+
+	if err := c.Validate(&payloadUser); err != nil {
+		return c.JSON(http.StatusBadRequest, "Field can't be empty")
+	}
+
+	err := usecase.GenerateOTPEndpoint(&payloadUser)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, "OTP sent successfully, please check your email for the OTP  token ")
+}
+
+// Verify OTP
+func VerifyngOtpController(c echo.Context) error {
+	payloadUser := payload.VerifyngOtp{}
+
+	c.Bind(&payloadUser)
+
+	if err := c.Validate(&payloadUser); err != nil {
+		return c.JSON(http.StatusBadRequest, "OTP has to be 6 digit")
+	}
+
+	err := usecase.VerifyOTP(&payloadUser)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, "OTP confirmed")
+}
+
+// Update Password User
+func UpdatePasswordController(c echo.Context) error {
+	payloadUser := payload.UpdatePasswordRequest{}
+
+	userId, err := middleware.IsUser(c)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, "User not found")
+	}
+
+	c.Bind(&payloadUser)
+
+	if err := c.Validate(&payloadUser); err != nil {
+		return c.JSON(http.StatusBadRequest, "Field cannot be empty")
+	}
+
+	err = usecase.UpdatePassword(userId, &payloadUser)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, "Change password success")
+
 }
