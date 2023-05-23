@@ -14,7 +14,7 @@ func CreateWarehouse(req *payload.CreateWarehouseRequest) (resp payload.CreateWa
 	newWarehouse := &models.Warehouse{
 		Name:     req.Name,
 		Location: req.Location,
-		Status:   constants.NotAvailable,
+		Status:   constants.Available,
 	}
 
 	err = database.CreateWarehouse(newWarehouse)
@@ -40,11 +40,11 @@ func UpdateWarehouse(warehouse *models.Warehouse) (resp payload.UpdateWarehouseR
 		return resp, errors.New("Can't update warehouse")
 	}
 	resp = payload.UpdateWarehouseResponse{
-		Name: warehouse.Name,
+		Name:     warehouse.Name,
 		Location: warehouse.Location,
-		Status: warehouse.Status,	
+		Status:   warehouse.Status,
 	}
-	
+
 	return resp, nil
 }
 
