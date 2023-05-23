@@ -22,9 +22,9 @@ type Config struct {
 func InitDB() *gorm.DB {
 	config := Config{
 		DB_Username: "root",
-		DB_Password: "",
+		DB_Password: os.Getenv("DB_PASSWORD"),
 		DB_Port:     os.Getenv("DB_PORT"),
-		DB_Host:     "localhost",
+		DB_Host:     os.Getenv("DB_HOST"),
 		DB_Name:     "inventron",
 	}
 
