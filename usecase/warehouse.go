@@ -40,7 +40,6 @@ func UploadImage(file *multipart.FileHeader, warehouseName string) (string, erro
 
 // logic create new warehouse
 func CreateWarehouse(file *multipart.FileHeader, req *payload.CreateWarehouseRequest) (resp payload.CreateWarehouseResponse, err error) {
-
 	req.WarehouseImage, err = UploadImage(file, req.Name)
 	if err != nil {
 		return
@@ -48,7 +47,27 @@ func CreateWarehouse(file *multipart.FileHeader, req *payload.CreateWarehouseReq
 
 	path := fmt.Sprintf("%s/%s", constants.Base_Url, req.WarehouseImage)
 
-)
+	newWarehouse := &models.Warehouse{
+		Name:     req.Name,
+		Location: req.Location,
+		Status:   constants.Available,
+		ImageURL: path,
+	}
+
+	err = database.CreateWarehouse(newWarehouse)
+	if err != nil {
+		return
+	}
+
+	resp = payload.CreateWarehouseResponse{
+		Name:     newWarehouse.Name,
+		Location: newWarehouse.Location,
+		Status:   newWarehouse.Status,
+		ImageURL: newWarehouse.ImageURL,
+	}
+
+	return
+}
 
 func DeleteWarehouse(warehouses *models.Warehouse) error {
 
@@ -77,33 +96,6 @@ func GetAllWarehouse() (resp []payload.GetAllWarehouseResponse, err error) {
 	return
 }
 
-// logic create new warehouse
-func CreateWarehouse(req *payload.CreateWarehouseRequest) (resp payload.CreateWarehouseResponse, err error) {
-
-	newWarehouse := &models.Warehouse{
-		Name:     req.Name,
-		Location: req.Location,
-		Status:   constants.Available,
-		ImageURL: path,
-
-	}
-
-	err = database.CreateWarehouse(newWarehouse)
-	if err != nil {
-		return
-	}
-
-	resp = payload.CreateWarehouseResponse{
-		Name:     newWarehouse.Name,
-		Location: newWarehouse.Location,
-		Status:   newWarehouse.Status,
-		ImageURL: newWarehouse.ImageURL,
-
-	}
-
-	return
-}
-
 // logic update warehouse
 func UpdateWarehouse(warehouse *models.Warehouse) (resp payload.UpdateWarehouseResponse, err error) {
 
@@ -117,7 +109,6 @@ func UpdateWarehouse(warehouse *models.Warehouse) (resp payload.UpdateWarehouseR
 		Location: warehouse.Location,
 		Status:   warehouse.Status,
 		ImageURL: warehouse.ImageURL,
-
 	}
 
 	return resp, nil
