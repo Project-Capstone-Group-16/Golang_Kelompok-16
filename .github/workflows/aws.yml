@@ -49,6 +49,6 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
-            docker stop capstone1 || true
-            docker rm capstone1 || true
-            docker run -d --name capstone1 -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/capstone:1.2
+            docker stop demo || true
+            docker rm demo || true
+            docker run -d --name demo -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/capstone:1.2
