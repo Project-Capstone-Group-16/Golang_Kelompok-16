@@ -27,7 +27,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Build Docker image
-        run: docker build -t {{tag_project}} .
+        run: docker build -t capstone:latest .
 
       - name: Log in to AWS
         uses: aws-actions/configure-aws-credentials@v1
@@ -39,8 +39,8 @@ jobs:
       - name: Push Docker image to AWS EC2
         run: |
           eval $(aws ecr get-login --no-include-email --region ap-southeast-2)
-          docker tag {{tag_project}} ${{ secrets.DOCKERHUB_USERNAME }}/capstone
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/capstone
+          docker tag capstone:latest ${{ secrets.DOCKERHUB_USERNAME }}/capstone:1.2
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/capstone1.2
 
       - name: SSH into EC2 and deploy
         uses: appleboy/ssh-action@master
@@ -51,4 +51,4 @@ jobs:
           script: |
             docker stop capstone1 || true
             docker rm capstone1 || true
-            docker run -d --name capstone1 -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/capstone
+            docker run -d --name capstone1 -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/capstone:1.2
