@@ -49,7 +49,6 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
-            sudo docker login
             sudo docker stop demo || true
             sudo docker rm demo || true
             sudo docker run -d --name demo -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/capstone:1.2
