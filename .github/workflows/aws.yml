@@ -52,4 +52,4 @@ jobs:
             sudo docker login
             sudo docker stop demo || true
             sudo docker rm demo || true
-            sudo docker run -d --name demo -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/capstone:1.2
+            sudo docker run -p 8080:8080 --name demo ${{ secrets.DOCKERHUB_USERNAME }}/capstone:1.2
