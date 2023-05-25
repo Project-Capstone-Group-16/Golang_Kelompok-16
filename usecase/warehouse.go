@@ -90,6 +90,7 @@ func GetAllWarehouse() (resp []payload.GetAllWarehouseResponse, err error) {
 	resp = []payload.GetAllWarehouseResponse{}
 	for _, warehouse := range warehouses {
 		resp = append(resp, payload.GetAllWarehouseResponse{
+			ID:       warehouse.ID,
 			Name:     warehouse.Name,
 			Location: warehouse.Location,
 			Status:   warehouse.Status,
@@ -109,6 +110,7 @@ func GetAllByStatusWarehouse(status string) (resp []payload.GetAllWarehouseRespo
 	resp = []payload.GetAllWarehouseResponse{}
 	for _, warehouse := range warehouses {
 		resp = append(resp, payload.GetAllWarehouseResponse{
+			ID:       warehouse.ID,
 			Name:     warehouse.Name,
 			Location: warehouse.Location,
 			Status:   warehouse.Status,
@@ -146,6 +148,3 @@ func GetWarehouseByID(id uint64) (warehouse *models.Warehouse, err error) {
 
 	return warehouse, nil
 }
-
-// Create Favorite Warehouse
-func CreateFavoriteWarehouse()

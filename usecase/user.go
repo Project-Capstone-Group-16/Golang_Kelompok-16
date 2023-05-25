@@ -45,6 +45,10 @@ func CreateUser(req *payload.CreateUserRequest) (resp payload.CreateUserResponse
 
 // Logic Create Admin
 func CreateAdmin(req *payload.CreateAdminRequest) (resp payload.CreateAdminResponse, err error) {
+	if !database.IsEmailAvailable(req.Email) {
+		return resp, errors.New("email is already registered")
+	}
+
 	if req.ConfirmPassword != req.Password {
 		return resp, errors.New("Password not match")
 	}
@@ -54,14 +58,10 @@ func CreateAdmin(req *payload.CreateAdminRequest) (resp payload.CreateAdminRespo
 		return
 	}
 
-	if !database.IsEmailAvailable(req.Email) {
-		return resp, errors.New("email is already registered")
-	}
-
 	newUser := &models.User{
 		Fullname:    req.Fullname,
 		Email:       req.Email,
-		PhoneNumber: req.PhoneNumber,
+		PhoneNumber: "0" + req.PhoneNumber, // masih bimbang apakah +62 atau 0
 		Password:    string(passwordHash),
 		Role:        constants.Admin,
 	}
@@ -107,3 +107,37 @@ func UpdatePassword(id int, req *payload.UpdatePasswordRequest) error {
 	return nil
 }
 
+func CreateFavoriteWarehouse(id int, req *payload.CreateFavoriteRequest) (resp payload.CreateFavoriteResponse, err error) {
+	user, err := database.GetuserByID(id)
+	if err != nil {
+		return resp, errors.New("User not found")
+	}
+
+	warehouse, err := database.GetWarehouseByID(uint64(req.WarehouseID))
+	if err != nil {
+		return resp, errors.New("Warehouse not found")
+	}
+
+	newUser := &models.Favorite{
+		UserID:      user.ID,
+		WarehouseID: req.WarehouseID,
+	}
+
+	err = database.CreateFavorite(newUser)
+	if err != nil {
+		return resp, errors.New("Can't Create Favorite")
+	}
+
+	resp = payload.CreateFavoriteResponse{
+		WarehouseID: newUser.WarehouseID,
+		Warehouse: payload.GetAllWarehouseResponse{
+			ID:       warehouse.ID,
+			Name:     warehouse.Name,
+			Location: warehouse.Location,
+			Status:   warehouse.Status,
+			ImageURL: warehouse.ImageURL,
+		},
+	}
+
+	return
+}

@@ -15,19 +15,24 @@ type LoginUserResponse struct {
 	Token string `json:"token"`
 }
 
+type CreateFavoriteResponse struct {
+	WarehouseID uint `json:"warehouse_id" form:"warehouse_id"`
+	Warehouse   GetAllWarehouseResponse
+}
+
+// Admin Response
 type GetAllWarehouseResponse struct {
-	Name     string `json:"name`
+	ID       uint   `json:"id"`
+	Name     string `json:"name"`
 	Location string `json:"location"`
 	Status   string `json:"status"`
 	ImageURL string `json:"image_url"`
 }
 
-// Admin Response
-
 type CreateAdminResponse struct {
 	Fullname    string `json:"fullname"`
 	Email       string `json:"email"`
-	PhoneNumber int    `json:"phone_number"`
+	PhoneNumber string `json:"phone_number"`
 	Password    string `json:"password"`
 }
 type LoginAdminResponse struct {

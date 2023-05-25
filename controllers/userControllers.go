@@ -14,7 +14,7 @@ func RegisterUserController(c echo.Context) error {
 	payloadUser := payload.CreateUserRequest{}
 	c.Bind(&payloadUser)
 
-	if err := c.Validate(payloadUser); err != nil {
+	if err := c.Validate(&payloadUser); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"messages": "error payload create user",
 			"error":    "password minimum length has to be 5 character",
@@ -40,7 +40,7 @@ func RegisterAdminController(c echo.Context) error {
 	payloadUser := payload.CreateAdminRequest{}
 	c.Bind(&payloadUser)
 
-	if err := c.Validate(payloadUser); err != nil {
+	if err := c.Validate(&payloadUser); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"messages": "error payload create admin",
 			"error":    "password minimum length has to be 5 character",
@@ -122,12 +122,12 @@ func GenerateOTPController(c echo.Context) error {
 
 // Verify OTP
 func VerifyngOtpController(c echo.Context) error {
-	payloadUser := payload.VerifyngOtp{}
+	payloadUser := payload.VerifyngOtpRequest{}
 
 	c.Bind(&payloadUser)
 
 	if err := c.Validate(&payloadUser); err != nil {
-		return c.JSON(http.StatusBadRequest, "OTP has to be 6 digit")
+		return c.JSON(http.StatusBadRequest, "OTP has to be 4 digit")
 	}
 
 	err := usecase.VerifyOTP(&payloadUser)
@@ -144,7 +144,7 @@ func UpdatePasswordController(c echo.Context) error {
 
 	userId, err := middleware.IsUser(c)
 	if err != nil {
-		return c.JSON(http.StatusNotFound, "User not found")
+		return c.JSON(http.StatusNotFound, "Unauthorized")
 	}
 
 	c.Bind(&payloadUser)
@@ -160,4 +160,30 @@ func UpdatePasswordController(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, "Change password success")
 
+}
+
+// User add favorite warehouse
+func AddFavoriteWarehouseController(c echo.Context) error {
+	payloadUser := payload.CreateFavoriteRequest{}
+
+	userId, err := middleware.IsUser(c)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, "Unauthorized")
+	}
+
+	c.Bind(&payloadUser)
+
+	if err := c.Validate(&payloadUser); err != nil {
+		return c.JSON(http.StatusBadRequest, "Field cannot be empty")
+	}
+
+	response, err := usecase.CreateFavoriteWarehouse(userId, &payloadUser)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, payload.Response{
+		Message: "Succes Favorite Warehouse",
+		Data:    response,
+	})
 }
