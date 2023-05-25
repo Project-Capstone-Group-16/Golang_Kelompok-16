@@ -8,7 +8,9 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"os"
 	"strconv"
+	"strings"
 
 	"github.com/labstack/echo"
 )
@@ -65,6 +67,10 @@ func UpdateWarehouseController(c echo.Context) error {
 	c.Bind(warehouse)
 
 	if file != nil {
+		rmPath := strings.TrimLeft(warehouse.ImageURL, constants.Base_Url+"/")
+		if err := os.Remove(rmPath); err != nil {
+			return err
+		}
 		warehouseImage, _ := usecase.UploadImage(file, warehouse.Name)
 		path := fmt.Sprintf("%s/%s", constants.Base_Url, warehouseImage)
 		if warehouseImage != "" {
@@ -92,6 +98,10 @@ func DeleteWarehouse(c echo.Context) error {
 
 	warehouse, err := usecase.GetWarehouseByID(id)
 	if err != nil {
+		return err
+	}
+	rmPath := strings.TrimLeft(warehouse.ImageURL, constants.Base_Url+"/")
+	if err := os.Remove(rmPath); err != nil {
 		return err
 	}
 
