@@ -16,7 +16,7 @@ type LoginUserResponse struct {
 }
 
 type GetAllWarehouseResponse struct {
-	Name     string `json:"name`
+	Name     string `json:"name"`
 	Location string `json:"location"`
 	Status   string `json:"status"`
 	ImageURL string `json:"image_url"`
