@@ -13,7 +13,7 @@ type User struct {
 	Fullname    string    `json:"fullname" form:"fullname" gorm:"not null"`
 	Gender      string    `json:"gender" form:"gender" gorm:"type:enum('MALE','FEMALE')"`
 	BirthDate   time.Time `json:"birth_date" form:"birth_date"`
-	PhoneNumber int       `json:"phone_number" form:"phone_number" gorm:"not null"`
+	PhoneNumber string    `json:"phone_number" form:"phone_number" gorm:"not null"`
 	Address     string    `json:"address" form:"address" gorm:"not null"`
 	Favorite    []Favorite
 	Token       string `json:"-" form:"-"`

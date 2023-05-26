@@ -122,7 +122,7 @@ func GenerateOTPEndpoint(req *payload.ForgotPasswordRequest) error {
 }
 
 // Logic Verify OTP
-func VerifyOTP(req *payload.VerifyngOtp) error {
+func VerifyOTP(req *payload.VerifyngOtpRequest) error {
 	if req.Otp != generatedOTP {
 		return errors.New("OTP verification failed.")
 	}

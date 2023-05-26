@@ -13,6 +13,7 @@ import (
 	"github.com/labstack/echo"
 )
 
+// Create Warehouse
 func CreateWarehouseController(c echo.Context) error {
 	if _, err := middleware.IsAdmin(c); err != nil {
 		return c.JSON(401, "Unauthorized")
@@ -35,7 +36,6 @@ func CreateWarehouseController(c echo.Context) error {
 	}
 
 	response, err := usecase.CreateWarehouse(file, &payloadWarehouse)
-
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"messages": "error create warehouse",
@@ -49,12 +49,14 @@ func CreateWarehouseController(c echo.Context) error {
 	})
 }
 
+// Update Warehouse
 func UpdateWarehouseController(c echo.Context) error {
 	if _, err := middleware.IsAdmin(c); err != nil {
 		return c.JSON(401, "Unauthorized")
 	}
 
 	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
+
 	warehouse, err := usecase.GetWarehouseByID(id)
 	if err != nil {
 		return errors.New("Warehouse not found")
@@ -83,7 +85,8 @@ func UpdateWarehouseController(c echo.Context) error {
 	})
 }
 
-func DeleteWarehouse(c echo.Context) error {
+// Delete Warehouse
+func DeleteWarehouseController(c echo.Context) error {
 	if _, err := middleware.IsAdmin(c); err != nil {
 		return c.JSON(401, "Unauthorized")
 	}
@@ -103,10 +106,30 @@ func DeleteWarehouse(c echo.Context) error {
 	return c.JSON(http.StatusOK, "delete complete")
 }
 
-func GetAllWarehouse(c echo.Context) error {
+// Get all warehouse
+func GetAllWarehouseController(c echo.Context) error {
 	response, err := usecase.GetAllWarehouse()
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK, response)
+
+	return c.JSON(http.StatusOK, payload.Response{
+		Message: "Succes get all warehouse",
+		Data:    response,
+	})
+}
+
+// get all warehouse by status
+func GetStatusWarehouseController(c echo.Context) error {
+	status := c.QueryParam("status")
+
+	response, err := usecase.GetAllByStatusWarehouse(status)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, payload.Response{
+		Message: "Succes get all warehouse by status",
+		Data:    response,
+	})
 }
