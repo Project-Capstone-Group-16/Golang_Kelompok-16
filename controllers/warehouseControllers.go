@@ -35,8 +35,8 @@ func CreateWarehouseController(c echo.Context) error {
 
 	if err := c.Validate(payloadWarehouse); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
-			"messages": "error payload create Warehouse",
-			"error":    "field cannot be empty",
+			"message": "error payload create warehouse",
+			"error":   err.Error(),
 		})
 	}
 

@@ -151,5 +151,6 @@ func CreateFavoriteWarehouse(id int, req *payload.CreateFavoriteRequest) (resp p
 
 		return resp, echo.NewHTTPError(200, "Succes Delete Favorite")
 	}
+
 	return
 }
