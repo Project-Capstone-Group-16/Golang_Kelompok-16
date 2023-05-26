@@ -135,7 +135,7 @@ func VerifyngOtpController(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	return c.JSON(http.StatusOK, "OTP confirmed")
+	return c.JSON(http.StatusOK, "OTP verification successful!")
 }
 
 // Update Password User
