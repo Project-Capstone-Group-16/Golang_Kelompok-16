@@ -123,6 +123,11 @@ func CreateFavoriteWarehouse(id int, req *payload.CreateFavoriteRequest) (resp p
 		WarehouseID: req.WarehouseID,
 	}
 
+	err = database.CheckFavorite(newUser)
+	if err == nil {
+		return resp, errors.New("User Cant Favorite This Warehouse Again")
+	}
+
 	err = database.CreateFavorite(newUser)
 	if err != nil {
 		return resp, errors.New("Can't Create Favorite")

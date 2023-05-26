@@ -13,6 +13,14 @@ func CreateFavorite(user *models.Favorite) error {
 	return nil
 }
 
+func CheckFavorite(favorite *models.Favorite) error {
+	if err := config.DB.Where("user_id = ? AND warehouse_id = ?", favorite.UserID, favorite.WarehouseID).First(&favorite).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func GetAllFavorite() (favorite []models.Favorite, err error) {
 	if err = config.DB.Preload("Warehouse").Find(&favorite).Error; err != nil {
 		return
@@ -36,14 +44,3 @@ func DeleteFavorite(favorite *models.Favorite) error {
 
 	return nil
 }
-
-// func CountFavoriteWarehouseByid() (res int64) {
-// 	res = 0
-// 	favorite := []models.Favorite{}
-
-// 	if err := config.DB.Model(&favorite).Count(&res).Error; err != nil {
-// 		return 0
-// 	}
-
-// 	return res
-// }
