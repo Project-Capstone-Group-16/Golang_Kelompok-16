@@ -86,14 +86,22 @@ func GetAllWarehouse() (resp []payload.GetAllWarehouseResponse, err error) {
 		return resp, err
 	}
 
+	var totalFavorite []int
+	for _, v := range warehouses {
+		warehouse_id := v.ID
+		totalCount := database.CountFavoriteByWarehouseId(warehouse_id)
+		totalFavorite = append(totalFavorite, int(totalCount))
+	}
+
 	// resp = make([]payload.GetAllWarehouseResponse, len(warehouses))
 	resp = []payload.GetAllWarehouseResponse{}
-	for _, warehouse := range warehouses {
+	for i, warehouse := range warehouses {
 		resp = append(resp, payload.GetAllWarehouseResponse{
 			ID:       warehouse.ID,
 			Name:     warehouse.Name,
 			Location: warehouse.Location,
 			Status:   warehouse.Status,
+			Favorite: uint(totalFavorite[i]),
 			ImageURL: warehouse.ImageURL,
 		})
 	}

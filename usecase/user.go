@@ -7,6 +7,7 @@ import (
 	"Capstone/repository/database"
 	"errors"
 
+	"github.com/labstack/echo"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -118,31 +119,37 @@ func CreateFavoriteWarehouse(id int, req *payload.CreateFavoriteRequest) (resp p
 		return resp, errors.New("Warehouse not found")
 	}
 
-	newUser := &models.Favorite{
+	newFavorite := &models.Favorite{
 		UserID:      user.ID,
 		WarehouseID: req.WarehouseID,
 	}
 
-	err = database.CheckFavorite(newUser)
-	if err == nil {
-		return resp, errors.New("User Cant Favorite This Warehouse Again")
-	}
-
-	err = database.CreateFavorite(newUser)
+	favorite, err := database.CheckFavorite(newFavorite)
 	if err != nil {
-		return resp, errors.New("Can't Create Favorite")
-	}
+		err = database.CreateFavorite(newFavorite)
+		if err != nil {
+			return resp, errors.New("Can't Create Favorite")
+		}
 
-	resp = payload.CreateFavoriteResponse{
-		WarehouseID: newUser.WarehouseID,
-		Warehouse: payload.GetAllWarehouseResponse{
-			ID:       warehouse.ID,
-			Name:     warehouse.Name,
-			Location: warehouse.Location,
-			Status:   warehouse.Status,
-			ImageURL: warehouse.ImageURL,
-		},
-	}
+		resp = payload.CreateFavoriteResponse{
+			WarehouseID: newFavorite.WarehouseID,
+			Warehouse: payload.GetAllWarehouseResponse{
+				ID:       warehouse.ID,
+				Name:     warehouse.Name,
+				Location: warehouse.Location,
+				Status:   warehouse.Status,
+				ImageURL: warehouse.ImageURL,
+			},
+		}
 
+		// return resp, errors.New("User Cant Favorite This Warehouse Again")
+	} else {
+		err = database.DeleteFavorite(favorite)
+		if err != nil {
+			return resp, errors.New("Can't Delete Favorite")
+		}
+
+		return resp, echo.NewHTTPError(200, "Succes Delete Favorite")
+	}
 	return
 }

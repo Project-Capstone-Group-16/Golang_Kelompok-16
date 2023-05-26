@@ -26,6 +26,7 @@ type GetAllWarehouseResponse struct {
 	Name     string `json:"name"`
 	Location string `json:"location"`
 	Status   string `json:"status"`
+	Favorite uint   `json:"favorite"`
 	ImageURL string `json:"image_url"`
 }
 
