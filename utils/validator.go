@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -36,7 +37,7 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 				errorMessage += fmt.Sprintf("Field %s is invalid"+"\n", fieldError.Field())
 			}
 		}
-		return echo.NewHTTPError(http.StatusBadRequest, errorMessage)
+		return errors.New(errorMessage)
 	}
 
 	return nil
