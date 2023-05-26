@@ -16,8 +16,8 @@ func RegisterUserController(c echo.Context) error {
 
 	if err := c.Validate(&payloadUser); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
-			"messages": "error payload create user",
-			"error":    "password minimum length has to be 5 character",
+			"message": "error payload create user",
+			"error":   err.Error(),
 		})
 	}
 
@@ -43,7 +43,7 @@ func RegisterAdminController(c echo.Context) error {
 	if err := c.Validate(&payloadUser); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"messages": "error payload create admin",
-			"error":    "password minimum length has to be 5 character",
+			"error":    err.Error(),
 		})
 	}
 
@@ -135,7 +135,7 @@ func VerifyngOtpController(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	return c.JSON(http.StatusOK, "OTP confirmed")
+	return c.JSON(http.StatusOK, "OTP verification successful!")
 }
 
 // Update Password User

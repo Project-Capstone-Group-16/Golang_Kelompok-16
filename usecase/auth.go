@@ -127,5 +127,5 @@ func VerifyOTP(req *payload.VerifyngOtpRequest) error {
 		return errors.New("OTP verification failed.")
 	}
 
-	return errors.New("OTP verification successful!")
+	return nil
 }

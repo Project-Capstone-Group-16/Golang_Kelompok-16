@@ -23,7 +23,10 @@ func CreateWarehouseController(c echo.Context) error {
 
 	file, err := c.FormFile("warehouse_image")
 	if err != nil {
-		return err
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "error payload create warehouse",
+			"error":   "Warehouse image can't be empty",
+		})
 	}
 
 	payloadWarehouse := payload.CreateWarehouseRequest{}
