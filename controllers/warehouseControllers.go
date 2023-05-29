@@ -18,7 +18,9 @@ import (
 // Create Warehouse
 func CreateWarehouseController(c echo.Context) error {
 	if _, err := middleware.IsAdmin(c); err != nil {
-		return c.JSON(401, "Unauthorized")
+		return c.JSON(http.StatusUnauthorized, map[string]string{
+			"Message": "this route only for admin",
+		})
 	}
 
 	file, err := c.FormFile("warehouse_image")
@@ -35,8 +37,8 @@ func CreateWarehouseController(c echo.Context) error {
 
 	if err := c.Validate(payloadWarehouse); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
-			"messages": "error payload create Warehouse",
-			"error":    "field cannot be empty",
+			"message": "error payload create warehouse",
+			"error":   err.Error(),
 		})
 	}
 
@@ -57,7 +59,9 @@ func CreateWarehouseController(c echo.Context) error {
 // Update Warehouse
 func UpdateWarehouseController(c echo.Context) error {
 	if _, err := middleware.IsAdmin(c); err != nil {
-		return c.JSON(401, "Unauthorized")
+		return c.JSON(http.StatusUnauthorized, map[string]string{
+			"Message": "this route only for admin",
+		})
 	}
 
 	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
@@ -97,7 +101,9 @@ func UpdateWarehouseController(c echo.Context) error {
 // Delete Warehouse
 func DeleteWarehouseController(c echo.Context) error {
 	if _, err := middleware.IsAdmin(c); err != nil {
-		return c.JSON(401, "Unauthorized")
+		return c.JSON(http.StatusUnauthorized, map[string]string{
+			"Message": "this route only for admin",
+		})
 	}
 
 	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
@@ -121,6 +127,12 @@ func DeleteWarehouseController(c echo.Context) error {
 
 // Get all warehouse
 func GetAllWarehouseController(c echo.Context) error {
+	if _, err := middleware.IsAdmin(c); err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]string{
+			"Message": "this route only for admin",
+		})
+	}
+
 	response, err := usecase.GetAllWarehouse()
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())

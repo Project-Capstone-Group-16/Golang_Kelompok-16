@@ -7,10 +7,8 @@ import (
 	"Capstone/utils"
 	"errors"
 	"fmt"
-	"net/http"
 	"os"
 
-	"github.com/labstack/echo"
 	"github.com/mailjet/mailjet-apiv3-go"
 
 	"golang.org/x/crypto/bcrypt"
@@ -23,7 +21,7 @@ func LoginUser(req *payload.LoginUserRequest) (res payload.LoginUserResponse, er
 
 	user, err := database.GetuserByEmail(req.Email)
 	if err != nil {
-		return res, echo.NewHTTPError(http.StatusBadRequest, "Email not registered")
+		return res, errors.New("Email Not Registered")
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
@@ -33,7 +31,7 @@ func LoginUser(req *payload.LoginUserRequest) (res payload.LoginUserResponse, er
 
 	token, err := middleware.CreateToken(int(user.ID), user.Role)
 	if err != nil {
-		return res, echo.NewHTTPError(http.StatusBadRequest, "Failed to generate token")
+		return res, errors.New("Failed To Create Token")
 	}
 
 	user.Token = token
@@ -51,7 +49,7 @@ func LoginAdmin(req *payload.LoginAdminRequest) (res payload.LoginAdminResponse,
 
 	user, err := database.GetuserByEmail(req.Email)
 	if err != nil {
-		return res, echo.NewHTTPError(http.StatusBadRequest, "Email not registered")
+		return res, errors.New("Email not registered")
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
@@ -61,7 +59,7 @@ func LoginAdmin(req *payload.LoginAdminRequest) (res payload.LoginAdminResponse,
 
 	token, err := middleware.CreateToken(int(user.ID), user.Role)
 	if err != nil {
-		return res, echo.NewHTTPError(http.StatusBadRequest, "Failed to generate token")
+		return res, errors.New("Failed To Create Token")
 	}
 
 	user.Token = token
