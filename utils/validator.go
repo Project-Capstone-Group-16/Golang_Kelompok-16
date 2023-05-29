@@ -31,11 +31,13 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 			case "email":
 				errorMessage += fmt.Sprintf("Field %s must be a valid email address"+"\n", fieldError.Field())
 			case "min":
-				errorMessage += fmt.Sprintf("Field %s minimum 6 character"+"\n", fieldError.Field())
+				errorMessage += fmt.Sprintf("Field %s minimum %s character"+"\n", fieldError.Field(), fieldError.Param())
+			case "max":
+				errorMessage += fmt.Sprintf("Field %s maximum %s character"+"\n", fieldError.Field(), fieldError.Param()) //bingung message
 			case "number":
 				errorMessage += fmt.Sprintf("Field %s must be number"+"\n", fieldError.Field())
-			case "len":
-				errorMessage += fmt.Sprintf("Field %s must be 11 length"+"\n", fieldError.Field())
+			// case "len":
+			// 	errorMessage += fmt.Sprintf("Field %s must be %s length"+"\n", fieldError.Field(), fieldError.Param())
 			default:
 				errorMessage += fmt.Sprintf("Field %s is invalid"+"\n", fieldError.Field())
 			}

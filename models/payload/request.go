@@ -35,7 +35,7 @@ type CreateFavoriteRequest struct {
 type CreateAdminRequest struct {
 	Fullname        string `json:"full_name" form:"full_name" validate:"required"`
 	Email           string `json:"email" form:"email" validate:"required,email"`
-	PhoneNumber     string `json:"phone_number" form:"phone_number" validate:"required,len=11,number"`
+	PhoneNumber     string `json:"phone_number" form:"phone_number" validate:"required,max=11,min=10,number"`
 	Password        string `json:"password" form:"password" validate:"required,min=6"`
 	ConfirmPassword string `json:"confirm_password" form:"confirm_password"`
 }
