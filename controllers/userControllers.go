@@ -153,7 +153,9 @@ func UpdatePasswordController(c echo.Context) error {
 
 	userId, err := middleware.IsUser(c)
 	if err != nil {
-		return c.JSON(http.StatusNotFound, "Unauthorized")
+		return c.JSON(http.StatusUnauthorized, map[string]string{
+			"Message": "this route only for user",
+		})
 	}
 
 	c.Bind(&payloadUser)
@@ -180,7 +182,9 @@ func AddFavoriteWarehouseController(c echo.Context) error {
 
 	userId, err := middleware.IsUser(c)
 	if err != nil {
-		return c.JSON(http.StatusUnauthorized, "Unauthorized")
+		return c.JSON(http.StatusUnauthorized, map[string]string{
+			"Message": "this route only for user",
+		})
 	}
 
 	c.Bind(&payloadUser)

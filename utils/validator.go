@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/go-playground/validator"
+	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo"
 )
 
@@ -24,15 +24,18 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 		validationErrors := err.(validator.ValidationErrors)
 		errorMessage := ""
 		for _, fieldError := range validationErrors {
-			// Ubah pesan validasi default menjadi pesan yang lebih informatif
+			// Customize  pesan error menjadi pesan yang lebih informatif
 			switch fieldError.Tag() {
 			case "required":
 				errorMessage += fmt.Sprintf(`Field %s is required`+"\n", fieldError.Field())
 			case "email":
 				errorMessage += fmt.Sprintf("Field %s must be a valid email address"+"\n", fieldError.Field())
-			// Tambahkan penanganan pesan validasi lainnya sesuai kebutuhan
 			case "min":
-				errorMessage += fmt.Sprintf("Field %s must be 6 character"+"\n", fieldError.Field())
+				errorMessage += fmt.Sprintf("Field %s minimum 6 character"+"\n", fieldError.Field())
+			case "number":
+				errorMessage += fmt.Sprintf("Field %s must be number"+"\n", fieldError.Field())
+			case "len":
+				errorMessage += fmt.Sprintf("Field %s must be 11 length"+"\n", fieldError.Field())
 			default:
 				errorMessage += fmt.Sprintf("Field %s is invalid"+"\n", fieldError.Field())
 			}

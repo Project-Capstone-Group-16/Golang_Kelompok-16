@@ -6,6 +6,7 @@ import (
 	"Capstone/models/payload"
 	"Capstone/repository/database"
 	"errors"
+	"net/http"
 
 	"github.com/labstack/echo"
 	"golang.org/x/crypto/bcrypt"
@@ -87,7 +88,7 @@ func UpdatePassword(id int, req *payload.UpdatePasswordRequest) error {
 
 	user, err := database.GetuserByID(id)
 	if err != nil {
-		return err
+		return errors.New("user not found")
 	}
 
 	if req.ConfirmPassword != req.Password {
@@ -149,7 +150,7 @@ func CreateFavoriteWarehouse(id int, req *payload.CreateFavoriteRequest) (resp p
 			return resp, errors.New("Can't Delete Favorite")
 		}
 
-		return resp, echo.NewHTTPError(200, "Succes Delete Favorite")
+		return resp, echo.NewHTTPError(http.StatusOK, "Succes Delete Favorite")
 	}
 
 	return
