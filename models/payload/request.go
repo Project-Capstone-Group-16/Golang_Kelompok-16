@@ -50,3 +50,14 @@ type CreateWarehouseRequest struct {
 	Location       string `json:"location" form:"location" validate:"required"`
 	WarehouseImage string `json:"warehouse_image" form:"warehouse_image" validate:"required"`
 }
+
+type CreateStaffRequest struct {
+	FullName    string `json:"full_name" form:"full_name" validate:"required"`
+	WarehouseID uint `json:"warehouse_id" form:"warehouse_id" validate:"required"`
+	BirthDate   string `json:"birth_date" form:"birth_date" validate:"required"`
+	PhoneNumber string `json:"phone_number" form:"phone_number" validate:"required,max=11,min=10,number"`
+}
+
+type UpdateStaffRequest struct {
+	BirthDate   string `json:"birth_date" form:"birth_date"`
+}
