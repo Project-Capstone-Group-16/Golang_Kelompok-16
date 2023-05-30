@@ -3,6 +3,7 @@ package controllers
 import (
 	"Capstone/constants"
 	"Capstone/middleware"
+	"Capstone/models"
 	"Capstone/models/payload"
 	"Capstone/usecase"
 	"errors"
@@ -146,9 +147,11 @@ func GetAllWarehouseController(c echo.Context) error {
 
 // get all warehouse by status
 func GetStatusWarehouseController(c echo.Context) error {
-	status := c.QueryParam("status")
+	warehouseParams := models.Warehouse{
+		Status: c.QueryParam("status"),
+	}
 
-	response, err := usecase.GetAllByStatusWarehouse(status)
+	response, err := usecase.GetAllByStatusWarehouse(&warehouseParams)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}

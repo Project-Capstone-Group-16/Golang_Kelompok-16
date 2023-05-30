@@ -109,8 +109,8 @@ func GetAllWarehouse() (resp []payload.GetAllWarehouseResponse, err error) {
 }
 
 // logic by status warehouse
-func GetAllByStatusWarehouse(status string) (resp []payload.GetAllWarehouseResponse, err error) {
-	warehouses, err := database.GetAllAvailableWarehouses(status)
+func GetAllByStatusWarehouse(warehouse *models.Warehouse) (resp []payload.GetAllWarehouseResponse, err error) {
+	warehouses, err := database.GetAllAvailableWarehouses(warehouse)
 	if err != nil {
 		return resp, err
 	}

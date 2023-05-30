@@ -14,8 +14,14 @@ func GetAllWarehouses() (warehouse []models.Warehouse, err error) {
 	return warehouse, nil
 }
 
-func GetAllAvailableWarehouses(status string) (warehouse []models.Warehouse, err error) {
-	if err := config.DB.Where("status = ? ", status).Find(&warehouse).Error; err != nil {
+func GetAllAvailableWarehouses(warehouseParam *models.Warehouse) (warehouse []models.Warehouse, err error) {
+	db := config.DB
+
+	if warehouseParam.Status != "" {
+		db = db.Where("status = ?", warehouseParam.Status)
+	}
+
+	if err := db.Find(&warehouse).Error; err != nil {
 		return nil, err
 	}
 
