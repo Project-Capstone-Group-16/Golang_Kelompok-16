@@ -21,7 +21,7 @@ type Config struct {
 
 func InitDB() *gorm.DB {
 	config := Config{
-		DB_Username: "root",
+		DB_Username: os.Getenv("DB_USERNAME"),
 		DB_Password: os.Getenv("DB_PASSWORD"),
 		DB_Port:     os.Getenv("DB_PORT"),
 		DB_Host:     os.Getenv("DB_HOST"),

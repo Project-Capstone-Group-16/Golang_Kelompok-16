@@ -14,6 +14,7 @@ import (
 	"github.com/gosimple/slug"
 )
 
+// Login Upload Image Warehouse
 func UploadImage(file *multipart.FileHeader, warehouseName string) (string, error) {
 	slugWarehouse := slug.Make(warehouseName)
 	slugFileName := slug.Make(file.Filename)
@@ -69,8 +70,8 @@ func CreateWarehouse(file *multipart.FileHeader, req *payload.CreateWarehouseReq
 	return
 }
 
+// Logic Delete Warahouse
 func DeleteWarehouse(warehouses *models.Warehouse) error {
-
 	err := database.DeleteWarehouse(warehouses)
 	if err != nil {
 		return err
@@ -78,21 +79,61 @@ func DeleteWarehouse(warehouses *models.Warehouse) error {
 	return nil
 }
 
+// Logic Get All Warehouse
 func GetAllWarehouse() (resp []payload.GetAllWarehouseResponse, err error) {
 	warehouses, err := database.GetAllWarehouses()
 	if err != nil {
 		return resp, err
 	}
 
+	var totalFavorite []int
+	for _, v := range warehouses {
+		warehouse_id := v.ID
+		totalCount := database.CountFavoriteByWarehouseId(warehouse_id)
+		totalFavorite = append(totalFavorite, int(totalCount))
+	}
+
 	// resp = make([]payload.GetAllWarehouseResponse, len(warehouses))
 	resp = []payload.GetAllWarehouseResponse{}
-	for _, warehouse := range warehouses {
+	for i, warehouse := range warehouses {
 		resp = append(resp, payload.GetAllWarehouseResponse{
+			ID:       warehouse.ID,
 			Name:     warehouse.Name,
 			Location: warehouse.Location,
 			Status:   warehouse.Status,
+			Favorite: uint(totalFavorite[i]),
+			ImageURL: warehouse.ImageURL,
 		})
 	}
+	return
+}
+
+// logic by status warehouse
+func GetAllByStatusWarehouse(warehouse *models.Warehouse) (resp []payload.GetAllWarehouseResponse, err error) {
+	warehouses, err := database.GetAllAvailableWarehouses(warehouse)
+	if err != nil {
+		return resp, err
+	}
+
+	var totalFavorite []int
+	for _, v := range warehouses {
+		warehouse_id := v.ID
+		totalCount := database.CountFavoriteByWarehouseId(warehouse_id)
+		totalFavorite = append(totalFavorite, int(totalCount))
+	}
+
+	resp = []payload.GetAllWarehouseResponse{}
+	for i, warehouse := range warehouses {
+		resp = append(resp, payload.GetAllWarehouseResponse{
+			ID:       warehouse.ID,
+			Name:     warehouse.Name,
+			Location: warehouse.Location,
+			Favorite: uint(totalFavorite[i]),
+			Status:   warehouse.Status,
+			ImageURL: warehouse.ImageURL,
+		})
+	}
+
 	return
 }
 
@@ -100,10 +141,10 @@ func GetAllWarehouse() (resp []payload.GetAllWarehouseResponse, err error) {
 func UpdateWarehouse(warehouse *models.Warehouse) (resp payload.UpdateWarehouseResponse, err error) {
 
 	err = database.UpdateWarehouse(warehouse)
-
 	if err != nil {
 		return resp, errors.New("Can't update warehouse")
 	}
+
 	resp = payload.UpdateWarehouseResponse{
 		Name:     warehouse.Name,
 		Location: warehouse.Location,
@@ -114,10 +155,12 @@ func UpdateWarehouse(warehouse *models.Warehouse) (resp payload.UpdateWarehouseR
 	return resp, nil
 }
 
+// Get Warehouse By Id
 func GetWarehouseByID(id uint64) (warehouse *models.Warehouse, err error) {
 	warehouse, err = database.GetWarehouseByID(id)
 	if err != nil {
 		return warehouse, errors.New("Warehouse not found")
 	}
+
 	return warehouse, nil
 }

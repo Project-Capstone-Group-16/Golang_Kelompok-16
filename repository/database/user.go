@@ -40,21 +40,15 @@ func GetUsers() (users []models.User, err error) {
 	return
 }
 
-func GetUser(user *models.User) (err error) {
-	if err = config.DB.First(&user).Error; err != nil {
-		return
-	}
-	return
-}
-
-func UpdateUser(user  *models.User) error {
-
+// update user query database
+func UpdateUser(user *models.User) error {
 	if err := config.DB.Updates(&user).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
+// delete user query database
 func DeleteUser(user *models.User) error {
 	if err := config.DB.Delete(user).Error; err != nil {
 		return err
@@ -62,6 +56,7 @@ func DeleteUser(user *models.User) error {
 	return nil
 }
 
+// login user query database
 func LoginUser(user *models.User) error {
 	if err := config.DB.Where("email = ? AND password = ?", user.Email, user.Password).First(&user).Error; err != nil {
 		return err
@@ -69,8 +64,9 @@ func LoginUser(user *models.User) error {
 	return nil
 }
 
+// get user by id query database
 func GetuserByID(id int) (user *models.User, err error) {
-	if err := config.DB.Where("id = ?", id).First(&user).Error; err != nil {
+	if err := config.DB.Preload("Favorite").Where("id = ?", id).First(&user).Error; err != nil {
 		return nil, err
 	}
 	return user, nil
