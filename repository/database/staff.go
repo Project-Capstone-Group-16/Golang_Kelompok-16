@@ -26,3 +26,17 @@ func GetStaffByID(id uint64) (staff *models.Staff, err error) {
 
 	return staff, nil
 }
+
+func GetAllStaffs() (staffs []models.Staff, err error) {
+	if err = config.DB.Find(&staffs).Error; err != nil {
+		return
+	}
+	return
+}
+
+func DeleteStaff(staff *models.Staff) error {
+	if err := config.DB.Delete(staff).Error; err != nil {
+		return err
+	}
+	return nil
+}

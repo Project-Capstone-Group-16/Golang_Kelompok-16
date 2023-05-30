@@ -52,3 +52,30 @@ func GetStaffByID(id uint64) (staff *models.Staff, err error) {
 
 	return staff, nil
 }
+
+func GetAllStaffs() (resp []payload.GetAllStaffsResponse, err error) {
+	Staffs, err := database.GetAllStaffs()
+	if err != nil {
+		return
+	}
+
+	resp = []payload.GetAllStaffsResponse{}
+	for _, staff := range Staffs {
+		resp = append(resp, payload.GetAllStaffsResponse{
+			ID:          staff.ID,
+			WarehouseID: staff.WarehouseID,
+			FullName:    staff.FullName,
+			BirthDate:   staff.BirthDate,
+			PhoneNumber: staff.PhoneNumber,
+		})
+	}
+	return
+}
+
+func DeleteStaff(staff *models.Staff) error {
+	err := database.DeleteStaff(staff)
+	if err != nil {
+		return err
+	}
+	return nil
+}

@@ -68,3 +68,43 @@ func UpdateStaffController(c echo.Context) error {
 		Data:    response,
 	})
 }
+
+func GetAllStaffController(c echo.Context) error {
+	if _, err := middleware.IsAdmin(c); err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]string{
+			"Message": "this route only for admin",
+		})
+	}
+
+	response, err := usecase.GetAllStaffs()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, payload.Response{
+		Message: "Succes get all staff",
+		Data:    response,
+	})
+}
+
+func DeleteStaffController(c echo.Context) error {
+	if _, err := middleware.IsAdmin(c); err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]string{
+			"Message": "this route only for admin",
+		})
+	}
+
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+
+	staff, err := usecase.GetStaffByID(id)
+	if err != nil {
+		return err
+	}
+
+	err = usecase.DeleteStaff(staff)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, "delete staff complete")
+}
