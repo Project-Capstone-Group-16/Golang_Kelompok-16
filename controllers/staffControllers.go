@@ -43,6 +43,8 @@ func CreateStaffController(c echo.Context) error {
 }
 
 func UpdateStaffController(c echo.Context) error {
+	payloadStaff := payload.UpdateStaffRequest{}
+	c.Bind(&payloadStaff)
 	if _, err := middleware.IsAdmin(c); err != nil {
 		return c.JSON(http.StatusUnauthorized, map[string]string{
 			"Message": "this route only for admin",
@@ -57,8 +59,15 @@ func UpdateStaffController(c echo.Context) error {
 	}
 
 	c.Bind(staff)
+	
+	if err := c.Validate(payloadStaff); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "error payload update staff",
+			"error":   err.Error(),
+		})
+	}
 
-	response, err := usecase.UpdateStaff(staff)
+	response, err := usecase.UpdateStaff(staff, &payloadStaff)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
