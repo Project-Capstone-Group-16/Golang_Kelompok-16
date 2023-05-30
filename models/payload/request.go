@@ -1,7 +1,5 @@
 package payload
 
-import "time"
-
 // User Request
 type CreateUserRequest struct {
 	Email           string `json:"email" form:"email" validate:"required,email"`
@@ -54,7 +52,12 @@ type CreateWarehouseRequest struct {
 }
 
 type CreateStaffRequest struct {
-	FullName    string    `json:"full_name" form:"full_name" validate:"required"`
-	BirthDate   time.Time `json:"birth_date" form:"birth_date" validate:"required"`
-	PhoneNumber string    `json:"phone_number" form:"phone_number validate:"required,max=11,min=10,number"`
+	FullName    string `json:"full_name" form:"full_name" validate:"required"`
+	WarehouseID uint `json:"warehouse_id" form:"warehouse_id" validate:"required"`
+	BirthDate   string `json:"birth_date" form:"birth_date" validate:"required"`
+	PhoneNumber string `json:"phone_number" form:"phone_number" validate:"required,max=11,min=10,number"`
+}
+
+type UpdateStaffRequest struct {
+	BirthDate   string `json:"birth_date" form:"birth_date"`
 }

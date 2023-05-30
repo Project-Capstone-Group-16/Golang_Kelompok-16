@@ -59,7 +59,8 @@ type UpdateWarehouseResponse struct {
 
 type ManageStaffResponse struct {
 	FullName    string    `json:"full_name"`
-	BirthDate   time.Time `json:"birth_date"`
+	WarehouseID uint      `json:"warehouse_id"`
+	BirthDate   *time.Time `json:"birth_date"`
 	PhoneNumber string    `json:"phone_number"`
 }
 

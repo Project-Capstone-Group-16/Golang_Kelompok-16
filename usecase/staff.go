@@ -5,13 +5,19 @@ import (
 	"Capstone/models/payload"
 	"Capstone/repository/database"
 	"errors"
+	"time"
 )
 
 func CreateStaff(req *payload.CreateStaffRequest) (resp payload.ManageStaffResponse, err error) {
+	BirthDate, err := time.Parse("02/01/2006", req.BirthDate)
+	if err != nil {
+		return
+	}
 	newStaff := &models.Staff{
 		FullName:    req.FullName,
-		BirthDate:   req.BirthDate,
-		PhoneNumber: req.PhoneNumber,
+		WarehouseID: req.WarehouseID,
+		BirthDate:   &BirthDate,
+		PhoneNumber: "0" + req.PhoneNumber,
 	}
 
 	err = database.CreateStaff(newStaff)
@@ -21,6 +27,7 @@ func CreateStaff(req *payload.CreateStaffRequest) (resp payload.ManageStaffRespo
 
 	resp = payload.ManageStaffResponse{
 		FullName:    newStaff.FullName,
+		WarehouseID: newStaff.WarehouseID,
 		BirthDate:   newStaff.BirthDate,
 		PhoneNumber: newStaff.PhoneNumber,
 	}
@@ -28,7 +35,12 @@ func CreateStaff(req *payload.CreateStaffRequest) (resp payload.ManageStaffRespo
 	return
 }
 
-func UpdateStaff(staff *models.Staff) (resp payload.ManageStaffResponse, err error) {
+func UpdateStaff(staff *models.Staff, req *payload.UpdateStaffRequest) (resp payload.ManageStaffResponse, err error) {
+	birthDate, err := time.Parse("02/01/2006", req.BirthDate)
+	if err != nil {
+		return
+	}
+	staff.BirthDate = &birthDate
 
 	err = database.UpdateStaff(staff)
 	if err != nil {
@@ -37,6 +49,7 @@ func UpdateStaff(staff *models.Staff) (resp payload.ManageStaffResponse, err err
 
 	resp = payload.ManageStaffResponse{
 		FullName:    staff.FullName,
+		WarehouseID: staff.WarehouseID,
 		BirthDate:   staff.BirthDate,
 		PhoneNumber: staff.PhoneNumber,
 	}
