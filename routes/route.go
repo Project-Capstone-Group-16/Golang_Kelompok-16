@@ -40,6 +40,10 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	adm.PUT("/warehouse/:id", controllers.UpdateWarehouseController)
 	adm.DELETE("/warehouse/:id", controllers.DeleteWarehouseController)
 	adm.GET("/warehouse", controllers.GetAllWarehouseController)
+	adm.POST("/staff", controllers.CreateStaffController)
+	adm.PUT("/staff/:id", controllers.UpdateStaffController)
+	adm.GET("/staff", controllers.GetAllStaffController)
+	adm.DELETE("/staff/:id", controllers.DeleteStaffController)
 
 	wh := e.Group("/warehouse")
 	wh.GET("", controllers.GetStatusWarehouseController)                                    //query params
