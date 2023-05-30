@@ -66,7 +66,7 @@ type ManageStaffResponse struct {
 
 type GetAllStaffsResponse struct {
 	ID          uint       `json:"id"`
-	WarehouseID uint       `json:warehouse_id"`
+	WarehouseID uint       `json:"warehouse_id"`
 	FullName    string     `json:"full_name"`
 	BirthDate   *time.Time `json:"birth_date"`
 	PhoneNumber string     `json:"phone_number"`
