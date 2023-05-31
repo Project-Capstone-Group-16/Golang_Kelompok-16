@@ -153,7 +153,7 @@ func GetStatusWarehouseController(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, payload.Response{
-		Message: fmt.Sprintf("Succes get all warehouse by %s", warehouseParams.Status),
+		Message: fmt.Sprintf("Succes get all warehouse by status %s", warehouseParams.Status),
 		Data:    response,
 	})
 }
@@ -168,7 +168,7 @@ func GetWarehouseLocCapController(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, payload.Response{
-		Message: fmt.Sprintf("Succes get all warehouse by %s", warehouseParams.Location),
+		Message: fmt.Sprintf("Succes get all warehouse by location %s", warehouseParams.Location),
 		Data:    response,
 	})
 
