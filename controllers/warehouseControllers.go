@@ -157,3 +157,19 @@ func GetStatusWarehouseController(c echo.Context) error {
 		Data:    response,
 	})
 }
+
+func GetWarehouseLocCapController(c echo.Context) error {
+	warehouseParams := models.Warehouse{
+		Location: c.QueryParam("location"),
+	}
+	response, err := usecase.GetAllByStatusWarehouse(&warehouseParams)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, payload.Response{
+		Message: "Succes get all warehouse by location",
+		Data:    response,
+	})
+
+}
