@@ -25,6 +25,10 @@ func GetAllAvailableWarehouses(warehouseParam *models.Warehouse) (warehouse []mo
 		db = db.Where("capacity = ?", warehouseParam.Capacity)
 	}
 
+	if warehouseParam.Location != "" {
+		db = db.Where("Location = ?", warehouseParam.Location)
+	}
+	
 	if err := db.Find(&warehouse).Error; err != nil {
 		return nil, err
 	}
