@@ -78,9 +78,7 @@ func UpdateWarehouseController(c echo.Context) error {
 
 	if file != nil {
 		rmPath := strings.TrimLeft(warehouse.ImageURL, constants.Base_Url+"/")
-		if err := os.Remove(rmPath); err != nil {
-			return err
-		}
+		os.Remove(rmPath)
 		warehouseImage, _ := usecase.UploadImage(file, warehouse.Name)
 		path := fmt.Sprintf("%s/%s", constants.Base_Url, warehouseImage)
 		if warehouseImage != "" {
@@ -111,12 +109,10 @@ func DeleteWarehouseController(c echo.Context) error {
 
 	warehouse, err := usecase.GetWarehouseByID(id)
 	if err != nil {
-		return err
+		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 	rmPath := strings.TrimLeft(warehouse.ImageURL, constants.Base_Url+"/")
-	if err := os.Remove(rmPath); err != nil {
-		return err
-	}
+	os.Remove(rmPath)
 
 	err = usecase.DeleteWarehouse(warehouse)
 	if err != nil {
