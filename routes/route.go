@@ -4,7 +4,6 @@ import (
 	"Capstone/controllers"
 	"Capstone/middleware"
 	"Capstone/utils"
-	"net/http"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo"
@@ -15,10 +14,7 @@ import (
 func Routes(e *echo.Echo, db *gorm.DB) {
 	e.Validator = &utils.CustomValidator{Validator: validator.New()}
 	e.Pre(mid.RemoveTrailingSlash())
-	e.Use(mid.CORSWithConfig(mid.CORSConfig{
-		AllowOrigins: []string{"https://inventron-indonesia.netlify.app/"},
-		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
-	}))
+	e.Use(mid.CORS())
 
 	e.Static("/images/warehouse", "./images/warehouse")
 
