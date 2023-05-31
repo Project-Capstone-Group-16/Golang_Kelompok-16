@@ -44,6 +44,5 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	wh := e.Group("/warehouse",  middleware.IsLoggedIn)
 	wh.GET("", controllers.GetStatusWarehouseController)				//query params
 	wh.POST("/favorite", controllers.AddFavoriteWarehouseController) // second task
-	wh.GET("", controllers.GetWarehouseLocCapController)
 
 }
