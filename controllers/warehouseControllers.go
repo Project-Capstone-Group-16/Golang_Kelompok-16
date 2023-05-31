@@ -144,7 +144,8 @@ func GetAllWarehouseController(c echo.Context) error {
 // get all warehouse by status
 func GetStatusWarehouseController(c echo.Context) error {
 	warehouseParams := models.Warehouse{
-		Status: c.QueryParam("status"),
+		Status:   c.QueryParam("status"),
+		Location: c.QueryParam("location"),
 	}
 
 	response, err := usecase.GetAllByStatusWarehouse(&warehouseParams)
@@ -153,7 +154,7 @@ func GetStatusWarehouseController(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, payload.Response{
-		Message: "Succes get all warehouse by status",
+		Message: fmt.Sprintf("Succes get all warehouse by status %s", warehouseParams.Status),
 		Data:    response,
 	})
 }
