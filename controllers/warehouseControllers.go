@@ -124,11 +124,13 @@ func DeleteWarehouseController(c echo.Context) error {
 
 // Get all warehouse
 func GetAllWarehouseController(c echo.Context) error {
-	warehouseParams := models.Warehouse{
-		Status:	c.QueryParam("status"),
-		Location: c.QueryParam("location"),
+	if _, err := middleware.IsAdmin(c); err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]string{
+			"Message": "this route only for admin",
+		})
 	}
-	response, err := usecase.GetAllByStatusWarehouse(&warehouseParams)
+
+	response, err := usecase.GetAllWarehouse()
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
@@ -142,7 +144,8 @@ func GetAllWarehouseController(c echo.Context) error {
 // get all warehouse by status
 func GetStatusWarehouseController(c echo.Context) error {
 	warehouseParams := models.Warehouse{
-		Status: c.QueryParam("status"),
+		Status:   c.QueryParam("status"),
+		Location: c.QueryParam("location"),
 	}
 
 	response, err := usecase.GetAllByStatusWarehouse(&warehouseParams)
@@ -154,20 +157,4 @@ func GetStatusWarehouseController(c echo.Context) error {
 		Message: fmt.Sprintf("Succes get all warehouse by status %s", warehouseParams.Status),
 		Data:    response,
 	})
-}
-
-func GetWarehouseLocCapController(c echo.Context) error {
-	warehouseParams := models.Warehouse{
-		Location: c.QueryParam("location"),
-	}
-	response, err := usecase.GetAllByStatusWarehouse(&warehouseParams)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
-	}
-
-	return c.JSON(http.StatusOK, payload.Response{
-		Message: fmt.Sprintf("Succes get all warehouse by location %s", warehouseParams.Location),
-		Data:    response,
-	})
-
 }
