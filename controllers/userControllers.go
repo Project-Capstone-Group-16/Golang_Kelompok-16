@@ -212,8 +212,7 @@ func AddFavoriteWarehouseController(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	return c.JSON(http.StatusOK, payload.Response{
-		Message: "Succes Favorite Warehouse",
-		Data:    response,
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"Message": response,
 	})
 }
