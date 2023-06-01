@@ -62,7 +62,7 @@ func CreateWarehouse(warehouse *models.Warehouse) error {
 
 // update warehouse query database
 func UpdateWarehouse(warehouse *models.Warehouse) error {
-	if err := config.DB.Model(&warehouse).Updates(&warehouse).Error; err != nil {
+	if err := config.DB.Model(&warehouse).Save(&warehouse).Error; err != nil {
 		return err
 	}
 
