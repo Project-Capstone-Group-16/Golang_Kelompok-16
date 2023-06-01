@@ -29,7 +29,7 @@ type GetAllWarehouseResponse struct {
 	Location string `json:"location"`
 	Status   string `json:"status"`
 	Capacity uint    `json:"capacity"`
-	Favorite uint   `json:"favorite"`
+	Favorite int   `json:"favorite"`
 	ImageURL string `json:"image_url"`
 }
 

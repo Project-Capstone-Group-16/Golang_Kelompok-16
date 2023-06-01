@@ -124,19 +124,36 @@ func DeleteWarehouseController(c echo.Context) error {
 
 // Get all warehouse
 // get all warehouse by status
-func GetStatusWarehouseController(c echo.Context) error {
+func GetWarehousesController(c echo.Context) error {
 	warehouseParams := models.Warehouse{
 		Status:   c.QueryParam("status"),
 		Location: c.QueryParam("location"),
 	}
 
-	response, err := usecase.GetAllByStatusWarehouse(&warehouseParams)
+	response, err := usecase.GetWarehouses(&warehouseParams)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
 	return c.JSON(http.StatusOK, payload.Response{
 		Message: fmt.Sprintf("Succes get all warehouse by status %s", warehouseParams.Status),
+		Data:    response,
+	})
+}
+
+func GetRecomendedWarehouseController(c echo.Context) error {
+	warehouseParams := models.Warehouse{
+		Status:   c.QueryParam("status"),
+		Location: c.QueryParam("location"),
+	}
+
+	response, err := usecase.GetRecomendedWarehouse(&warehouseParams)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, payload.Response{
+		Message: "Succes get all recomended warehouse",
 		Data:    response,
 	})
 }
