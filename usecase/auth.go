@@ -19,7 +19,7 @@ var generatedOTP string
 // Logic Login User
 func LoginUser(req *payload.LoginUserRequest) (res payload.LoginUserResponse, err error) {
 
-	user, err := database.GetuserByEmail(req.Email)
+	user, err := database.GetUserByEmail(req.Email)
 	if err != nil {
 		return res, errors.New("Email Not Registered")
 	}
@@ -47,7 +47,7 @@ func LoginUser(req *payload.LoginUserRequest) (res payload.LoginUserResponse, er
 // Logic Login Admin
 func LoginAdmin(req *payload.LoginAdminRequest) (res payload.LoginAdminResponse, err error) {
 
-	user, err := database.GetuserByEmail(req.Email)
+	user, err := database.GetUserByEmail(req.Email)
 	if err != nil {
 		return res, errors.New("Email not registered")
 	}
@@ -106,7 +106,7 @@ func SendOTPByEmail(emailAddress, otp string) error {
 
 // Logic Generate  OTP
 func GenerateOTPEndpoint(req *payload.ForgotPasswordRequest) error {
-	user, err := database.GetuserByEmail(req.Email)
+	user, err := database.GetUserByEmail(req.Email)
 	if err != nil {
 		return errors.New("Email not registered")
 	}
@@ -120,10 +120,25 @@ func GenerateOTPEndpoint(req *payload.ForgotPasswordRequest) error {
 }
 
 // Logic Verify OTP
-func VerifyOTP(req *payload.VerifyngOtpRequest) error {
+func VerifyOTP(req *payload.VerifyngOtpRequest, email string) (res payload.LoginUserResponse, err error) {
 	if req.Otp != generatedOTP {
-		return errors.New("OTP verification failed.")
+		return res, errors.New("OTP verification failed.")
 	}
 
-	return nil
+	user, err := database.GetUserByEmail(email)
+	if err != nil {
+		return res, errors.New("Failed to get user")
+	}
+
+	token, err := middleware.CreateToken(int(user.ID), user.Role)
+	if err != nil {
+		return res, errors.New("Failed To Create Token")
+	}
+
+	res = payload.LoginUserResponse{
+		Email: user.Email,
+		Token: token,
+	}
+
+	return res, nil
 }

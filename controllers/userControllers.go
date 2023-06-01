@@ -133,18 +133,26 @@ func GenerateOTPController(c echo.Context) error {
 func VerifyngOtpController(c echo.Context) error {
 	payloadUser := payload.VerifyngOtpRequest{}
 
+	email := c.QueryParam("email")
+	if email == "" {
+		return c.JSON(http.StatusNotFound, "User Not Found")
+	}
+
 	c.Bind(&payloadUser)
 
 	if err := c.Validate(&payloadUser); err != nil {
 		return c.JSON(http.StatusBadRequest, "OTP has to be 4 digit")
 	}
 
-	err := usecase.VerifyOTP(&payloadUser)
+	response, err := usecase.VerifyOTP(&payloadUser, email)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	return c.JSON(http.StatusOK, "OTP verification successful!")
+	return c.JSON(200, payload.Response{
+		Message: "Otp Verification Successfully",
+		Data:    response,
+	})
 }
 
 // Update Password User
