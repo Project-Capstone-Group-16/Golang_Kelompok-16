@@ -35,7 +35,7 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	adm.POST("/warehouse", controllers.CreateWarehouseController)
 	adm.PUT("/warehouse/:id", controllers.UpdateWarehouseController)
 	adm.DELETE("/warehouse/:id", controllers.DeleteWarehouseController)
-	adm.GET("/warehouse", controllers.GetAllWarehouseController)
+	adm.GET("/warehouse", controllers.GetStatusWarehouseController)
 	adm.POST("/staff", controllers.CreateStaffController)
 	adm.PUT("/staff/:id", controllers.UpdateStaffController)
 	adm.GET("/staff", controllers.GetAllStaffController)

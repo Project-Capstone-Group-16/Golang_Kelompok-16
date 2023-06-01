@@ -123,24 +123,6 @@ func DeleteWarehouseController(c echo.Context) error {
 }
 
 // Get all warehouse
-func GetAllWarehouseController(c echo.Context) error {
-	if _, err := middleware.IsAdmin(c); err != nil {
-		return c.JSON(http.StatusUnauthorized, map[string]string{
-			"Message": "this route only for admin",
-		})
-	}
-
-	response, err := usecase.GetAllWarehouse()
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
-	}
-
-	return c.JSON(http.StatusOK, payload.Response{
-		Message: "Succes get all warehouse",
-		Data:    response,
-	})
-}
-
 // get all warehouse by status
 func GetStatusWarehouseController(c echo.Context) error {
 	warehouseParams := models.Warehouse{
