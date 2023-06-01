@@ -6,30 +6,18 @@ import (
 )
 
 // get all warehouse query database
-func GetAllWarehouses() (warehouse []models.Warehouse, err error) {
-	if err := config.DB.Find(&warehouse).Error; err != nil {
-		return nil, err
-	}
-
-	return warehouse, nil
-}
-
-func GetAllAvailableWarehouses(warehouseParam *models.Warehouse) (warehouse []models.Warehouse, err error) {
+func GetAllWarehouses(warehouseParam *models.Warehouse) (warehouse []models.Warehouse, err error) {
 	db := config.DB
 
 	if warehouseParam.Status != "" {
 		db = db.Where("status = ?", warehouseParam.Status)
 	}
 
-	if warehouseParam.Capacity <= 0 {
-		db = db.Where("capacity = ?", warehouseParam.Capacity)
-	}
-
 	if warehouseParam.Location != "" {
 		db = db.Where("location = ?", warehouseParam.Location)
 	}
-	
-	if err := db.Find(&warehouse).Error; err != nil {
+
+	if err := db.Order("capacity desc").Find(&warehouse).Error; err != nil {
 		return nil, err
 	}
 
