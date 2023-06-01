@@ -6,7 +6,7 @@ import (
 )
 
 // get all warehouse query database
-func GetAllWarehouses(warehouseParam *models.Warehouse) (warehouse []models.Warehouse, err error) {
+func GetWarehouses(warehouseParam *models.Warehouse) (warehouse []models.Warehouse, err error) {
 	db := config.DB
 
 	if warehouseParam.Status != "" {
@@ -18,6 +18,24 @@ func GetAllWarehouses(warehouseParam *models.Warehouse) (warehouse []models.Ware
 	}
 
 	if err := db.Order("capacity desc").Find(&warehouse).Error; err != nil {
+		return nil, err
+	}
+
+	return warehouse, nil
+}
+
+func GetRecomendedWarehouses(warehouseParam *models.Warehouse) (warehouse []models.Warehouse, err error) {
+	db := config.DB
+
+	if warehouseParam.Status != "" {
+		db = db.Where("status = ?", warehouseParam.Status)
+	}
+
+	if warehouseParam.Location != "" {
+		db = db.Where("location = ?", warehouseParam.Location)
+	}
+
+	if err := db.Order("favorites desc").Find(&warehouse).Error; err != nil {
 		return nil, err
 	}
 
@@ -44,7 +62,7 @@ func CreateWarehouse(warehouse *models.Warehouse) error {
 
 // update warehouse query database
 func UpdateWarehouse(warehouse *models.Warehouse) error {
-	if err := config.DB.Model(&warehouse).Updates(&warehouse).Error; err != nil {
+	if err := config.DB.Model(&warehouse).Save(&warehouse).Error; err != nil {
 		return err
 	}
 

@@ -129,6 +129,11 @@ func CreateFavoriteWarehouse(id int, req *payload.CreateFavoriteRequest) (resp a
 		if err != nil {
 			return resp, errors.New("Can't Create Favorite")
 		}
+		warehouse.Favorites += 1
+		err = database.UpdateWarehouse(warehouse)
+		if err != nil {
+			return resp, errors.New("Can't Update Warehouse")
+		}
 
 		resp = payload.CreateFavoriteResponse{
 			WarehouseID: newFavorite.WarehouseID,
@@ -136,6 +141,8 @@ func CreateFavoriteWarehouse(id int, req *payload.CreateFavoriteRequest) (resp a
 				ID:       warehouse.ID,
 				Name:     warehouse.Name,
 				Location: warehouse.Location,
+				Capacity: warehouse.Capacity,
+				Favorite: warehouse.Favorites,
 				Status:   warehouse.Status,
 				ImageURL: warehouse.ImageURL,
 			},
@@ -146,6 +153,12 @@ func CreateFavoriteWarehouse(id int, req *payload.CreateFavoriteRequest) (resp a
 		err = database.DeleteFavorite(favorite)
 		if err != nil {
 			return resp, errors.New("Can't Delete Favorite")
+		}
+
+		warehouse.Favorites -= 1
+		err = database.UpdateWarehouse(warehouse)
+		if err != nil {
+			return resp, errors.New("Can't Update Warehouse")
 		}
 
 		resp = "Success Delete Favorite"

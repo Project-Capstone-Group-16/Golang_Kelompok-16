@@ -82,8 +82,8 @@ func DeleteWarehouse(warehouses *models.Warehouse) error {
 // Logic Get All Warehouse
 
 // logic by status warehouse
-func GetAllByStatusWarehouse(warehouse *models.Warehouse) (resp []payload.GetAllWarehouseResponse, err error) {
-	warehouses, err := database.GetAllWarehouses(warehouse)
+func GetWarehouses(warehouse *models.Warehouse) (resp []payload.GetAllWarehouseResponse, err error) {
+	warehouses, err := database.GetWarehouses(warehouse)
 	if err != nil {
 		return resp, err
 	}
@@ -101,7 +101,7 @@ func GetAllByStatusWarehouse(warehouse *models.Warehouse) (resp []payload.GetAll
 			ID:       warehouse.ID,
 			Name:     warehouse.Name,
 			Location: warehouse.Location,
-			Favorite: uint(totalFavorite[i]),
+			Favorite: totalFavorite[i],
 			Status:   warehouse.Status,
 			Capacity: warehouse.Capacity,
 			ImageURL: warehouse.ImageURL,
@@ -110,6 +110,36 @@ func GetAllByStatusWarehouse(warehouse *models.Warehouse) (resp []payload.GetAll
 
 	return
 }
+
+func GetRecomendedWarehouse(warehouse *models.Warehouse) (resp []payload.GetAllWarehouseResponse, err error) {
+	warehouses, err := database.GetRecomendedWarehouses(warehouse)
+	if err != nil {
+		return resp, err
+	}
+
+	var totalFavorite []int
+	for _, v := range warehouses {
+		warehouse_id := v.ID
+		totalCount := database.CountFavoriteByWarehouseId(warehouse_id)
+		totalFavorite = append(totalFavorite, int(totalCount))
+	}
+
+	resp = []payload.GetAllWarehouseResponse{}
+	for i, warehouse := range warehouses {
+		resp = append(resp, payload.GetAllWarehouseResponse{
+			ID:       warehouse.ID,
+			Name:     warehouse.Name,
+			Location: warehouse.Location,
+			Favorite: totalFavorite[i],
+			Status:   warehouse.Status,
+			Capacity: warehouse.Capacity,
+			ImageURL: warehouse.ImageURL,
+		})
+	}
+
+	return
+}
+
 
 // logic update warehouse
 func UpdateWarehouse(warehouse *models.Warehouse) (resp payload.UpdateWarehouseResponse, err error) {
