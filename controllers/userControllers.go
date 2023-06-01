@@ -126,7 +126,10 @@ func GenerateOTPController(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK, "OTP sent successfully, please check your email for the OTP  token ")
+	return c.JSON(200, payload.Response{
+		Message: "OTP sent successfully, please check your email for the OTP  token",
+		Data:    payloadUser.Email,
+	})
 }
 
 // Verify OTP

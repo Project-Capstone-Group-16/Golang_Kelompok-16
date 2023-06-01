@@ -14,7 +14,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var generatedOTP string
+var generatedOTPParse string
+var emailParse string
 
 // Logic Login User
 func LoginUser(req *payload.LoginUserRequest) (res payload.LoginUserResponse, err error) {
@@ -110,9 +111,11 @@ func GenerateOTPEndpoint(req *payload.ForgotPasswordRequest) error {
 	if err != nil {
 		return errors.New("Email not registered")
 	}
-	generatedOTP = utils.GenerateOTP()
 
-	err = SendOTPByEmail(user.Email, generatedOTP)
+	generatedOTPParse = utils.GenerateOTP()
+	emailParse = req.Email
+
+	err = SendOTPByEmail(user.Email, generatedOTPParse)
 	if err != nil {
 		return errors.New("Failed to send OTP")
 	}
@@ -121,8 +124,12 @@ func GenerateOTPEndpoint(req *payload.ForgotPasswordRequest) error {
 
 // Logic Verify OTP
 func VerifyOTP(req *payload.VerifyngOtpRequest, email string) (res payload.LoginUserResponse, err error) {
-	if req.Otp != generatedOTP {
+	if req.Otp != generatedOTPParse {
 		return res, errors.New("OTP verification failed.")
+	}
+
+	if email != emailParse {
+		return res, errors.New("Email verification failed.")
 	}
 
 	user, err := database.GetUserByEmail(email)
