@@ -25,7 +25,7 @@ func IsEmailAvailable(email string) bool {
 	return count == 0
 }
 
-func GetuserByEmail(email string) (user models.User, err error) {
+func GetUserByEmail(email string) (user models.User, err error) {
 	if err := config.DB.Where("email = ?", email).First(&user).Error; err != nil {
 		return user, err
 	}
