@@ -4,6 +4,7 @@ import (
 	"Capstone/middleware"
 	"Capstone/models/payload"
 	"Capstone/usecase"
+	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo"
@@ -14,10 +15,10 @@ func RegisterUserController(c echo.Context) error {
 	payloadUser := payload.CreateUserRequest{}
 	c.Bind(&payloadUser)
 
-	if err := c.Validate(payloadUser); err != nil {
+	if err := c.Validate(&payloadUser); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
-			"messages": "error payload create user",
-			"error":    "password minimum length has to be 5 character",
+			"message": "error payload create user",
+			"error":   err.Error(),
 		})
 	}
 
@@ -40,10 +41,10 @@ func RegisterAdminController(c echo.Context) error {
 	payloadUser := payload.CreateAdminRequest{}
 	c.Bind(&payloadUser)
 
-	if err := c.Validate(payloadUser); err != nil {
+	if err := c.Validate(&payloadUser); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"messages": "error payload create admin",
-			"error":    "password minimum length has to be 5 character",
+			"error":    err.Error(),
 		})
 	}
 
@@ -68,7 +69,10 @@ func LoginUserController(c echo.Context) error {
 	c.Bind(&payloadUser)
 
 	if err := c.Validate(&payloadUser); err != nil {
-		return c.JSON(http.StatusBadRequest, "Field can't be empty")
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "error payload login user",
+			"error":   err.Error(),
+		})
 	}
 
 	response, err := usecase.LoginUser(&payloadUser)
@@ -89,7 +93,10 @@ func LoginAdminController(c echo.Context) error {
 	c.Bind(&payloadUser)
 
 	if err := c.Validate(&payloadUser); err != nil {
-		return c.JSON(http.StatusBadRequest, "Field can't be empty")
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "error payload login admin",
+			"error":   err.Error(),
+		})
 	}
 
 	response, err := usecase.LoginAdmin(&payloadUser)
@@ -110,32 +117,46 @@ func GenerateOTPController(c echo.Context) error {
 	c.Bind(&payloadUser)
 
 	if err := c.Validate(&payloadUser); err != nil {
-		return c.JSON(http.StatusBadRequest, "Field can't be empty")
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "error payload Email",
+			"error":   err.Error(),
+		})
 	}
 
 	err := usecase.GenerateOTPEndpoint(&payloadUser)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK, "OTP sent successfully, please check your email for the OTP  token ")
+	return c.JSON(200, payload.Response{
+		Message: "OTP sent successfully, please check your email for the OTP  token",
+		Data:    payloadUser.Email,
+	})
 }
 
 // Verify OTP
 func VerifyngOtpController(c echo.Context) error {
-	payloadUser := payload.VerifyngOtp{}
+	payloadUser := payload.VerifyngOtpRequest{}
+
+	email := c.QueryParam("email")
+	if email == "" {
+		return c.JSON(http.StatusNotFound, "User Not Found")
+	}
 
 	c.Bind(&payloadUser)
 
 	if err := c.Validate(&payloadUser); err != nil {
-		return c.JSON(http.StatusBadRequest, "OTP has to be 6 digit")
+		return c.JSON(http.StatusBadRequest, "OTP has to be 4 digit")
 	}
 
-	err := usecase.VerifyOTP(&payloadUser)
+	response, err := usecase.VerifyOTP(&payloadUser, email)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	return c.JSON(http.StatusOK, "OTP confirmed")
+	return c.JSON(200, payload.Response{
+		Message: "Otp Verification Successfully",
+		Data:    response,
+	})
 }
 
 // Update Password User
@@ -144,13 +165,18 @@ func UpdatePasswordController(c echo.Context) error {
 
 	userId, err := middleware.IsUser(c)
 	if err != nil {
-		return c.JSON(http.StatusNotFound, "User not found")
+		return c.JSON(http.StatusUnauthorized, map[string]string{
+			"Message": "this route only for user",
+		})
 	}
 
 	c.Bind(&payloadUser)
 
 	if err := c.Validate(&payloadUser); err != nil {
-		return c.JSON(http.StatusBadRequest, "Field cannot be empty")
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "error payload update password",
+			"error":   err.Error(),
+		})
 	}
 
 	err = usecase.UpdatePassword(userId, &payloadUser)
@@ -160,4 +186,91 @@ func UpdatePasswordController(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, "Change password success")
 
+}
+
+// User add favorite warehouse
+func AddFavoriteWarehouseController(c echo.Context) error {
+	payloadUser := payload.CreateFavoriteRequest{}
+
+	userId, err := middleware.IsUser(c)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]string{
+			"Message": "this route only for user",
+		})
+	}
+
+	c.Bind(&payloadUser)
+
+	if err := c.Validate(&payloadUser); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "error payload favorite warehouse",
+			"error":   err.Error(),
+		})
+	}
+
+	response, err := usecase.CreateFavoriteWarehouse(userId, &payloadUser)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"Message": response,
+	})
+}
+
+// Get User Controllers
+func GetUserController(c echo.Context) error {
+	userId, err := middleware.IsUser(c)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]string{
+			"Message": "this route only for user",
+		})
+	}
+
+	user, err := usecase.GetUser(userId)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, payload.Response{
+		Message: fmt.Sprintf("Success get profile %s %s", user.FirstName, user.LastName),
+		Data:    user,
+	})
+}
+
+func UpdateProfileController(c echo.Context) error {
+	payloadUser := payload.UpdateProfileUser{}
+
+	c.Bind(&payloadUser)
+
+	userId, err := middleware.IsUser(c)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]string{
+			"Message": "this route only for user",
+		})
+	}
+
+	user, err := usecase.GetUser(userId)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	c.Bind(&user)
+
+	if err := c.Validate(payloadUser); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "error payload update staff",
+			"error":   err.Error(),
+		})
+	}
+
+	response, err := usecase.UpdateProfile(user, &payloadUser)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, payload.Response{
+		Message: "Succes Update Profile",
+		Data:    response,
+	})
 }
