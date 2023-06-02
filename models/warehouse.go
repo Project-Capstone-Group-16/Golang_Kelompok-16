@@ -10,7 +10,7 @@ type Warehouse struct {
 	Location  string `json:"location" form:"location"`
 	Capacity  uint   `json:"capacity" form:"capacity"`
 	Status    string `json:"status" form:"status" gorm:"type:enum('Available','Not Available')"`
-	Favorites int    `json:"favorite" form:"favorite" gorm:"-"`
+	Favorites int   `json:"favorites" form:"favorites"`
 	ImageURL  string `json:"image_url" form:"image_url" gorm:"unique;not null"`
 	Favorite  *[]Favorite
 }
