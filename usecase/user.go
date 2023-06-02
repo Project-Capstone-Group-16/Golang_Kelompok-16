@@ -6,6 +6,7 @@ import (
 	"Capstone/models/payload"
 	"Capstone/repository/database"
 	"errors"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -59,7 +60,8 @@ func CreateAdmin(req *payload.CreateAdminRequest) (resp payload.CreateAdminRespo
 	}
 
 	newUser := &models.User{
-		Fullname:    req.Fullname,
+		FirstName:   req.FirstName,
+		LastName:    req.LastName,
 		Email:       req.Email,
 		PhoneNumber: "0" + req.PhoneNumber, // masih bimbang apakah +62 atau 0
 		Password:    string(passwordHash),
@@ -72,7 +74,8 @@ func CreateAdmin(req *payload.CreateAdminRequest) (resp payload.CreateAdminRespo
 	}
 
 	resp = payload.CreateAdminResponse{
-		Fullname:    newUser.Fullname,
+		FirstName:   newUser.FirstName,
+		LastName:    newUser.LastName,
 		Email:       newUser.Email,
 		PhoneNumber: newUser.PhoneNumber,
 		Password:    newUser.Password,
@@ -107,6 +110,7 @@ func UpdatePassword(id int, req *payload.UpdatePasswordRequest) error {
 	return nil
 }
 
+// Add Favorite Warehouse
 func CreateFavoriteWarehouse(id int, req *payload.CreateFavoriteRequest) (resp any, err error) {
 	user, err := database.GetuserByID(id)
 	if err != nil {
@@ -164,6 +168,45 @@ func CreateFavoriteWarehouse(id int, req *payload.CreateFavoriteRequest) (resp a
 		resp = "Success Delete Favorite"
 
 		return
+	}
+
+	return
+}
+
+func GetUser(id int) (user *models.User, err error) {
+	user, err = database.GetuserByID(id)
+	if err != nil {
+		return nil, errors.New("User not found")
+	}
+
+	return user, nil
+}
+
+func UpdateProfile(user *models.User, req *payload.UpdateProfileUser) (res payload.UpdateProfileUserResponse, err error) {
+	birthDate, err := time.Parse("02/01/2006", req.BirthDate)
+	if err != nil {
+		return
+	}
+
+	user.FirstName = req.FirstName
+	user.LastName = req.LastName
+	user.BirthDate = &birthDate
+	user.Gender = req.Gender
+	user.PhoneNumber = "0" + req.PhoneNumber
+	user.Address = req.Address
+
+	err = database.UpdateUser(user)
+	if err != nil {
+		return res, errors.New("Can't update profile user")
+	}
+
+	res = payload.UpdateProfileUserResponse{
+		FirstName:   user.FirstName,
+		LastName:    user.LastName,
+		BirthDate:   user.BirthDate,
+		Gender:      user.Gender,
+		PhoneNumber: user.PhoneNumber,
+		Address:     user.Address,
 	}
 
 	return

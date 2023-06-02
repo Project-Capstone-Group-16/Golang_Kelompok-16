@@ -41,9 +41,13 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	adm.GET("/staff", controllers.GetAllStaffController)
 	adm.DELETE("/staff/:id", controllers.DeleteStaffController)
 
-	wh := e.Group("/warehouse",  middleware.IsLoggedIn)
-	wh.GET("", controllers.GetWarehousesController)				//query params
+	wh := e.Group("/warehouse", middleware.IsLoggedIn)
+	wh.GET("", controllers.GetWarehousesController)                     //query params
 	wh.GET("/recomended", controllers.GetRecomendedWarehouseController) //get recomended
-	wh.POST("/favorite", controllers.AddFavoriteWarehouseController) // second task
+	wh.POST("/favorite", controllers.AddFavoriteWarehouseController)    // second task
+
+	us := e.Group("/profile", middleware.IsLoggedIn)
+	us.GET("", controllers.GetUserController)
+	us.PUT("/update", controllers.UpdateProfileController)
 
 }
