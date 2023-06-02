@@ -21,6 +21,7 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	e.POST("/register/admin", controllers.RegisterAdminController)
 	e.POST("/login", controllers.LoginUserController)
 	e.POST("/login/admin", controllers.LoginAdminController)
+	e.POST("/upload", controllers.UploadImage)
 
 	fp := e.Group("/forgot-password")
 	fp.POST("/generate", controllers.GenerateOTPController)

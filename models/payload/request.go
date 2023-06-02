@@ -46,6 +46,8 @@ type CreateWarehouseRequest struct {
 	Name     string `json:"name" form:"name" validate:"required"`
 	Location string `json:"location" form:"location" validate:"required"`
 	WarehouseImage string `json:"warehouse_image" form:"warehouse_image" validate:"required"`
-
 }
 
+type UploadImage struct {
+	Image string  `json:"image form:"image"`
+}
