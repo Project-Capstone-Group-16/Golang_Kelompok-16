@@ -15,6 +15,8 @@ func CreateStaff(req *payload.CreateStaffRequest) (resp payload.ManageStaffRespo
 	}
 	newStaff := &models.Staff{
 		FullName:    req.FullName,
+		Occupation: req.Occupation,
+		WorkingHours: req.WorkingHours,
 		WarehouseID: req.WarehouseID,
 		BirthDate:   &BirthDate,
 		PhoneNumber: "0" + req.PhoneNumber,
@@ -27,6 +29,8 @@ func CreateStaff(req *payload.CreateStaffRequest) (resp payload.ManageStaffRespo
 
 	resp = payload.ManageStaffResponse{
 		FullName:    newStaff.FullName,
+		Occupation: newStaff.Occupation,
+		WorkingHours: newStaff.WorkingHours,
 		WarehouseID: newStaff.WarehouseID,
 		BirthDate:   newStaff.BirthDate,
 		PhoneNumber: newStaff.PhoneNumber,
@@ -40,18 +44,27 @@ func UpdateStaff(staff *models.Staff, req *payload.UpdateStaffRequest) (resp pay
 	if err != nil {
 		return
 	}
+	staff.FullName = req.FullName
+	staff.WarehouseID = req.WarehouseID
+	staff.Occupation = req.Occupation
+	staff.WorkingHours = req.WorkingHours
 	staff.BirthDate = &birthDate
-
+	staff.PhoneNumber = req.PhoneNumber
+	
 	err = database.UpdateStaff(staff)
 	if err != nil {
 		return resp, errors.New("Can't update staff")
 	}
 
+	updatedStaff,_ := database.GetStaffByID(uint64(staff.ID))
+
 	resp = payload.ManageStaffResponse{
-		FullName:    staff.FullName,
-		WarehouseID: staff.WarehouseID,
-		BirthDate:   staff.BirthDate,
-		PhoneNumber: staff.PhoneNumber,
+		FullName:    updatedStaff.FullName,
+		Occupation: updatedStaff.Occupation,
+		WorkingHours: updatedStaff.WorkingHours,
+		WarehouseID: updatedStaff.WarehouseID,
+		BirthDate:   updatedStaff.BirthDate,
+		PhoneNumber: updatedStaff.PhoneNumber,
 	}
 
 	return resp, nil
@@ -78,6 +91,8 @@ func GetAllStaffs() (resp []payload.GetAllStaffsResponse, err error) {
 			ID:          staff.ID,
 			WarehouseID: staff.WarehouseID,
 			FullName:    staff.FullName,
+			Occupation: staff.Occupation,
+			WorkingHours: staff.WorkingHours,
 			BirthDate:   staff.BirthDate,
 			PhoneNumber: staff.PhoneNumber,
 		})
