@@ -5,57 +5,36 @@ import (
 	"Capstone/models"
 	"Capstone/models/payload"
 	"Capstone/repository/database"
+	"context"
 	"errors"
-	"fmt"
-	"io"
 	"mime/multipart"
 	"os"
 
-	"github.com/gosimple/slug"
+	"github.com/cloudinary/cloudinary-go/v2"
+	"github.com/cloudinary/cloudinary-go/v2/api"
+	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
 )
 
-// Login Upload Image Warehouse
-func UploadImage(file *multipart.FileHeader, warehouseName string) (string, error) {
-	slugWarehouse := slug.Make(warehouseName)
-	slugFileName := slug.Make(file.Filename)
-	path := fmt.Sprintf("images/warehouse/%s-%s.png", slugWarehouse, slugFileName)
-
-	//upload the avatar
-	src, err := file.Open()
-	if err != nil {
-		return "", err
-	}
-	defer src.Close()
-	// Create a new file on disk
-	dst, err := os.Create(path)
-	if err != nil {
-		return "", err
-	}
-	defer dst.Close()
-	// Copy the uploaded file to the destination file
-	if _, err = io.Copy(dst, src); err != nil {
-		return "", err
-	}
-	return path, nil
-}
-
 // logic create new warehouse
-func CreateWarehouse(file *multipart.FileHeader, req *payload.CreateWarehouseRequest) (resp payload.CreateWarehouseResponse, err error) {
-	req.WarehouseImage, err = UploadImage(file, req.Name)
-	if err != nil {
-		return
-	}
+func CreateWarehouse(fileHeader *multipart.FileHeader, req *payload.CreateWarehouseRequest) (resp payload.CreateWarehouseResponse, err error) {
 
-	path := fmt.Sprintf("%s/%s", constants.Base_Url, req.WarehouseImage)
+	ctx := context.Background()
 
-	newWarehouse := &models.Warehouse{
+	file, _ := fileHeader.Open()
+
+	cldService, _ := cloudinary.NewFromURL(os.Getenv("CLD_URL"))
+	responseImage, _ := cldService.Upload.Upload(ctx, file, uploader.UploadParams{
+		PublicID: "Inventron" + "/" + fileHeader.Filename,
+	})
+
+	newWarehouse := models.Warehouse{
 		Name:     req.Name,
 		Location: req.Location,
 		Status:   constants.Available,
-		ImageURL: path,
+		ImageURL: responseImage.SecureURL,
 	}
 
-	err = database.CreateWarehouse(newWarehouse)
+	err = database.CreateWarehouse(&newWarehouse)
 	if err != nil {
 		return
 	}
@@ -72,7 +51,18 @@ func CreateWarehouse(file *multipart.FileHeader, req *payload.CreateWarehouseReq
 
 // Logic Delete Warahouse
 func DeleteWarehouse(warehouses *models.Warehouse) error {
-	err := database.DeleteWarehouse(warehouses)
+	ctx := context.Background()
+
+	cldService, _ := cloudinary.NewFromURL(os.Getenv("CLD_URL"))
+
+	_, err := cldService.Upload.Destroy(ctx, uploader.DestroyParams{
+		PublicID: warehouses.ImageURL,
+	})
+	if err != nil {
+		return errors.New("Failed Delete warehouse")
+	}
+
+	err = database.DeleteWarehouse(warehouses)
 	if err != nil {
 		return err
 	}
@@ -140,9 +130,17 @@ func GetRecomendedWarehouse(warehouse *models.Warehouse) (resp []payload.GetAllW
 	return
 }
 
-
 // logic update warehouse
-func UpdateWarehouse(warehouse *models.Warehouse) (resp payload.UpdateWarehouseResponse, err error) {
+func UpdateWarehouse(file multipart.File, warehouse *models.Warehouse) (resp payload.UpdateWarehouseResponse, err error) {
+	ctx := context.Background()
+
+	cldService, _ := cloudinary.NewFromURL(os.Getenv("CLD_URL"))
+	path, _ := cldService.Upload.Upload(ctx, file, uploader.UploadParams{
+		UniqueFilename: api.Bool(true),
+		Overwrite:      api.Bool(true),
+	})
+
+	warehouse.ImageURL = path.SecureURL
 
 	err = database.UpdateWarehouse(warehouse)
 	if err != nil {
