@@ -24,7 +24,7 @@ func CreateWarehouseController(c echo.Context) error {
 		})
 	}
 
-	file, err := c.FormFile("warehouse_image")
+	fileHeader, err := c.FormFile("warehouse_image")
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "error payload create warehouse",
@@ -32,9 +32,13 @@ func CreateWarehouseController(c echo.Context) error {
 		})
 	}
 
+	// file, _ := fileHeader.Open()
+
 	payloadWarehouse := payload.CreateWarehouseRequest{}
+
 	c.Bind(&payloadWarehouse)
-	payloadWarehouse.WarehouseImage = file.Filename
+
+	payloadWarehouse.WarehouseImage = fileHeader.Filename
 
 	if err := c.Validate(payloadWarehouse); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
@@ -43,7 +47,7 @@ func CreateWarehouseController(c echo.Context) error {
 		})
 	}
 
-	response, err := usecase.CreateWarehouse(file, &payloadWarehouse)
+	response, err := usecase.CreateWarehouse(fileHeader, &payloadWarehouse)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"messages": "error create warehouse",
@@ -72,21 +76,15 @@ func UpdateWarehouseController(c echo.Context) error {
 		return errors.New("Warehouse not found")
 	}
 
-	file, _ := c.FormFile("warehouse_image")
+	fileHeader, _ := c.FormFile("warehouse_image")
 
-	c.Bind(warehouse)
+	file, _ := fileHeader.Open()
 
-	if file != nil {
-		rmPath := strings.TrimLeft(warehouse.ImageURL, constants.Base_Url+"/")
-		os.Remove(rmPath)
-		warehouseImage, _ := usecase.UploadImage(file, warehouse.Name)
-		path := fmt.Sprintf("%s/%s", constants.Base_Url, warehouseImage)
-		if warehouseImage != "" {
-			warehouse.ImageURL = path
-		}
-	}
+	c.Bind(&warehouse)
 
-	response, err := usecase.UpdateWarehouse(warehouse)
+	warehouse.ImageURL = fileHeader.Filename
+
+	response, err := usecase.UpdateWarehouse(file, warehouse)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}

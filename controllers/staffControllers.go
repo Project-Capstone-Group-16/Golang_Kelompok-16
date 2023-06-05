@@ -58,8 +58,6 @@ func UpdateStaffController(c echo.Context) error {
 		return errors.New("Staff not found")
 	}
 
-	c.Bind(staff)
-	
 	if err := c.Validate(payloadStaff); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "error payload update staff",
