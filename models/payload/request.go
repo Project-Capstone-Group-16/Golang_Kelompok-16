@@ -30,10 +30,20 @@ type CreateFavoriteRequest struct {
 	WarehouseID uint `json:"warehouse_id" form:"warehouse_id" validate:"required"`
 }
 
+type UpdateProfileUser struct {
+	FirstName   string `json:"first_name" form:"first_name"`
+	LastName    string `json:"last_name" form:"last_name"`
+	BirthDate   string `json:"birth_date" form:"birth_date"`
+	Gender      string `json:"gender" form:"gender" gorm:"type:enum('PRIA', 'WANITA', '');default:''"`
+	PhoneNumber string `json:"phone_number" form:"phone_number" validate:"required,max=11,min=10,number`
+	Address     string `json:"address" form:"address"`
+}
+
 // admin request
 
 type CreateAdminRequest struct {
-	Fullname        string `json:"full_name" form:"full_name" validate:"required"`
+	FirstName       string `json:"first_name" form:"first_name" validate:"required"`
+	LastName        string `json:"last_name" form:"last_name" validate:"required"`
 	Email           string `json:"email" form:"email" validate:"required,email"`
 	PhoneNumber     string `json:"phone_number" form:"phone_number" validate:"required,max=11,min=10,number"`
 	Password        string `json:"password" form:"password" validate:"required,min=6"`

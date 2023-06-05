@@ -44,6 +44,9 @@ func UpdateStaff(staff *models.Staff, req *payload.UpdateStaffRequest) (resp pay
 	if err != nil {
 		return
 	}
+	staff.FullName = req.FullName
+	staff.WarehouseID = req.WarehouseID
+	staff.Occupation = req.Occupation
 	staff.BirthDate = &birthDate
 	staff.PhoneNumber = req.PhoneNumber
 	staff.Address = req.Address

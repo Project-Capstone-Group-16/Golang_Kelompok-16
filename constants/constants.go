@@ -1,11 +1,10 @@
 package constants
 
 const (
-
 	User         = "USER"
 	Admin        = "ADMIN"
-	Male         = "Male"
-	Female       = "Female"
+	Pria         = "PRIA"
+	Wanita       = "WANITA"
 	NotAvailable = "Not Available"
 	Available    = "Available"
 	SECRET_JWT   = "secret"
