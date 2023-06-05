@@ -5,33 +5,18 @@ import (
 	"Capstone/models"
 	"Capstone/models/payload"
 	"Capstone/repository/database"
-	"context"
 	"errors"
-	"mime/multipart"
-	"os"
-
-	"github.com/cloudinary/cloudinary-go/v2"
-	"github.com/cloudinary/cloudinary-go/v2/api"
-	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
 )
 
 // logic create new warehouse
-func CreateWarehouse(fileHeader *multipart.FileHeader, req *payload.CreateWarehouseRequest) (resp payload.CreateWarehouseResponse, err error) {
-
-	ctx := context.Background()
-
-	file, _ := fileHeader.Open()
-
-	cldService, _ := cloudinary.NewFromURL(os.Getenv("CLD_URL"))
-	responseImage, _ := cldService.Upload.Upload(ctx, file, uploader.UploadParams{
-		PublicID: "Inventron" + "/" + fileHeader.Filename,
-	})
+func CreateWarehouse(req *payload.CreateWarehouseRequest) (resp payload.CreateWarehouseResponse, err error) {
 
 	newWarehouse := models.Warehouse{
 		Name:     req.Name,
-		Location: req.Location,
+		City:     req.City,
+		Province: req.Province,
 		Status:   constants.Available,
-		ImageURL: responseImage.SecureURL,
+		ImageURL: req.WarehouseImage,
 	}
 
 	err = database.CreateWarehouse(&newWarehouse)
@@ -41,7 +26,8 @@ func CreateWarehouse(fileHeader *multipart.FileHeader, req *payload.CreateWareho
 
 	resp = payload.CreateWarehouseResponse{
 		Name:     newWarehouse.Name,
-		Location: newWarehouse.Location,
+		City:     newWarehouse.City,
+		Province: newWarehouse.Province,
 		Status:   newWarehouse.Status,
 		ImageURL: newWarehouse.ImageURL,
 	}
@@ -51,18 +37,8 @@ func CreateWarehouse(fileHeader *multipart.FileHeader, req *payload.CreateWareho
 
 // Logic Delete Warahouse
 func DeleteWarehouse(warehouses *models.Warehouse) error {
-	ctx := context.Background()
 
-	cldService, _ := cloudinary.NewFromURL(os.Getenv("CLD_URL"))
-
-	_, err := cldService.Upload.Destroy(ctx, uploader.DestroyParams{
-		PublicID: warehouses.ImageURL,
-	})
-	if err != nil {
-		return errors.New("Failed Delete warehouse")
-	}
-
-	err = database.DeleteWarehouse(warehouses)
+	err := database.DeleteWarehouse(warehouses)
 	if err != nil {
 		return err
 	}
@@ -90,7 +66,8 @@ func GetWarehouses(warehouse *models.Warehouse) (resp []payload.GetAllWarehouseR
 		resp = append(resp, payload.GetAllWarehouseResponse{
 			ID:       warehouse.ID,
 			Name:     warehouse.Name,
-			Location: warehouse.Location,
+			City:     warehouse.City,
+			Province: warehouse.Province,
 			Favorite: totalFavorite[i],
 			Status:   warehouse.Status,
 			Capacity: warehouse.Capacity,
@@ -119,7 +96,8 @@ func GetRecomendedWarehouse(warehouse *models.Warehouse) (resp []payload.GetAllW
 		resp = append(resp, payload.GetAllWarehouseResponse{
 			ID:       warehouse.ID,
 			Name:     warehouse.Name,
-			Location: warehouse.Location,
+			City:     warehouse.City,
+			Province: warehouse.Province,
 			Favorite: totalFavorite[i],
 			Status:   warehouse.Status,
 			Capacity: warehouse.Capacity,
@@ -131,16 +109,13 @@ func GetRecomendedWarehouse(warehouse *models.Warehouse) (resp []payload.GetAllW
 }
 
 // logic update warehouse
-func UpdateWarehouse(file multipart.File, warehouse *models.Warehouse) (resp payload.UpdateWarehouseResponse, err error) {
-	ctx := context.Background()
+func UpdateWarehouse(warehouse *models.Warehouse) (resp payload.UpdateWarehouseResponse, err error) {
 
-	cldService, _ := cloudinary.NewFromURL(os.Getenv("CLD_URL"))
-	path, _ := cldService.Upload.Upload(ctx, file, uploader.UploadParams{
-		UniqueFilename: api.Bool(true),
-		Overwrite:      api.Bool(true),
-	})
-
-	warehouse.ImageURL = path.SecureURL
+	// warehouse.Name = req.Name
+	// warehouse.City = req.City
+	// warehouse.Province = req.Province
+	// warehouse.Status = req.Status
+	// warehouse.ImageURL = req.WarehouseImage
 
 	err = database.UpdateWarehouse(warehouse)
 	if err != nil {
@@ -149,7 +124,8 @@ func UpdateWarehouse(file multipart.File, warehouse *models.Warehouse) (resp pay
 
 	resp = payload.UpdateWarehouseResponse{
 		Name:     warehouse.Name,
-		Location: warehouse.Location,
+		City:     warehouse.City,
+		Province: warehouse.Province,
 		Status:   warehouse.Status,
 		ImageURL: warehouse.ImageURL,
 	}
