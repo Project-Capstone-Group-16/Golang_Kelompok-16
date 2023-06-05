@@ -62,12 +62,17 @@ type CreateWarehouseRequest struct {
 }
 
 type CreateStaffRequest struct {
-	FullName    string `json:"full_name" form:"full_name" validate:"required"`
-	WarehouseID uint   `json:"warehouse_id" form:"warehouse_id" validate:"required"`
-	BirthDate   string `json:"birth_date" form:"birth_date" validate:"required"`
-	PhoneNumber string `json:"phone_number" form:"phone_number" validate:"required,max=11,min=10,number"`
+	FullName     string `json:"full_name" form:"full_name" validate:"required"`
+	WarehouseID  uint   `json:"warehouse_id" form:"warehouse_id" validate:"required"`
+	Occupation   string `json:"occupation" form:"occupation" validate:"required"`
+	BirthDate    string `json:"birth_date" form:"birth_date" validate:"required"`
+	PhoneNumber  string `json:"phone_number" form:"phone_number" validate:"required,max=11,min=10,number"`
 }
 
 type UpdateStaffRequest struct {
-	BirthDate string `json:"birth_date" form:"birth_date"`
+	FullName     string `json:"full_name" form:"full_name"`
+	WarehouseID  uint   `json:"warehouse_id" form:"warehouse_id"`
+	Occupation   string `json:"occupation" form:"occupation"`
+	BirthDate    string `json:"birth_date" form:"birth_date"`
+	PhoneNumber  string `json:"phone_number" form:"phone_number" validate:"omitempty,gt=0,max=11,min=10,number"`
 }

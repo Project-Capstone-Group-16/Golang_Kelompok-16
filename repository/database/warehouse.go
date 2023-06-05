@@ -3,6 +3,8 @@ package database
 import (
 	"Capstone/config"
 	"Capstone/models"
+
+	"gorm.io/gorm/clause"
 )
 
 // get all warehouse query database
@@ -53,7 +55,7 @@ func DeleteWarehouse(warehouse *models.Warehouse) error {
 
 // create warehouse query database
 func CreateWarehouse(warehouse *models.Warehouse) error {
-	if err := config.DB.Create(warehouse).Error; err != nil {
+	if err := config.DB.Clauses(clause.Returning{}).Create(warehouse).Error; err != nil {
 		return err
 	}
 
