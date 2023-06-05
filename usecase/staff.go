@@ -16,7 +16,6 @@ func CreateStaff(req *payload.CreateStaffRequest) (resp payload.ManageStaffRespo
 	newStaff := &models.Staff{
 		FullName:    req.FullName,
 		Occupation: req.Occupation,
-		WorkingHours: req.WorkingHours,
 		WarehouseID: req.WarehouseID,
 		BirthDate:   &BirthDate,
 		PhoneNumber: "0" + req.PhoneNumber,
@@ -47,7 +46,6 @@ func UpdateStaff(staff *models.Staff, req *payload.UpdateStaffRequest) (resp pay
 	staff.FullName = req.FullName
 	staff.WarehouseID = req.WarehouseID
 	staff.Occupation = req.Occupation
-	staff.WorkingHours = req.WorkingHours
 	staff.BirthDate = &birthDate
 	staff.PhoneNumber = req.PhoneNumber
 	
