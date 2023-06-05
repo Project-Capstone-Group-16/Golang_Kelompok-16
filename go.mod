@@ -3,6 +3,7 @@ module Capstone
 go 1.20
 
 require (
+	github.com/cloudinary/cloudinary-go/v2 v2.2.0
 	github.com/go-playground/validator/v10 v10.14.0
 	github.com/labstack/echo v3.3.10+incompatible
 	github.com/mailjet/mailjet-apiv3-go v0.0.0-20201009050126-c24bc15a9394

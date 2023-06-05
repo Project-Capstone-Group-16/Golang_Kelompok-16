@@ -59,7 +59,7 @@ type CreateWarehouseRequest struct {
 	Name           string `json:"name" form:"name" validate:"required"`
 	Location       string `json:"location" form:"location" validate:"required"`
 	WarehouseImage string `json:"warehouse_image" form:"warehouse_image" validate:"required"`
-}
+
 
 type CreateStaffRequest struct {
 	FullName     string `json:"full_name" form:"full_name" validate:"required"`
@@ -76,3 +76,4 @@ type UpdateStaffRequest struct {
 	BirthDate    string `json:"birth_date" form:"birth_date"`
 	PhoneNumber  string `json:"phone_number" form:"phone_number" validate:"omitempty,gt=0,max=11,min=10,number"`
 }
+
