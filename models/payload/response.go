@@ -58,16 +58,20 @@ type UpdateWarehouseResponse struct {
 }
 
 type ManageStaffResponse struct {
-	FullName    string     `json:"full_name"`
 	WarehouseID uint       `json:"warehouse_id"`
+	FullName    string     `json:"full_name"`
+	Occupation  string     `json:"occupation" form:"occupation"`
 	BirthDate   *time.Time `json:"birth_date"`
 	PhoneNumber string     `json:"phone_number"`
+	Address     string     `json:"address"`
 }
 
 type GetAllStaffsResponse struct {
 	ID          uint       `json:"id"`
-	WarehouseID uint       `json:warehouse_id"`
+	WarehouseID uint       `json:"warehouse_id"`
 	FullName    string     `json:"full_name"`
+	Occupation  string     `json:"occupation" form:"occupation"`
 	BirthDate   *time.Time `json:"birth_date"`
 	PhoneNumber string     `json:"phone_number"`
+	Address     string     `json:"address"`
 }
