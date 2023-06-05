@@ -15,10 +15,11 @@ func CreateStaff(req *payload.CreateStaffRequest) (resp payload.ManageStaffRespo
 	}
 	newStaff := &models.Staff{
 		FullName:    req.FullName,
-		Occupation: req.Occupation,
+		Occupation:  req.Occupation,
 		WarehouseID: req.WarehouseID,
 		BirthDate:   &BirthDate,
 		PhoneNumber: "0" + req.PhoneNumber,
+		Address:     req.Address,
 	}
 
 	err = database.CreateStaff(newStaff)
@@ -28,11 +29,11 @@ func CreateStaff(req *payload.CreateStaffRequest) (resp payload.ManageStaffRespo
 
 	resp = payload.ManageStaffResponse{
 		FullName:    newStaff.FullName,
-		Occupation: newStaff.Occupation,
-		WorkingHours: newStaff.WorkingHours,
+		Occupation:  newStaff.Occupation,
 		WarehouseID: newStaff.WarehouseID,
 		BirthDate:   newStaff.BirthDate,
 		PhoneNumber: newStaff.PhoneNumber,
+		Address:     newStaff.Address,
 	}
 
 	return
@@ -48,21 +49,22 @@ func UpdateStaff(staff *models.Staff, req *payload.UpdateStaffRequest) (resp pay
 	staff.Occupation = req.Occupation
 	staff.BirthDate = &birthDate
 	staff.PhoneNumber = req.PhoneNumber
-	
+	staff.Address = req.Address
+
 	err = database.UpdateStaff(staff)
 	if err != nil {
 		return resp, errors.New("Can't update staff")
 	}
 
-	updatedStaff,_ := database.GetStaffByID(uint64(staff.ID))
+	updatedStaff, _ := database.GetStaffByID(uint64(staff.ID))
 
 	resp = payload.ManageStaffResponse{
 		FullName:    updatedStaff.FullName,
-		Occupation: updatedStaff.Occupation,
-		WorkingHours: updatedStaff.WorkingHours,
+		Occupation:  updatedStaff.Occupation,
 		WarehouseID: updatedStaff.WarehouseID,
 		BirthDate:   updatedStaff.BirthDate,
 		PhoneNumber: updatedStaff.PhoneNumber,
+		Address:     updatedStaff.Address,
 	}
 
 	return resp, nil
@@ -89,10 +91,10 @@ func GetAllStaffs() (resp []payload.GetAllStaffsResponse, err error) {
 			ID:          staff.ID,
 			WarehouseID: staff.WarehouseID,
 			FullName:    staff.FullName,
-			Occupation: staff.Occupation,
-			WorkingHours: staff.WorkingHours,
+			Occupation:  staff.Occupation,
 			BirthDate:   staff.BirthDate,
 			PhoneNumber: staff.PhoneNumber,
+			Address:     staff.Address,
 		})
 	}
 	return
