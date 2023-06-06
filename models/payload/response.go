@@ -17,6 +17,10 @@ type LoginUserResponse struct {
 	Token string `json:"token"`
 }
 
+type GenerateOTPResponse struct {
+	Email string `json:"email"`
+}
+
 type CreateFavoriteResponse struct {
 	WarehouseID uint `json:"warehouse_id" form:"warehouse_id"`
 	Warehouse   GetAllWarehouseResponse

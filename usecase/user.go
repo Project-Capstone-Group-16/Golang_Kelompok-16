@@ -212,3 +212,12 @@ func UpdateProfile(user *models.User, req *payload.UpdateProfileUser) (res paylo
 
 	return
 }
+
+func GetUsers() (users []models.User, err error) {
+	users, err = database.GetUsers()
+	if err != nil {
+		return nil, errors.New("Error getting users")
+	}
+
+	return users, nil
+}

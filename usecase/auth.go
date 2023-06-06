@@ -106,10 +106,10 @@ func SendOTPByEmail(emailAddress, otp string) error {
 }
 
 // Logic Generate  OTP
-func GenerateOTPEndpoint(req *payload.ForgotPasswordRequest) error {
+func GenerateOTPEndpoint(req *payload.ForgotPasswordRequest) (res payload.GenerateOTPResponse, err error) {
 	user, err := database.GetUserByEmail(req.Email)
 	if err != nil {
-		return errors.New("Email not registered")
+		return res, errors.New("Email not registered")
 	}
 
 	generatedOTPParse = utils.GenerateOTP()
@@ -117,22 +117,27 @@ func GenerateOTPEndpoint(req *payload.ForgotPasswordRequest) error {
 
 	err = SendOTPByEmail(user.Email, generatedOTPParse)
 	if err != nil {
-		return errors.New("Failed to send OTP")
+		return res, errors.New("Failed to send OTP")
 	}
-	return nil
+
+	res = payload.GenerateOTPResponse{
+		Email: user.Email,
+	}
+
+	return res, nil
 }
 
 // Logic Verify OTP
-func VerifyOTP(req *payload.VerifyngOtpRequest, email string) (res payload.LoginUserResponse, err error) {
+func VerifyOTP(req *payload.VerifyngOtpRequest) (res payload.LoginUserResponse, err error) {
 	if req.Otp != generatedOTPParse {
 		return res, errors.New("OTP verification failed.")
 	}
 
-	if email != emailParse {
+	if req.Email != emailParse {
 		return res, errors.New("Email verification failed.")
 	}
 
-	user, err := database.GetUserByEmail(email)
+	user, err := database.GetUserByEmail(req.Email)
 	if err != nil {
 		return res, errors.New("Failed to get user")
 	}
