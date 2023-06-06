@@ -123,13 +123,13 @@ func GenerateOTPController(c echo.Context) error {
 		})
 	}
 
-	err := usecase.GenerateOTPEndpoint(&payloadUser)
+	response, err := usecase.GenerateOTPEndpoint(&payloadUser)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 	return c.JSON(200, payload.Response{
 		Message: "OTP sent successfully, please check your email for the OTP  token",
-		Data:    payloadUser.Email,
+		Data:    response,
 	})
 }
 
@@ -137,18 +137,13 @@ func GenerateOTPController(c echo.Context) error {
 func VerifyngOtpController(c echo.Context) error {
 	payloadUser := payload.VerifyngOtpRequest{}
 
-	email := c.QueryParam("email")
-	if email == "" {
-		return c.JSON(http.StatusNotFound, "User Not Found")
-	}
-
 	c.Bind(&payloadUser)
 
 	if err := c.Validate(&payloadUser); err != nil {
 		return c.JSON(http.StatusBadRequest, "OTP has to be 4 digit")
 	}
 
-	response, err := usecase.VerifyOTP(&payloadUser, email)
+	response, err := usecase.VerifyOTP(&payloadUser)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}

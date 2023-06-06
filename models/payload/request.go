@@ -22,7 +22,8 @@ type UpdatePasswordRequest struct {
 }
 
 type VerifyngOtpRequest struct {
-	Otp string `json:"otp" validate:"required,min=4"`
+	Email string `json:"email" form:"email" validate:"required,email"`
+	Otp   string `json:"otp" form:"otp" validate:"required,min=4"`
 }
 
 type CreateFavoriteRequest struct {
@@ -35,7 +36,7 @@ type UpdateProfileUser struct {
 	LastName    string `json:"last_name" form:"last_name"`
 	BirthDate   string `json:"birth_date" form:"birth_date"`
 	Gender      string `json:"gender" form:"gender" gorm:"type:enum('PRIA', 'WANITA', '');default:''"`
-	PhoneNumber string `json:"phone_number" form:"phone_number" validate:"required,max=11,min=10,number`
+	PhoneNumber string `json:"phone_number" form:"phone_number" validate:"required,max=11,min=10,number"`
 	Address     string `json:"address" form:"address"`
 }
 
