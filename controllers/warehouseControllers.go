@@ -61,6 +61,8 @@ func UpdateWarehouseController(c echo.Context) error {
 		return errors.New("Warehouse not found")
 	}
 
+	c.Bind(warehouse)
+
 	response, err := usecase.UpdateWarehouse(warehouse)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())

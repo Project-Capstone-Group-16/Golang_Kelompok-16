@@ -16,7 +16,7 @@ func CreateWarehouse(req *payload.CreateWarehouseRequest) (resp payload.CreateWa
 		City:     req.City,
 		Province: req.Province,
 		Status:   constants.Available,
-		ImageURL: req.WarehouseImage,
+		ImageURL: req.ImageURL,
 	}
 
 	err = database.CreateWarehouse(&newWarehouse)
@@ -110,12 +110,6 @@ func GetRecomendedWarehouse(warehouse *models.Warehouse) (resp []payload.GetAllW
 
 // logic update warehouse
 func UpdateWarehouse(warehouse *models.Warehouse) (resp payload.UpdateWarehouseResponse, err error) {
-
-	// warehouse.Name = req.Name
-	// warehouse.City = req.City
-	// warehouse.Province = req.Province
-	// warehouse.Status = req.Status
-	// warehouse.ImageURL = req.WarehouseImage
 
 	err = database.UpdateWarehouse(warehouse)
 	if err != nil {
