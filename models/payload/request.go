@@ -57,8 +57,17 @@ type LoginAdminRequest struct {
 
 type CreateWarehouseRequest struct {
 	Name           string `json:"name" form:"name" validate:"required"`
-	Location       string `json:"location" form:"location" validate:"required"`
+	City           string `json:"city" form:"city" validate:"required"`
+	Province       string `json:"province" form:"province" validate:"required"`
 	WarehouseImage string `json:"warehouse_image" form:"warehouse_image" validate:"required"`
+}
+
+type UpdateWarehouseRequest struct {
+	Name           string `json:"name" form:"name"`
+	City           string `json:"city" form:"city"`
+	Province       string `json:"province" form:"province"`
+	Status         string `json:"status" form:"status"`
+	WarehouseImage string `json:"warehouse_image" form:"warehouse_image"`
 }
 
 type CreateStaffRequest struct {

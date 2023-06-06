@@ -144,7 +144,8 @@ func CreateFavoriteWarehouse(id int, req *payload.CreateFavoriteRequest) (resp a
 			Warehouse: payload.GetAllWarehouseResponse{
 				ID:       warehouse.ID,
 				Name:     warehouse.Name,
-				Location: warehouse.Location,
+				City:     warehouse.City,
+				Province: warehouse.Province,
 				Capacity: warehouse.Capacity,
 				Favorite: warehouse.Favorites,
 				Status:   warehouse.Status,

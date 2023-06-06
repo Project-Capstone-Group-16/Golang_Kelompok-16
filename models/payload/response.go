@@ -35,7 +35,8 @@ type UpdateProfileUserResponse struct {
 type GetAllWarehouseResponse struct {
 	ID       uint   `json:"id"`
 	Name     string `json:"name"`
-	Location string `json:"location"`
+	City     string `json:"city"`
+	Province string `json:"province"`
 	Status   string `json:"status"`
 	Capacity uint   `json:"capacity"`
 	Favorite int    `json:"favorite"`
@@ -56,14 +57,16 @@ type LoginAdminResponse struct {
 
 type CreateWarehouseResponse struct {
 	Name     string `json:"name"`
-	Location string `json:"location"`
+	City     string `json:"city"`
+	Province string `json:"province"`
 	Status   string `json:"status"`
 	ImageURL string `json:"image_url"`
 }
 
 type UpdateWarehouseResponse struct {
 	Name     string `json:"name" form:"name"`
-	Location string `json:"location" form:"location"`
+	City     string `json:"city"`
+	Province string `json:"province"`
 	Status   string `json:"status" form:"status"`
 	ImageURL string `json:"image_url" form:"image_url"`
 }
