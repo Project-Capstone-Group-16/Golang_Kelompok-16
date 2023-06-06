@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"Capstone/constants"
 	"Capstone/middleware"
 	"Capstone/models"
 	"Capstone/models/payload"
@@ -9,9 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"os"
 	"strconv"
-	"strings"
 
 	"github.com/labstack/echo"
 )
@@ -24,21 +21,9 @@ func CreateWarehouseController(c echo.Context) error {
 		})
 	}
 
-	fileHeader, err := c.FormFile("warehouse_image")
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "error payload create warehouse",
-			"error":   "Warehouse image can't be empty",
-		})
-	}
-
-	// file, _ := fileHeader.Open()
-
 	payloadWarehouse := payload.CreateWarehouseRequest{}
 
 	c.Bind(&payloadWarehouse)
-
-	payloadWarehouse.WarehouseImage = fileHeader.Filename
 
 	if err := c.Validate(payloadWarehouse); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
@@ -47,7 +32,7 @@ func CreateWarehouseController(c echo.Context) error {
 		})
 	}
 
-	response, err := usecase.CreateWarehouse(fileHeader, &payloadWarehouse)
+	response, err := usecase.CreateWarehouse(&payloadWarehouse)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"messages": "error create warehouse",
@@ -76,15 +61,7 @@ func UpdateWarehouseController(c echo.Context) error {
 		return errors.New("Warehouse not found")
 	}
 
-	fileHeader, _ := c.FormFile("warehouse_image")
-
-	file, _ := fileHeader.Open()
-
-	c.Bind(&warehouse)
-
-	warehouse.ImageURL = fileHeader.Filename
-
-	response, err := usecase.UpdateWarehouse(file, warehouse)
+	response, err := usecase.UpdateWarehouse(warehouse)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
@@ -109,8 +86,6 @@ func DeleteWarehouseController(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-	rmPath := strings.TrimLeft(warehouse.ImageURL, constants.Base_Url+"/")
-	os.Remove(rmPath)
 
 	err = usecase.DeleteWarehouse(warehouse)
 	if err != nil {
@@ -125,7 +100,8 @@ func DeleteWarehouseController(c echo.Context) error {
 func GetWarehousesController(c echo.Context) error {
 	warehouseParams := models.Warehouse{
 		Status:   c.QueryParam("status"),
-		Location: c.QueryParam("location"),
+		City:     c.QueryParam("city"),
+		Province: c.QueryParam("province"),
 	}
 
 	response, err := usecase.GetWarehouses(&warehouseParams)
@@ -142,7 +118,8 @@ func GetWarehousesController(c echo.Context) error {
 func GetRecomendedWarehouseController(c echo.Context) error {
 	warehouseParams := models.Warehouse{
 		Status:   c.QueryParam("status"),
-		Location: c.QueryParam("location"),
+		City:     c.QueryParam("city"),
+		Province: c.QueryParam("province"),
 	}
 
 	response, err := usecase.GetRecomendedWarehouse(&warehouseParams)

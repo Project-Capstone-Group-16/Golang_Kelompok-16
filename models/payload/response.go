@@ -17,6 +17,10 @@ type LoginUserResponse struct {
 	Token string `json:"token"`
 }
 
+type GenerateOTPResponse struct {
+	Email string `json:"email"`
+}
+
 type CreateFavoriteResponse struct {
 	WarehouseID uint `json:"warehouse_id" form:"warehouse_id"`
 	Warehouse   GetAllWarehouseResponse
@@ -35,7 +39,8 @@ type UpdateProfileUserResponse struct {
 type GetAllWarehouseResponse struct {
 	ID       uint   `json:"id"`
 	Name     string `json:"name"`
-	Location string `json:"location"`
+	City     string `json:"city"`
+	Province string `json:"province"`
 	Status   string `json:"status"`
 	Capacity uint   `json:"capacity"`
 	Favorite int    `json:"favorite"`
@@ -56,33 +61,35 @@ type LoginAdminResponse struct {
 
 type CreateWarehouseResponse struct {
 	Name     string `json:"name"`
-	Location string `json:"location"`
+	City     string `json:"city"`
+	Province string `json:"province"`
 	Status   string `json:"status"`
 	ImageURL string `json:"image_url"`
 }
 
 type UpdateWarehouseResponse struct {
 	Name     string `json:"name" form:"name"`
-	Location string `json:"location" form:"location"`
+	City     string `json:"city"`
+	Province string `json:"province"`
 	Status   string `json:"status" form:"status"`
 	ImageURL string `json:"image_url" form:"image_url"`
 }
 
 type ManageStaffResponse struct {
-	WarehouseID  uint       `json:"warehouse_id"`
-	FullName     string     `json:"full_name"`
-	Occupation   string     `json:"occupation" form:"occupation"`
-	WorkingHours string     `json:"working_hours"`
-	BirthDate    *time.Time `json:"birth_date"`
-	PhoneNumber  string     `json:"phone_number"`
+	WarehouseID uint       `json:"warehouse_id"`
+	FullName    string     `json:"full_name"`
+	Occupation  string     `json:"occupation" form:"occupation"`
+	BirthDate   *time.Time `json:"birth_date"`
+	PhoneNumber string     `json:"phone_number"`
+	Address     string     `json:"address"`
 }
 
 type GetAllStaffsResponse struct {
-	ID           uint       `json:"id"`
-	WarehouseID  uint       `json:"warehouse_id"`
-	FullName     string     `json:"full_name"`
-	Occupation   string     `json:"occupation" form:"occupation"`
-	WorkingHours string     `json:"working_hours"`
-	BirthDate    *time.Time `json:"birth_date"`
-	PhoneNumber  string     `json:"phone_number"`
+	ID          uint       `json:"id"`
+	WarehouseID uint       `json:"warehouse_id"`
+	FullName    string     `json:"full_name"`
+	Occupation  string     `json:"occupation" form:"occupation"`
+	BirthDate   *time.Time `json:"birth_date"`
+	PhoneNumber string     `json:"phone_number"`
+	Address     string     `json:"address"`
 }

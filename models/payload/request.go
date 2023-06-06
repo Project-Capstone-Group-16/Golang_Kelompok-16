@@ -22,7 +22,8 @@ type UpdatePasswordRequest struct {
 }
 
 type VerifyngOtpRequest struct {
-	Otp string `json:"otp" validate:"required,min=4"`
+	Email string `json:"email" form:"email" validate:"required,email"`
+	Otp   string `json:"otp" form:"otp" validate:"required,min=4"`
 }
 
 type CreateFavoriteRequest struct {
@@ -35,7 +36,7 @@ type UpdateProfileUser struct {
 	LastName    string `json:"last_name" form:"last_name"`
 	BirthDate   string `json:"birth_date" form:"birth_date"`
 	Gender      string `json:"gender" form:"gender" gorm:"type:enum('PRIA', 'WANITA', '');default:''"`
-	PhoneNumber string `json:"phone_number" form:"phone_number" validate:"required,max=11,min=10,number`
+	PhoneNumber string `json:"phone_number" form:"phone_number" validate:"required,max=11,min=10,number"`
 	Address     string `json:"address" form:"address"`
 }
 
@@ -57,23 +58,33 @@ type LoginAdminRequest struct {
 
 type CreateWarehouseRequest struct {
 	Name           string `json:"name" form:"name" validate:"required"`
-	Location       string `json:"location" form:"location" validate:"required"`
+	City           string `json:"city" form:"city" validate:"required"`
+	Province       string `json:"province" form:"province" validate:"required"`
 	WarehouseImage string `json:"warehouse_image" form:"warehouse_image" validate:"required"`
+}
 
+type UpdateWarehouseRequest struct {
+	Name           string `json:"name" form:"name"`
+	City           string `json:"city" form:"city"`
+	Province       string `json:"province" form:"province"`
+	Status         string `json:"status" form:"status"`
+	WarehouseImage string `json:"warehouse_image" form:"warehouse_image"`
+}
 
 type CreateStaffRequest struct {
-	FullName     string `json:"full_name" form:"full_name" validate:"required"`
-	WarehouseID  uint   `json:"warehouse_id" form:"warehouse_id" validate:"required"`
-	Occupation   string `json:"occupation" form:"occupation" validate:"required"`
-	BirthDate    string `json:"birth_date" form:"birth_date" validate:"required"`
-	PhoneNumber  string `json:"phone_number" form:"phone_number" validate:"required,max=11,min=10,number"`
+	FullName    string `json:"full_name" form:"full_name" validate:"required"`
+	WarehouseID uint   `json:"warehouse_id" form:"warehouse_id" validate:"required"`
+	Occupation  string `json:"occupation" form:"occupation" validate:"required"`
+	BirthDate   string `json:"birth_date" form:"birth_date" validate:"required"`
+	PhoneNumber string `json:"phone_number" form:"phone_number" validate:"required,max=11,min=10,number"`
+	Address     string `json:"address" form:"address" validate:"required"`
 }
 
 type UpdateStaffRequest struct {
-	FullName     string `json:"full_name" form:"full_name"`
-	WarehouseID  uint   `json:"warehouse_id" form:"warehouse_id"`
-	Occupation   string `json:"occupation" form:"occupation"`
-	BirthDate    string `json:"birth_date" form:"birth_date"`
-	PhoneNumber  string `json:"phone_number" form:"phone_number" validate:"omitempty,gt=0,max=11,min=10,number"`
+	FullName    string `json:"full_name" form:"full_name"`
+	WarehouseID uint   `json:"warehouse_id" form:"warehouse_id"`
+	Occupation  string `json:"occupation" form:"occupation"`
+	BirthDate   string `json:"birth_date" form:"birth_date"`
+	PhoneNumber string `json:"phone_number" form:"phone_number" validate:"omitempty,gt=0,max=11,min=10,number"`
+	Address     string `json:"address" form:"address"`
 }
-
