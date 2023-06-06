@@ -33,6 +33,7 @@ type UpdateProfileUserResponse struct {
 	Gender      string     `json:"gender"`
 	PhoneNumber string     `json:"phone_number"`
 	Address     string     `json:"address"`
+	ImageURL    string     `json:"image_url"`
 }
 
 // Admin Response

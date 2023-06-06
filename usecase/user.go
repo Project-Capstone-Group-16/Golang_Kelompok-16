@@ -195,6 +195,7 @@ func UpdateProfile(user *models.User, req *payload.UpdateProfileUser) (res paylo
 	user.Gender = req.Gender
 	user.PhoneNumber = "0" + req.PhoneNumber
 	user.Address = req.Address
+	user.ImageUrl = req.ImageURL
 
 	err = database.UpdateUser(user)
 	if err != nil {
@@ -208,6 +209,7 @@ func UpdateProfile(user *models.User, req *payload.UpdateProfileUser) (res paylo
 		Gender:      user.Gender,
 		PhoneNumber: user.PhoneNumber,
 		Address:     user.Address,
+		ImageURL:    user.ImageUrl,
 	}
 
 	return
