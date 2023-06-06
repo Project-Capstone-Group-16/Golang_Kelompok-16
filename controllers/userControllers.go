@@ -233,6 +233,26 @@ func GetUserController(c echo.Context) error {
 	})
 }
 
+// Get All Users Controllers
+func GetUsersController(c echo.Context) error {
+	if _, err := middleware.IsAdmin(c); err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]string{
+			"Message": "this route only for admin",
+		})
+	}
+
+	users, err := usecase.GetUsers()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, payload.Response{
+		Message: "Succes get all users",
+		Data:    users,
+	})
+}
+
+// Update profile controllers
 func UpdateProfileController(c echo.Context) error {
 	payloadUser := payload.UpdateProfileUser{}
 
