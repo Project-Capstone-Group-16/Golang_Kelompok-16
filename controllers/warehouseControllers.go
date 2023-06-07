@@ -5,7 +5,6 @@ import (
 	"Capstone/models"
 	"Capstone/models/payload"
 	"Capstone/usecase"
-	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -58,7 +57,7 @@ func UpdateWarehouseController(c echo.Context) error {
 
 	warehouse, err := usecase.GetWarehouseByID(id)
 	if err != nil {
-		return errors.New("Warehouse not found")
+		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
 	c.Bind(warehouse)
