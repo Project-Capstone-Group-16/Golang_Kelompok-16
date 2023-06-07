@@ -13,5 +13,5 @@ type Warehouse struct {
 	Status      string `json:"status" form:"status" gorm:"type:enum('Available','Not Available')"`
 	Favorites   int    `json:"favorites" form:"favorites"`
 	Description string `json:"description" form:"description"`
-	ImageURL    string `json:"image_url" form:"image_url" gorm:"unique;not null"`
+	ImageURL    string `json:"image_url" form:"image_url"`
 }
