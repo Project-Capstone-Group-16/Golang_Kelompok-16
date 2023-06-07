@@ -42,6 +42,14 @@ func GetAllFavorite() (favorite []models.Favorite, err error) {
 	return favorite, nil
 }
 
+func GetFavoriteUserByID(userId int) (favorite []models.Favorite, err error) {
+	if err = config.DB.Preload("Warehouse").Where("user_id = ?", userId).Find(&favorite).Error; err != nil {
+		return
+	}
+
+	return favorite, nil
+}
+
 func GetFavoriteWarehouseByID(id int) (favorite *models.Favorite, err error) {
 	if err = config.DB.Preload("Warehouse").Where("id = ?", id).First(&favorite).Error; err != nil {
 		return

@@ -100,9 +100,8 @@ func DeleteWarehouseController(c echo.Context) error {
 // get all warehouse by status
 func GetWarehousesController(c echo.Context) error {
 	warehouseParams := models.Warehouse{
-		Status:   c.QueryParam("status"),
-		City:     c.QueryParam("city"),
-		Province: c.QueryParam("province"),
+		Status: c.QueryParam("status"),
+		City:   c.QueryParam("city"),
 	}
 
 	response, err := usecase.GetWarehouses(&warehouseParams)
@@ -118,9 +117,8 @@ func GetWarehousesController(c echo.Context) error {
 
 func GetRecomendedWarehouseController(c echo.Context) error {
 	warehouseParams := models.Warehouse{
-		Status:   c.QueryParam("status"),
-		City:     c.QueryParam("city"),
-		Province: c.QueryParam("province"),
+		Status: c.QueryParam("status"),
+		City:   c.QueryParam("city"),
 	}
 
 	response, err := usecase.GetRecomendedWarehouse(&warehouseParams)

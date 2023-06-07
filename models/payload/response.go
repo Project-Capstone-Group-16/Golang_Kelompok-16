@@ -1,6 +1,9 @@
 package payload
 
-import "time"
+import (
+	"Capstone/models"
+	"time"
+)
 
 // User Response
 type Response struct {
@@ -36,16 +39,22 @@ type UpdateProfileUserResponse struct {
 	ImageURL    string     `json:"image_url"`
 }
 
+type FavoriteListUserResponse struct {
+	ID        uint `json:"id"`
+	Warehouse []models.Warehouse
+}
+
 // Admin Response
 type GetAllWarehouseResponse struct {
-	ID       uint   `json:"id"`
-	Name     string `json:"name"`
-	City     string `json:"city"`
-	Province string `json:"province"`
-	Status   string `json:"status"`
-	Capacity uint   `json:"capacity"`
-	Favorite int    `json:"favorite"`
-	ImageURL string `json:"image_url"`
+	ID          uint   `json:"id"`
+	Name        string `json:"name"`
+	City        string `json:"city"`
+	Address     string `json:"address"`
+	Status      string `json:"status"`
+	Capacity    uint   `json:"capacity"`
+	Favorite    int    `json:"favorite"`
+	Description string `json:"description"`
+	ImageURL    string `json:"image_url"`
 }
 
 type CreateAdminResponse struct {
@@ -61,19 +70,23 @@ type LoginAdminResponse struct {
 }
 
 type CreateWarehouseResponse struct {
-	Name     string `json:"name"`
-	City     string `json:"city"`
-	Province string `json:"province"`
-	Status   string `json:"status"`
-	ImageURL string `json:"image_url"`
+	Name        string `json:"name"`
+	City        string `json:"city"`
+	Address     string `json:"address"`
+	Capacity    uint   `json:"capacity"`
+	Status      string `json:"status"`
+	Description string `json:"description"`
+	ImageURL    string `json:"image_url"`
 }
 
 type UpdateWarehouseResponse struct {
-	Name     string `json:"name" form:"name"`
-	City     string `json:"city"`
-	Province string `json:"province"`
-	Status   string `json:"status" form:"status"`
-	ImageURL string `json:"image_url" form:"image_url"`
+	Name        string `json:"name" form:"name"`
+	City        string `json:"city"`
+	Address     string `json:"address"`
+	Capacity    uint   `json:"capacity"`
+	Status      string `json:"status" form:"status"`
+	Description string `json:"description"`
+	ImageURL    string `json:"image_url" form:"image_url"`
 }
 
 type ManageStaffResponse struct {
@@ -83,6 +96,7 @@ type ManageStaffResponse struct {
 	BirthDate   *time.Time `json:"birth_date"`
 	PhoneNumber string     `json:"phone_number"`
 	Address     string     `json:"address"`
+	ImageURL    string     `json:"image_url"`
 }
 
 type GetAllStaffsResponse struct {
@@ -93,4 +107,5 @@ type GetAllStaffsResponse struct {
 	BirthDate   *time.Time `json:"birth_date"`
 	PhoneNumber string     `json:"phone_number"`
 	Address     string     `json:"address"`
+	ImageURL    string     `json:"image_url"`
 }

@@ -12,24 +12,67 @@ import (
 func CreateWarehouse(req *payload.CreateWarehouseRequest) (resp payload.CreateWarehouseResponse, err error) {
 
 	newWarehouse := models.Warehouse{
-		Name:     req.Name,
-		City:     req.City,
-		Province: req.Province,
-		Status:   constants.Available,
-		ImageURL: req.ImageURL,
+		Name:        req.Name,
+		City:        req.City,
+		Address:     req.Address,
+		Capacity:    40,
+		Status:      constants.Available,
+		Description: req.Description,
+		ImageURL:    req.ImageURL,
 	}
 
 	err = database.CreateWarehouse(&newWarehouse)
 	if err != nil {
-		return
+		return resp, errors.New("error create warehouse")
+	}
+
+	for i := 1; i <= 15; i++ {
+		LockerSmall := models.Locker{
+			WarehouseID:  newWarehouse.ID,
+			LockerTypeID: 1,
+			LockerNumber: uint(i),
+			Availability: constants.Available,
+		}
+		err = database.CreateLocker(&LockerSmall)
+		if err != nil {
+			return resp, errors.New("error create locker small")
+		}
+	}
+
+	for i := 16; i <= 30; i++ {
+		LockerMedium := models.Locker{
+			WarehouseID:  newWarehouse.ID,
+			LockerTypeID: 2,
+			LockerNumber: uint(i),
+			Availability: constants.Available,
+		}
+		err = database.CreateLocker(&LockerMedium)
+		if err != nil {
+			return resp, errors.New("error create locker medium")
+		}
+	}
+
+	for i := 31; i <= 40; i++ {
+		LockerLarge := models.Locker{
+			WarehouseID:  newWarehouse.ID,
+			LockerTypeID: 3,
+			LockerNumber: uint(i),
+			Availability: constants.Available,
+		}
+		err = database.CreateLocker(&LockerLarge)
+		if err != nil {
+			return resp, errors.New("error create locker large")
+		}
 	}
 
 	resp = payload.CreateWarehouseResponse{
-		Name:     newWarehouse.Name,
-		City:     newWarehouse.City,
-		Province: newWarehouse.Province,
-		Status:   newWarehouse.Status,
-		ImageURL: newWarehouse.ImageURL,
+		Name:        newWarehouse.Name,
+		City:        newWarehouse.City,
+		Address:     newWarehouse.Address,
+		Capacity:    newWarehouse.Capacity,
+		Description: newWarehouse.Description,
+		Status:      newWarehouse.Status,
+		ImageURL:    newWarehouse.ImageURL,
 	}
 
 	return
@@ -64,14 +107,15 @@ func GetWarehouses(warehouse *models.Warehouse) (resp []payload.GetAllWarehouseR
 	resp = []payload.GetAllWarehouseResponse{}
 	for i, warehouse := range warehouses {
 		resp = append(resp, payload.GetAllWarehouseResponse{
-			ID:       warehouse.ID,
-			Name:     warehouse.Name,
-			City:     warehouse.City,
-			Province: warehouse.Province,
-			Favorite: totalFavorite[i],
-			Status:   warehouse.Status,
-			Capacity: warehouse.Capacity,
-			ImageURL: warehouse.ImageURL,
+			ID:          warehouse.ID,
+			Name:        warehouse.Name,
+			City:        warehouse.City,
+			Address:     warehouse.Address,
+			Favorite:    totalFavorite[i],
+			Status:      warehouse.Status,
+			Capacity:    warehouse.Capacity,
+			Description: warehouse.Description,
+			ImageURL:    warehouse.ImageURL,
 		})
 	}
 
@@ -94,14 +138,15 @@ func GetRecomendedWarehouse(warehouse *models.Warehouse) (resp []payload.GetAllW
 	resp = []payload.GetAllWarehouseResponse{}
 	for i, warehouse := range warehouses {
 		resp = append(resp, payload.GetAllWarehouseResponse{
-			ID:       warehouse.ID,
-			Name:     warehouse.Name,
-			City:     warehouse.City,
-			Province: warehouse.Province,
-			Favorite: totalFavorite[i],
-			Status:   warehouse.Status,
-			Capacity: warehouse.Capacity,
-			ImageURL: warehouse.ImageURL,
+			ID:          warehouse.ID,
+			Name:        warehouse.Name,
+			City:        warehouse.City,
+			Address:     warehouse.Address,
+			Favorite:    totalFavorite[i],
+			Status:      warehouse.Status,
+			Capacity:    warehouse.Capacity,
+			Description: warehouse.Description,
+			ImageURL:    warehouse.ImageURL,
 		})
 	}
 
@@ -117,11 +162,13 @@ func UpdateWarehouse(warehouse *models.Warehouse) (resp payload.UpdateWarehouseR
 	}
 
 	resp = payload.UpdateWarehouseResponse{
-		Name:     warehouse.Name,
-		City:     warehouse.City,
-		Province: warehouse.Province,
-		Status:   warehouse.Status,
-		ImageURL: warehouse.ImageURL,
+		Name:        warehouse.Name,
+		City:        warehouse.City,
+		Address:     warehouse.Address,
+		Capacity:    warehouse.Capacity,
+		Status:      warehouse.Status,
+		Description: warehouse.Description,
+		ImageURL:    warehouse.ImageURL,
 	}
 
 	return resp, nil
