@@ -89,3 +89,8 @@ type UpdateStaffRequest struct {
 	PhoneNumber string `json:"phone_number" form:"phone_number" validate:"omitempty,gt=0,max=12,min=11,number"`
 	Address     string `json:"address" form:"address"`
 }
+
+type UploadImageCloudinaryRequest struct{
+	Image    string     `json:"image_url" form:"image_url"`
+}
+
