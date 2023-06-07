@@ -16,9 +16,9 @@ func CreateStaff(req *payload.CreateStaffRequest) (resp payload.ManageStaffRespo
 	newStaff := &models.Staff{
 		FullName:    req.FullName,
 		Occupation:  req.Occupation,
-		WarehouseID: req.WarehouseID,
+		Gender:      req.Gender,
 		BirthDate:   &BirthDate,
-		PhoneNumber: "0" + req.PhoneNumber,
+		PhoneNumber: req.PhoneNumber,
 		Address:     req.Address,
 	}
 
@@ -30,7 +30,7 @@ func CreateStaff(req *payload.CreateStaffRequest) (resp payload.ManageStaffRespo
 	resp = payload.ManageStaffResponse{
 		FullName:    newStaff.FullName,
 		Occupation:  newStaff.Occupation,
-		WarehouseID: newStaff.WarehouseID,
+		Gender:      newStaff.Gender,
 		BirthDate:   newStaff.BirthDate,
 		PhoneNumber: newStaff.PhoneNumber,
 		Address:     newStaff.Address,
@@ -45,8 +45,8 @@ func UpdateStaff(staff *models.Staff, req *payload.UpdateStaffRequest) (resp pay
 		return
 	}
 	staff.FullName = req.FullName
-	staff.WarehouseID = req.WarehouseID
 	staff.Occupation = req.Occupation
+	staff.Gender = req.Gender
 	staff.BirthDate = &birthDate
 	staff.PhoneNumber = req.PhoneNumber
 	staff.Address = req.Address
@@ -61,7 +61,7 @@ func UpdateStaff(staff *models.Staff, req *payload.UpdateStaffRequest) (resp pay
 	resp = payload.ManageStaffResponse{
 		FullName:    updatedStaff.FullName,
 		Occupation:  updatedStaff.Occupation,
-		WarehouseID: updatedStaff.WarehouseID,
+		Gender:      updatedStaff.Gender,
 		BirthDate:   updatedStaff.BirthDate,
 		PhoneNumber: updatedStaff.PhoneNumber,
 		Address:     updatedStaff.Address,
@@ -79,25 +79,26 @@ func GetStaffByID(id uint64) (staff *models.Staff, err error) {
 	return staff, nil
 }
 
-func GetAllStaffs() (resp []payload.GetAllStaffsResponse, err error) {
-	Staffs, err := database.GetAllStaffs()
+func GetAllStaffs() ([]models.Staff, error) {
+	Staff, err := database.GetAllStaffs()
 	if err != nil {
-		return
+		return nil, err
 	}
 
-	resp = []payload.GetAllStaffsResponse{}
-	for _, staff := range Staffs {
-		resp = append(resp, payload.GetAllStaffsResponse{
-			ID:          staff.ID,
-			WarehouseID: staff.WarehouseID,
-			FullName:    staff.FullName,
-			Occupation:  staff.Occupation,
-			BirthDate:   staff.BirthDate,
-			PhoneNumber: staff.PhoneNumber,
-			Address:     staff.Address,
-		})
-	}
-	return
+	// resp = []payload.GetAllStaffsResponse{}
+	// for _, staff := range Staffs {
+	// 	resp = append(resp, payload.GetAllStaffsResponse{
+	// 		ID:          staff.ID,
+	// 		FullName:    staff.FullName,
+	// 		Occupation:  staff.Occupation,
+	// 		Gender:      staff.Gender,
+	// 		BirthDate:   staff.BirthDate,
+	// 		PhoneNumber: staff.PhoneNumber,
+	// 		Address:     staff.Address,
+	// 	})
+	// }
+
+	return Staff, nil
 }
 
 func DeleteStaff(staff *models.Staff) error {

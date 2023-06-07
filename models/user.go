@@ -16,6 +16,7 @@ type User struct {
 	Gender      string     `json:"gender" form:"gender" gorm:"type:enum('PRIA', 'WANITA', '');default:''"`
 	PhoneNumber string     `json:"phone_number" form:"phone_number"`
 	Address     string     `json:"address" form:"address"`
+	ImageUrl    string     `json:"image_url" form:"image_url"`
 	Favorite    []Favorite
 	Token       string `json:"-" form:"-" gorm:"-"`
 	Role        string `json:"role" form:"role" gorm:"type:enum('USER', 'ADMIN');default:'USER'"`

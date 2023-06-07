@@ -33,6 +33,7 @@ type UpdateProfileUserResponse struct {
 	Gender      string     `json:"gender"`
 	PhoneNumber string     `json:"phone_number"`
 	Address     string     `json:"address"`
+	ImageURL    string     `json:"image_url"`
 }
 
 // Admin Response
@@ -76,9 +77,9 @@ type UpdateWarehouseResponse struct {
 }
 
 type ManageStaffResponse struct {
-	WarehouseID uint       `json:"warehouse_id"`
 	FullName    string     `json:"full_name"`
 	Occupation  string     `json:"occupation" form:"occupation"`
+	Gender      string     `json:"gender" `
 	BirthDate   *time.Time `json:"birth_date"`
 	PhoneNumber string     `json:"phone_number"`
 	Address     string     `json:"address"`
@@ -86,9 +87,9 @@ type ManageStaffResponse struct {
 
 type GetAllStaffsResponse struct {
 	ID          uint       `json:"id"`
-	WarehouseID uint       `json:"warehouse_id"`
 	FullName    string     `json:"full_name"`
 	Occupation  string     `json:"occupation" form:"occupation"`
+	Gender      string     `json:"gender"`
 	BirthDate   *time.Time `json:"birth_date"`
 	PhoneNumber string     `json:"phone_number"`
 	Address     string     `json:"address"`
