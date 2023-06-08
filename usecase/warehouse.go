@@ -6,6 +6,7 @@ import (
 	"Capstone/models/payload"
 	"Capstone/repository/database"
 	"errors"
+	"fmt"
 )
 
 // logic create new warehouse
@@ -28,6 +29,7 @@ func CreateWarehouse(req *payload.CreateWarehouseRequest) (resp payload.CreateWa
 
 	for i := 1; i <= 15; i++ {
 		LockerSmall := models.Locker{
+			Name:         fmt.Sprintf("S%d", i),
 			WarehouseID:  newWarehouse.ID,
 			LockerTypeID: 1,
 			LockerNumber: uint(i),
@@ -41,6 +43,7 @@ func CreateWarehouse(req *payload.CreateWarehouseRequest) (resp payload.CreateWa
 
 	for i := 16; i <= 30; i++ {
 		LockerMedium := models.Locker{
+			Name:         fmt.Sprintf("M%d", i),
 			WarehouseID:  newWarehouse.ID,
 			LockerTypeID: 2,
 			LockerNumber: uint(i),
@@ -54,6 +57,7 @@ func CreateWarehouse(req *payload.CreateWarehouseRequest) (resp payload.CreateWa
 
 	for i := 31; i <= 40; i++ {
 		LockerLarge := models.Locker{
+			Name:         fmt.Sprintf("L%d", i),
 			WarehouseID:  newWarehouse.ID,
 			LockerTypeID: 3,
 			LockerNumber: uint(i),
