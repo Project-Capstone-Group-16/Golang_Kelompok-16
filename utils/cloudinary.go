@@ -2,7 +2,7 @@ package utils
 
 import (
 	"context"
-	"os"
+	"mime/multipart"
 
 	"github.com/cloudinary/cloudinary-go/v2"
 	"github.com/cloudinary/cloudinary-go/v2/api"
@@ -14,20 +14,23 @@ func Credentials() *cloudinary.Cloudinary {
 	cld.Config.URL.Secure = true
 	return cld
 }
+func UploadImageCloud(fileHeader *multipart.FileHeader) (imageUrl string, err error) {
 
-func UploadImageCloud(image string, ctx context.Context) (resp *uploader.UploadResult, err error) {
-	file, err := os.Open(image)
+	file, _ := fileHeader.Open()
 
 	cld := Credentials()
 
-	resp, err = cld.Upload.Upload(ctx, file, uploader.UploadParams{
-		PublicID:       "inventron",
+	resp, err := cld.Upload.Upload(context.Background(), file, uploader.UploadParams{
+		PublicID:       "Inventron" + "/" + fileHeader.Filename,
 		UniqueFilename: api.Bool(false),
-		Overwrite:      api.Bool(true)})
+		Overwrite:      api.Bool(true),
+	})
 
 	if err != nil {
 		return
 	}
 
-	return resp, nil
+	imageUrl = resp.SecureURL
+
+	return imageUrl, nil
 }

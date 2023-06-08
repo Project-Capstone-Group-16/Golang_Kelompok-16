@@ -95,6 +95,3 @@ type GetAllStaffsResponse struct {
 	Address     string     `json:"address"`
 }
 
-type UploadImageCloudinary struct{
-	ImageUrl    string     `json:"image_url" form:"image_url"`
-}

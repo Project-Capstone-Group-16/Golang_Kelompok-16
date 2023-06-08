@@ -9,10 +9,13 @@ import (
 )
 
 func UploadImage(c echo.Context) error {
-	payloadimage := payload.UploadImageCloudinaryRequest{}
-	c.Bind(payloadimage)
-	ctx := c.Request().Context()
-	resp, err := utils.UploadImageCloud(payloadimage.Image, ctx)
+
+	file, err := c.FormFile("image_url")
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, "Error To upload Image")
+	}
+
+	resp, err := utils.UploadImageCloud(file)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, "Error To upload Image")
 	}

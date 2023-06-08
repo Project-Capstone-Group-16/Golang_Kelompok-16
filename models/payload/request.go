@@ -90,7 +90,5 @@ type UpdateStaffRequest struct {
 	Address     string `json:"address" form:"address"`
 }
 
-type UploadImageCloudinaryRequest struct{
-	Image    string     `json:"image_url" form:"image_url"`
-}
+
 
