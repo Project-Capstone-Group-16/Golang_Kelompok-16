@@ -109,3 +109,4 @@ type GetAllStaffsResponse struct {
 	Address     string     `json:"address"`
 	ImageURL    string     `json:"image_url"`
 }
+
