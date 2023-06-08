@@ -14,4 +14,5 @@ type Staff struct {
 	BirthDate   *time.Time `json:"birth_date" form:"birth_date"`
 	PhoneNumber string     `json:"phone_number" form:"phone_number"`
 	Address     string     `json:"address" form:"address"`
+	ImageURL    string     `json:"image_url" form:"image_url" gorm:"unique;not null"`
 }

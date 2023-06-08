@@ -58,17 +58,19 @@ type LoginAdminRequest struct {
 }
 
 type CreateWarehouseRequest struct {
-	Name     string `json:"name" form:"name" validate:"required"`
-	City     string `json:"city" form:"city" validate:"required"`
-	Province string `json:"province" form:"province" validate:"required"`
-	ImageURL string `json:"image_url" form:"image_url" validate:"required"`
+	Name        string `json:"name" form:"name" validate:"required"`
+	City        string `json:"city" form:"city" validate:"required"`
+	Address     string `json:"address" form:"address" validate:"required"`
+	Description string `json:"description" form:"description" validate:"required"`
+	ImageURL    string `json:"image_url" form:"image_url" validate:"required"`
 }
 
 type UpdateWarehouseRequest struct {
 	Name           string `json:"name" form:"name"`
 	City           string `json:"city" form:"city"`
-	Province       string `json:"province" form:"province"`
+	Address        string `json:"address" form:"address"`
 	Status         string `json:"status" form:"status"`
+	Description    string `json:"description" form:"description" validate:"required"`
 	WarehouseImage string `json:"warehouse_image" form:"warehouse_image"`
 }
 
@@ -79,6 +81,7 @@ type CreateStaffRequest struct {
 	BirthDate   string `json:"birth_date" form:"birth_date" validate:"required"`
 	PhoneNumber string `json:"phone_number" form:"phone_number" validate:"required,max=12,min=11,number"`
 	Address     string `json:"address" form:"address" validate:"required"`
+	ImageURL    string `json:"image_url" form:"image_url" validate:"required"`
 }
 
 type UpdateStaffRequest struct {
@@ -88,6 +91,7 @@ type UpdateStaffRequest struct {
 	BirthDate   string `json:"birth_date" form:"birth_date"`
 	PhoneNumber string `json:"phone_number" form:"phone_number" validate:"omitempty,gt=0,max=12,min=11,number"`
 	Address     string `json:"address" form:"address"`
+	ImageURL    string `json:"image_url" form:"image_url"`
 }
 
 
