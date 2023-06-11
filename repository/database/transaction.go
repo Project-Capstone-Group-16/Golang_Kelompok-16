@@ -21,6 +21,14 @@ func GetTransactionById(id uint) (transaction *models.Transaction, err error) {
 	return transaction, nil
 }
 
+func GetTransactionByUserId(id uint) (transaction []*models.Transaction, err error) {
+	if err = config.DB.Preload("User").Preload("Locker.Warehouse").Preload("Locker.LockerType").Preload("ItemCategory").Where("user_id = ?", id).Find(&transaction).Error; err != nil {
+		return transaction, err
+	}
+
+	return transaction, nil
+}
+
 func CreateTransaction(transaction *models.Transaction) error {
 	if err := config.DB.Preload("User").Preload("Locker").Preload("ItemCategory").Create(&transaction).Error; err != nil {
 		return err

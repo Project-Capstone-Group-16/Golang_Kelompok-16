@@ -55,6 +55,7 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	us := e.Group("/profile", middleware.IsLoggedIn)
 	us.GET("", controllers.GetUserController)
 	us.GET("/favorite", controllers.GetFavoriteUserByIDController)
+	us.GET("/transaction", controllers.GetTransactionByUserIDController)
 	us.PUT("/update", controllers.UpdateProfileController)
 
 	picture := e.Group("/upload")

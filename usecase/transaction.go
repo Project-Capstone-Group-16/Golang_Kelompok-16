@@ -12,27 +12,37 @@ import (
 func CreateTransaction(id int, req *payload.CreateTransactionRequest) (resp models.Transaction, err error) {
 	user, err := database.GetuserByID(id)
 	if err != nil {
-		return resp, err
+		return resp, errors.New("user not found")
 	}
 
 	StartDate, err := time.Parse("02/01/2006", req.StartDate)
 	if err != nil {
-		return
+		return resp, errors.New("Failed to parse start date")
 	}
 
 	EndDate, err := time.Parse("02/01/2006", req.EndDate)
 	if err != nil {
-		return
+		return resp, errors.New("Failed to parse start date")
 	}
 
-	locker, err := database.GetLockerByStatus(req.LockerID)
+	warehouse, err := database.GetWarehouseByID(uint64(req.WarehouseID))
 	if err != nil {
-		return resp, err
+		return resp, errors.New("Warehouse not found")
+	}
+
+	lockerType, err := database.GetLockerTypeById(uint64(req.LockerTypeID))
+	if err != nil {
+		return resp, errors.New("Locker type not found")
+	}
+
+	locker, err := database.GetLockerByStatus(warehouse.ID, lockerType.ID)
+	if err != nil {
+		return resp, errors.New("Locker not found")
 	}
 
 	itemCategory, err := database.GetItemCategoryById(req.ItemCategoryID)
 	if err != nil {
-		return resp, err
+		return resp, errors.New("Item category not found")
 	}
 
 	countDate := EndDate.Sub(StartDate)
@@ -40,8 +50,8 @@ func CreateTransaction(id int, req *payload.CreateTransactionRequest) (resp mode
 	newTransaction := models.Transaction{
 		UserID:         user.ID,
 		LockerID:       locker.ID,
-		ItemCategoryID: req.ItemCategoryID,
-		Amount:         uint(countDate.Hours()/24) * locker.LockerType.Price,
+		ItemCategoryID: itemCategory.ID,
+		Amount:         uint(countDate.Hours()/24) * lockerType.Price,
 		StartDate:      StartDate,
 		EndDate:        EndDate,
 		PaymentStatus:  "Unpaid",
@@ -71,6 +81,29 @@ func CreateTransaction(id int, req *payload.CreateTransactionRequest) (resp mode
 	}
 
 	err = database.CreateTransaction(&resp)
+	if err != nil {
+		return resp, err
+	}
+
+	warehouse.Capacity -= 1
+
+	err = database.UpdateWarehouse(warehouse)
+	if err != nil {
+		return resp, errors.New("Failed to update warehouse capacity")
+	}
+
+	locker.Availability = "Not Available"
+
+	err = database.UpdateLockerStatus(locker)
+	if err != nil {
+		return resp, errors.New("Failed to update locker status")
+	}
+
+	return
+}
+
+func GetTransactionsByUserId(id int) (resp []*models.Transaction, err error) {
+	resp, err = database.GetTransactionByUserId(uint(id))
 	if err != nil {
 		return resp, err
 	}

@@ -98,8 +98,9 @@ type UpdateStaffRequest struct {
 
 type CreateTransactionRequest struct {
 	UserID         uint   `json:"user_id" form:"user_id"`
-	LockerID       uint   `json:"locker_id" form:"locker_id" validate:"required"`
+	LockerTypeID   uint   `json:"locker_type_id" form:"locker_type_id" validate:"required"`
 	ItemCategoryID uint   `json:"item_category_id" form:"item_category_id" validate:"required"`
+	WarehouseID    uint   `json:"warehouse_id" form:"warehouse_id" validate:"required"`
 	StartDate      string `json:"start_date" form:"start_date" validate:"required"`
 	EndDate        string `json:"end_date" form:"end_date" validate:"required"`
 	PaymentStatus  string `json:"payment_status" form:"payment_status" gorm:"type:enum('Paid','Unpaid')"`

@@ -24,7 +24,7 @@ func GetPaymentURL(transaction models.Transaction, user *models.User) (string, e
 			Email: user.Email,
 		},
 		TransactionDetails: midtrans.TransactionDetails{
-			OrderID:  strconv.Itoa(int(transaction.OrderID)),
+			OrderID:  strconv.Itoa(int(transaction.OrderID)), // masalah order ID nya gak kebaca
 			GrossAmt: int64(transaction.Amount),
 		},
 	}

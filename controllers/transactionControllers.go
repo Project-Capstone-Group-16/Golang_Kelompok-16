@@ -38,3 +38,22 @@ func CreateTransactionController(c echo.Context) error {
 		Data:    response,
 	})
 }
+
+func GetTransactionByUserIDController(c echo.Context) error {
+	userId, err := middleware.IsUser(c)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]string{
+			"Message": "this route only for user",
+		})
+	}
+
+	response, err := usecase.GetTransactionsByUserId(userId)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, payload.Response{
+		Message: "success get transaction by user id",
+		Data:    response,
+	})
+}
