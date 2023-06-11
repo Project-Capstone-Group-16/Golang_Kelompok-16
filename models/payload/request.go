@@ -94,5 +94,13 @@ type UpdateStaffRequest struct {
 	ImageURL    string `json:"image_url" form:"image_url"`
 }
 
+//  Transaction Request
 
-
+type CreateTransactionRequest struct {
+	UserID         uint   `json:"user_id" form:"user_id"`
+	LockerID       uint   `json:"locker_id" form:"locker_id" validate:"required"`
+	ItemCategoryID uint   `json:"item_category_id" form:"item_category_id" validate:"required"`
+	StartDate      string `json:"start_date" form:"start_date" validate:"required"`
+	EndDate        string `json:"end_date" form:"end_date" validate:"required"`
+	PaymentStatus  string `json:"payment_status" form:"payment_status" gorm:"type:enum('Paid','Unpaid')"`
+}

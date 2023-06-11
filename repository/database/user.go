@@ -72,7 +72,7 @@ func LoginUser(user *models.User) error {
 
 // get user by id query database
 func GetuserByID(id int) (user *models.User, err error) {
-	if err := config.DB.Preload("Favorite.Warehouse").Where("id = ?", id).First(&user).Error; err != nil {
+	if err := config.DB.Preload("Favorite.Warehouse").Preload("Transaction").Where("id = ?", id).First(&user).Error; err != nil {
 		return nil, err
 	}
 

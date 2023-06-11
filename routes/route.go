@@ -23,6 +23,7 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	e.POST("/register/admin", controllers.RegisterAdminController)
 	e.POST("/login", controllers.LoginUserController)
 	e.POST("/login/admin", controllers.LoginAdminController)
+	e.POST("/transaction", controllers.CreateTransactionController, middleware.IsLoggedIn)
 
 	// generete otp routes
 	fp := e.Group("/forgot-password")
@@ -57,5 +58,5 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	us.PUT("/update", controllers.UpdateProfileController)
 
 	picture := e.Group("/upload", middleware.IsLoggedIn)
-	picture.POST("/image",controllers.UploadImageController)
+	picture.POST("/image", controllers.UploadImageController)
 }
