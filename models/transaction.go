@@ -5,7 +5,7 @@ import (
 )
 
 type Transaction struct {
-	OrderID        uint `json:"order_id" form:"order_id" gorm:"primarykey"`
+	OrderID        string `json:"order_id" form:"order_id"`
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 	UserID         uint `json:"user_id" form:"user_id"`

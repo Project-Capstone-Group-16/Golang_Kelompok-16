@@ -3,12 +3,11 @@ package utils
 import (
 	"Capstone/models"
 	"os"
-	"strconv"
 
 	"github.com/veritrans/go-midtrans"
 )
 
-func GetPaymentURL(transaction models.Transaction, user *models.User) (string, error) {
+func GetPaymentURL(transaction *models.Transaction, user *models.User) (string, error) {
 	midclient := midtrans.NewClient()
 	midclient.ServerKey = os.Getenv("Server_Key")
 	midclient.ClientKey = os.Getenv("Client_Key")
@@ -24,7 +23,7 @@ func GetPaymentURL(transaction models.Transaction, user *models.User) (string, e
 			Email: user.Email,
 		},
 		TransactionDetails: midtrans.TransactionDetails{
-			OrderID:  strconv.Itoa(int(transaction.OrderID)), // masalah order ID nya gak kebaca
+			OrderID:  transaction.OrderID, // masalah order ID nya gak kebaca
 			GrossAmt: int64(transaction.Amount),
 		},
 	}

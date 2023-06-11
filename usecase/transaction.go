@@ -47,7 +47,10 @@ func CreateTransaction(id int, req *payload.CreateTransactionRequest) (resp mode
 
 	countDate := EndDate.Sub(StartDate)
 
+	orderId := "TRX-" + time.Now().Format("20060102150405")
+
 	newTransaction := models.Transaction{
+		OrderID:        orderId,
 		UserID:         user.ID,
 		LockerID:       locker.ID,
 		ItemCategoryID: itemCategory.ID,
@@ -57,7 +60,7 @@ func CreateTransaction(id int, req *payload.CreateTransactionRequest) (resp mode
 		PaymentStatus:  "Unpaid",
 	}
 
-	paymentURL, err := utils.GetPaymentURL(newTransaction, user)
+	paymentURL, err := utils.GetPaymentURL(&newTransaction, user)
 	if err != nil {
 		return newTransaction, err
 	}
@@ -67,6 +70,7 @@ func CreateTransaction(id int, req *payload.CreateTransactionRequest) (resp mode
 	}
 
 	resp = models.Transaction{
+		OrderID:        newTransaction.OrderID,
 		UserID:         newTransaction.UserID,
 		User:           *user,
 		LockerID:       newTransaction.LockerID,
