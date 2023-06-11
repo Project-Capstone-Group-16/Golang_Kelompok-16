@@ -5,6 +5,7 @@ import (
 	"Capstone/models/payload"
 	"Capstone/repository/database"
 	"Capstone/utils"
+	"errors"
 	"time"
 )
 
@@ -29,6 +30,11 @@ func CreateTransaction(id int, req *payload.CreateTransactionRequest) (resp mode
 		return resp, err
 	}
 
+	itemCategory, err := database.GetItemCategoryById(req.ItemCategoryID)
+	if err != nil {
+		return resp, err
+	}
+
 	countDate := EndDate.Sub(StartDate)
 
 	newTransaction := models.Transaction{
@@ -46,14 +52,17 @@ func CreateTransaction(id int, req *payload.CreateTransactionRequest) (resp mode
 		return newTransaction, err
 	}
 
-	// if user.FirstName == "" || user.LastName == "" || user.PhoneNumber == "" || user.Address == "" || user.Gender == "" || user.BirthDate == nil {
-	// 	return resp, errors.New("Please complete your profile first")
-	// }
+	if user.FirstName == "" || user.LastName == "" || user.PhoneNumber == "" || user.Address == "" || user.Gender == "" || user.BirthDate == nil {
+		return resp, errors.New("Please complete your profile first")
+	}
 
 	resp = models.Transaction{
 		UserID:         newTransaction.UserID,
+		User:           *user,
 		LockerID:       newTransaction.LockerID,
+		Locker:         *locker,
 		ItemCategoryID: newTransaction.ItemCategoryID,
+		ItemCategory:   *itemCategory,
 		Amount:         newTransaction.Amount,
 		StartDate:      newTransaction.StartDate,
 		EndDate:        newTransaction.EndDate,

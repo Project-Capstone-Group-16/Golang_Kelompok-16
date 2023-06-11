@@ -13,7 +13,7 @@ func GetTransactions() (transaction []models.Transaction, err error) {
 	return transaction, nil
 }
 
-func GetTransactionById(id uint64) (transaction *models.Transaction, err error) {
+func GetTransactionById(id uint) (transaction *models.Transaction, err error) {
 	if err = config.DB.Preload("User").Preload("Locker").Preload("ItemCategory").Where("id = ?", id).First(&transaction).Error; err != nil {
 		return transaction, err
 	}
