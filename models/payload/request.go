@@ -105,3 +105,10 @@ type CreateTransactionRequest struct {
 	EndDate        string `json:"end_date" form:"end_date" validate:"required"`
 	PaymentStatus  string `json:"payment_status" form:"payment_status" gorm:"type:enum('Paid','Unpaid')"`
 }
+
+type TransactionNotificationInput struct {
+	TransactionStatus string `json:"transaction_status"`
+	TransactionTime   string `json:"transaction_time"`
+	OrderID           string `json:"order_id"`
+	PaymentType       string `json:"payment_type"`
+}

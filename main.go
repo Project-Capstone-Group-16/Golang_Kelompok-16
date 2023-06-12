@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	err := godotenv.Load(".env")
+	err := godotenv.Load("deploy.env")
 	if err != nil {
 		log.Fatal("failed to load .env")
 	}
@@ -22,5 +22,9 @@ func main() {
 	routes.Routes(e, db)
 	middleware.Logmiddleware(e)
 
-	e.Logger.Fatal(e.Start(":8080"))
+	go func() {
+		e.Logger.Fatal(e.Start(":8080"))
+	}()
+
+	select {}
 }

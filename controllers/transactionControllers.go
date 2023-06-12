@@ -57,3 +57,16 @@ func GetTransactionByUserIDController(c echo.Context) error {
 		Data:    response,
 	})
 }
+
+func GetNotificationController(c echo.Context) error {
+	payloadNotification := payload.TransactionNotificationInput{}
+
+	c.Bind(&payloadNotification)
+
+	err := usecase.ProcessPayemnt(&payloadNotification)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, "success process payment")
+}

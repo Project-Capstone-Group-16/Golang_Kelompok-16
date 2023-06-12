@@ -7,7 +7,7 @@ import (
 	"github.com/veritrans/go-midtrans"
 )
 
-func GetPaymentURL(transaction *models.Transaction, user *models.User) (string, error) {
+func GetPaymentURL(transaction *models.Transaction, user *models.User) (midtrans.SnapResponse, error) {
 	midclient := midtrans.NewClient()
 	midclient.ServerKey = os.Getenv("Server_Key")
 	midclient.ClientKey = os.Getenv("Client_Key")
@@ -23,14 +23,15 @@ func GetPaymentURL(transaction *models.Transaction, user *models.User) (string, 
 			Email: user.Email,
 		},
 		TransactionDetails: midtrans.TransactionDetails{
-			OrderID:  transaction.OrderID, // masalah order ID nya gak kebaca
+			OrderID:  transaction.OrderID,
 			GrossAmt: int64(transaction.Amount),
 		},
 	}
 
 	snapTokenResp, err := snapGateway.GetToken(snapReg)
 	if err != nil {
-		return "", err
+		return snapTokenResp, err
 	}
-	return snapTokenResp.RedirectURL, nil
+
+	return snapTokenResp, nil
 }

@@ -112,16 +112,9 @@ type GetAllStaffsResponse struct {
 
 // Transaction Response
 
-// type CreateTransactionResponse struct {
-// 	UserID         uint `json:"user_id" form:"user_id"`
-// 	User           User
-// 	LockerID       uint `json:"locker_id" form:"locker_id"`
-// 	Locker         Locker
-// 	ItemCategoryID uint `json:"item_category_id" form:"item_category_id"`
-// 	ItemCategory   ItemCategory
-// 	Amount         uint       `json:"amount" form:"amount"`
-// 	StartDate      *time.Time `json:"start_date" form:"start_date"`
-// 	EndDate        *time.Time `json:"end_date" form:"end_date"`
-// 	PaymentStatus  string     `json:"payment_status" form:"payment_status" gorm:"type:enum('Paid','Unpaid')"`
-// 	PaymentUrl     string     `json:"payment_url" form:"payment_url"`
-// }
+type MidtransStatusResponse struct {
+	OrderID           string `json:"order_id"`
+	TransactionID     string `json:"transaction_id"`
+	TransactionTime   string `json:"transaction_time"`
+	TransactionStatus string `json:"transaction_status"`
+}
