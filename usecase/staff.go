@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// Logic Create Staff
 func CreateStaff(req *payload.CreateStaffRequest) (resp payload.ManageStaffResponse, err error) {
 	BirthDate, err := time.Parse("02/01/2006", req.BirthDate)
 	if err != nil {
@@ -16,10 +17,11 @@ func CreateStaff(req *payload.CreateStaffRequest) (resp payload.ManageStaffRespo
 	newStaff := &models.Staff{
 		FullName:    req.FullName,
 		Occupation:  req.Occupation,
-		WarehouseID: req.WarehouseID,
+		Gender:      req.Gender,
 		BirthDate:   &BirthDate,
-		PhoneNumber: "0" + req.PhoneNumber,
+		PhoneNumber: req.PhoneNumber,
 		Address:     req.Address,
+		ImageURL:    req.ImageURL,
 	}
 
 	err = database.CreateStaff(newStaff)
@@ -30,26 +32,29 @@ func CreateStaff(req *payload.CreateStaffRequest) (resp payload.ManageStaffRespo
 	resp = payload.ManageStaffResponse{
 		FullName:    newStaff.FullName,
 		Occupation:  newStaff.Occupation,
-		WarehouseID: newStaff.WarehouseID,
+		Gender:      newStaff.Gender,
 		BirthDate:   newStaff.BirthDate,
 		PhoneNumber: newStaff.PhoneNumber,
 		Address:     newStaff.Address,
+		ImageURL:    newStaff.ImageURL,
 	}
 
 	return
 }
 
+// Logic Update Staff
 func UpdateStaff(staff *models.Staff, req *payload.UpdateStaffRequest) (resp payload.ManageStaffResponse, err error) {
 	birthDate, err := time.Parse("02/01/2006", req.BirthDate)
 	if err != nil {
 		return
 	}
 	staff.FullName = req.FullName
-	staff.WarehouseID = req.WarehouseID
 	staff.Occupation = req.Occupation
+	staff.Gender = req.Gender
 	staff.BirthDate = &birthDate
 	staff.PhoneNumber = req.PhoneNumber
 	staff.Address = req.Address
+	staff.ImageURL = req.ImageURL
 
 	err = database.UpdateStaff(staff)
 	if err != nil {
@@ -61,15 +66,17 @@ func UpdateStaff(staff *models.Staff, req *payload.UpdateStaffRequest) (resp pay
 	resp = payload.ManageStaffResponse{
 		FullName:    updatedStaff.FullName,
 		Occupation:  updatedStaff.Occupation,
-		WarehouseID: updatedStaff.WarehouseID,
+		Gender:      updatedStaff.Gender,
 		BirthDate:   updatedStaff.BirthDate,
 		PhoneNumber: updatedStaff.PhoneNumber,
 		Address:     updatedStaff.Address,
+		ImageURL:    updatedStaff.ImageURL,
 	}
 
 	return resp, nil
 }
 
+// Logic get staff by id
 func GetStaffByID(id uint64) (staff *models.Staff, err error) {
 	staff, err = database.GetStaffByID(id)
 	if err != nil {
@@ -79,27 +86,17 @@ func GetStaffByID(id uint64) (staff *models.Staff, err error) {
 	return staff, nil
 }
 
-func GetAllStaffs() (resp []payload.GetAllStaffsResponse, err error) {
-	Staffs, err := database.GetAllStaffs()
+// Logic get All staff
+func GetAllStaffs() ([]models.Staff, error) {
+	Staff, err := database.GetAllStaffs()
 	if err != nil {
-		return
+		return nil, err
 	}
 
-	resp = []payload.GetAllStaffsResponse{}
-	for _, staff := range Staffs {
-		resp = append(resp, payload.GetAllStaffsResponse{
-			ID:          staff.ID,
-			WarehouseID: staff.WarehouseID,
-			FullName:    staff.FullName,
-			Occupation:  staff.Occupation,
-			BirthDate:   staff.BirthDate,
-			PhoneNumber: staff.PhoneNumber,
-			Address:     staff.Address,
-		})
-	}
-	return
+	return Staff, nil
 }
 
+// Logic Delete Staff
 func DeleteStaff(staff *models.Staff) error {
 	err := database.DeleteStaff(staff)
 	if err != nil {

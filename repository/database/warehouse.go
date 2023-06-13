@@ -15,8 +15,8 @@ func GetWarehouses(warehouseParam *models.Warehouse) (warehouse []models.Warehou
 		db = db.Where("status = ?", warehouseParam.Status)
 	}
 
-	if warehouseParam.City != "" || warehouseParam.Province != "" {
-		db = db.Where("city = ? OR province = ?", warehouseParam.City, warehouseParam.Province)
+	if warehouseParam.City != "" {
+		db = db.Where("city = ? ", warehouseParam.City)
 	}
 
 	if err := db.Order("capacity desc").Find(&warehouse).Error; err != nil {
@@ -33,8 +33,8 @@ func GetRecomendedWarehouses(warehouseParam *models.Warehouse) (warehouse []mode
 		db = db.Where("status = ?", warehouseParam.Status)
 	}
 
-	if warehouseParam.City != "" || warehouseParam.Province != "" {
-		db = db.Where("city = ? OR province = ?", warehouseParam.City, warehouseParam.Province)
+	if warehouseParam.City != "" {
+		db = db.Where("city = ? ", warehouseParam.City)
 	}
 
 	if err := db.Order("favorites desc").Find(&warehouse).Error; err != nil {

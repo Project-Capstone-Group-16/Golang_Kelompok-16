@@ -20,7 +20,7 @@ func UpdateStaff(staff *models.Staff) error {
 }
 
 func GetStaffByID(id uint64) (staff *models.Staff, err error) {
-	if err = config.DB.Where("id = ?", id).Preload("Warehouse").First(&staff).Error; err != nil {
+	if err = config.DB.Where("id = ?", id).First(&staff).Error; err != nil {
 		return nil, err
 	}
 
@@ -28,7 +28,7 @@ func GetStaffByID(id uint64) (staff *models.Staff, err error) {
 }
 
 func GetAllStaffs() (staffs []models.Staff, err error) {
-	if err = config.DB.Preload("Warehouse").Find(&staffs).Error; err != nil {
+	if err = config.DB.Find(&staffs).Error; err != nil {
 		return
 	}
 

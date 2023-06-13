@@ -4,7 +4,6 @@ import (
 	"Capstone/middleware"
 	"Capstone/models/payload"
 	"Capstone/usecase"
-	"errors"
 	"net/http"
 	"strconv"
 
@@ -55,7 +54,7 @@ func UpdateStaffController(c echo.Context) error {
 
 	staff, err := usecase.GetStaffByID(id)
 	if err != nil {
-		return errors.New("Staff not found")
+		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
 	if err := c.Validate(payloadStaff); err != nil {
@@ -101,11 +100,11 @@ func DeleteStaffController(c echo.Context) error {
 		})
 	}
 
-	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
 
 	staff, err := usecase.GetStaffByID(id)
 	if err != nil {
-		return err
+		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
 	err = usecase.DeleteStaff(staff)

@@ -110,70 +110,7 @@ func UpdatePassword(id int, req *payload.UpdatePasswordRequest) error {
 	return nil
 }
 
-// Add Favorite Warehouse
-func CreateFavoriteWarehouse(id int, req *payload.CreateFavoriteRequest) (resp any, err error) {
-	user, err := database.GetuserByID(id)
-	if err != nil {
-		return resp, errors.New("User not found")
-	}
-
-	warehouse, err := database.GetWarehouseByID(uint64(req.WarehouseID))
-	if err != nil {
-		return resp, errors.New("Warehouse not found")
-	}
-
-	newFavorite := &models.Favorite{
-		UserID:      user.ID,
-		WarehouseID: req.WarehouseID,
-	}
-
-	favorite, err := database.CheckFavorite(newFavorite)
-	if err != nil {
-		err = database.CreateFavorite(newFavorite)
-		if err != nil {
-			return resp, errors.New("Can't Create Favorite")
-		}
-		warehouse.Favorites += 1
-		err = database.UpdateWarehouse(warehouse)
-		if err != nil {
-			return resp, errors.New("Can't Update Warehouse")
-		}
-
-		resp = payload.CreateFavoriteResponse{
-			WarehouseID: newFavorite.WarehouseID,
-			Warehouse: payload.GetAllWarehouseResponse{
-				ID:       warehouse.ID,
-				Name:     warehouse.Name,
-				City:     warehouse.City,
-				Province: warehouse.Province,
-				Capacity: warehouse.Capacity,
-				Favorite: warehouse.Favorites,
-				Status:   warehouse.Status,
-				ImageURL: warehouse.ImageURL,
-			},
-		}
-
-		// return resp, errors.New("User Cant Favorite This Warehouse Again")
-	} else {
-		err = database.DeleteFavorite(favorite)
-		if err != nil {
-			return resp, errors.New("Can't Delete Favorite")
-		}
-
-		warehouse.Favorites -= 1
-		err = database.UpdateWarehouse(warehouse)
-		if err != nil {
-			return resp, errors.New("Can't Update Warehouse")
-		}
-
-		resp = "Success Delete Favorite"
-
-		return
-	}
-
-	return
-}
-
+// Logic get user by id
 func GetUser(id int) (user *models.User, err error) {
 	user, err = database.GetuserByID(id)
 	if err != nil {
@@ -183,6 +120,7 @@ func GetUser(id int) (user *models.User, err error) {
 	return user, nil
 }
 
+// Logic Update Profile User
 func UpdateProfile(user *models.User, req *payload.UpdateProfileUser) (res payload.UpdateProfileUserResponse, err error) {
 	birthDate, err := time.Parse("02/01/2006", req.BirthDate)
 	if err != nil {
@@ -195,6 +133,7 @@ func UpdateProfile(user *models.User, req *payload.UpdateProfileUser) (res paylo
 	user.Gender = req.Gender
 	user.PhoneNumber = "0" + req.PhoneNumber
 	user.Address = req.Address
+	user.ImageUrl = req.ImageURL
 
 	err = database.UpdateUser(user)
 	if err != nil {
@@ -208,7 +147,18 @@ func UpdateProfile(user *models.User, req *payload.UpdateProfileUser) (res paylo
 		Gender:      user.Gender,
 		PhoneNumber: user.PhoneNumber,
 		Address:     user.Address,
+		ImageURL:    user.ImageUrl,
 	}
 
 	return
+}
+
+// Logic Get All Users
+func GetUsers() (users []models.User, err error) {
+	users, err = database.GetUsers()
+	if err != nil {
+		return nil, errors.New("Error getting users")
+	}
+
+	return users, nil
 }

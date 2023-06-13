@@ -14,9 +14,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var generatedOTPParse string
-var emailParse string
-
 // Logic Login User
 func LoginUser(req *payload.LoginUserRequest) (res payload.LoginUserResponse, err error) {
 
@@ -106,35 +103,41 @@ func SendOTPByEmail(emailAddress, otp string) error {
 }
 
 // Logic Generate  OTP
-func GenerateOTPEndpoint(req *payload.ForgotPasswordRequest) error {
+func GenerateOTPEndpoint(req *payload.ForgotPasswordRequest) (res payload.GenerateOTPResponse, err error) {
 	user, err := database.GetUserByEmail(req.Email)
 	if err != nil {
-		return errors.New("Email not registered")
+		return res, errors.New("Email not registered")
 	}
 
-	generatedOTPParse = utils.GenerateOTP()
-	emailParse = req.Email
+	user.OTP = utils.GenerateOTP()
 
-	err = SendOTPByEmail(user.Email, generatedOTPParse)
+	err = SendOTPByEmail(user.Email, user.OTP)
 	if err != nil {
-		return errors.New("Failed to send OTP")
+		return res, errors.New("Failed to send OTP")
 	}
-	return nil
+
+	
+	err = database.UpdateUser(&user)
+	if err != nil {
+		return res, errors.New("Failed to update user")
+	}
+
+	res = payload.GenerateOTPResponse{
+		Email: user.Email,
+	}
+
+	return res, nil
 }
 
 // Logic Verify OTP
-func VerifyOTP(req *payload.VerifyngOtpRequest, email string) (res payload.LoginUserResponse, err error) {
-	if req.Otp != generatedOTPParse {
-		return res, errors.New("OTP verification failed.")
-	}
-
-	if email != emailParse {
-		return res, errors.New("Email verification failed.")
-	}
-
-	user, err := database.GetUserByEmail(email)
+func VerifyOTP(req *payload.VerifyngOtpRequest) (res payload.LoginUserResponse, err error) {
+	user, err := database.GetUserByEmail(req.Email)
 	if err != nil {
 		return res, errors.New("Failed to get user")
+	}
+
+	if req.Otp != user.OTP {
+		return res, errors.New("OTP verification failed.")
 	}
 
 	token, err := middleware.CreateToken(int(user.ID), user.Role)
