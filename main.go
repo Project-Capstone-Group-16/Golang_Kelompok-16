@@ -4,10 +4,16 @@ import (
 	"Capstone/config"
 	"Capstone/middleware"
 	"Capstone/routes"
+	"Capstone/usecase"
 	"log"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo"
+	"github.com/robfig/cron/v3"
 )
 
 func main() {
@@ -26,5 +32,30 @@ func main() {
 		e.Logger.Fatal(e.Start(":8080"))
 	}()
 
+	go func() {
+		JobUpdateStatusDone()
+	}() //new
+
 	select {}
 }
+
+func JobUpdateStatusDone() {
+	// set scheduler berdasarkan zona waktu sesuai kebutuhan
+	jakartaTime, _ := time.LoadLocation("Asia/Jakarta")
+	scheduler := cron.New(cron.WithLocation(jakartaTime))
+
+	// stop scheduler tepat sebelum fungsi berakhir
+	defer scheduler.Stop()
+
+	// set task yang akan dijalankan scheduler
+	// gunakan crontab string untuk mengatur jadwal
+	scheduler.AddFunc("0 0 * * 1-5", usecase.UpdateStatusDone)
+
+	// start scheduler
+	go scheduler.Start()
+
+	// trap SIGINT untuk trigger shutdown.
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
+	<-sig
+} // new

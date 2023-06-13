@@ -11,7 +11,7 @@ func GetLockerTypes() (lockerType []models.LockerType, err error) {
 		return nil, err
 	}
 	return lockerType, nil
-}
+} // new
 
 func GetLockerTypeById(id uint64) (lockerType *models.LockerType, err error) {
 	err = config.DB.Where("id = ?", id).First(&lockerType).Error
@@ -20,4 +20,4 @@ func GetLockerTypeById(id uint64) (lockerType *models.LockerType, err error) {
 	}
 
 	return lockerType, nil
-}
+} // new

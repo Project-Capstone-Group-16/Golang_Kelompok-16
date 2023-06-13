@@ -31,6 +31,15 @@ func GetLockerByStatus(idWarehouse, idLockerType uint) (locker *models.Locker, e
 	return locker, nil
 }
 
+func GetLockerById(lockerId uint) (locker *models.Locker, err error) {
+	err = config.DB.Preload("Warehouse").Preload("LockerType").Where("id = ?", lockerId).First(&locker).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return locker, nil
+} // new
+
 func GetLockerSmall(warehouseId uint) (locker []models.Locker, err error) {
 	err = config.DB.Preload("Warehouse").Preload("LockerType").Where("locker_type_id = ? AND warehouse_id = ?", 1, warehouseId).Find(&locker).Error
 	if err != nil {
