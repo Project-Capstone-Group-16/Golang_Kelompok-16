@@ -11,7 +11,7 @@ func GetItemCategorys() (ItemCategory []models.ItemCategory, err error) {
 	}
 
 	return ItemCategory, nil
-}
+} // new
 
 func GetItemCategoryById(id uint) (ItemCategory *models.ItemCategory, err error) {
 	if err = config.DB.Where("id = ?", id).First(&ItemCategory).Error; err != nil {
@@ -19,4 +19,4 @@ func GetItemCategoryById(id uint) (ItemCategory *models.ItemCategory, err error)
 	}
 
 	return ItemCategory, nil
-}
+} // new

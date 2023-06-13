@@ -95,7 +95,6 @@ type UpdateStaffRequest struct {
 }
 
 //  Transaction Request
-
 type CreateTransactionRequest struct {
 	UserID         uint   `json:"user_id" form:"user_id"`
 	LockerTypeID   uint   `json:"locker_type_id" form:"locker_type_id" validate:"required"`
@@ -104,4 +103,11 @@ type CreateTransactionRequest struct {
 	StartDate      string `json:"start_date" form:"start_date" validate:"required"`
 	EndDate        string `json:"end_date" form:"end_date" validate:"required"`
 	PaymentStatus  string `json:"payment_status" form:"payment_status" gorm:"type:enum('Paid','Unpaid')"`
+}
+
+type TransactionNotificationInput struct {
+	TransactionStatus string `json:"transaction_status"`
+	TransactionTime   string `json:"transaction_time"`
+	OrderID           string `json:"order_id"`
+	PaymentType       string `json:"payment_type"`
 }

@@ -53,7 +53,7 @@ func UpdateTransaction(transaction *models.Transaction) error {
 	}
 
 	return nil
-} // new
+}
 
 func UpdateTransactionDone(transaction *models.Transaction) error {
 	if err := config.DB.Clauses(clause.Returning{}).Exec("UPDATE transactions SET status = 'Done' WHERE end_date < NOW() AND status = 'On Going'").Error; err != nil {

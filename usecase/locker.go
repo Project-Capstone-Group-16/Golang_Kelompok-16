@@ -36,3 +36,4 @@ func GetLockerLarge(warehouseId uint) (locker []models.Locker, err error) {
 	}
 	return locker, nil
 }
+

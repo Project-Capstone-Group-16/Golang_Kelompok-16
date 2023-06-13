@@ -6,7 +6,10 @@ import (
 	"Capstone/repository/database"
 	"Capstone/utils"
 	"errors"
+	"fmt"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 func CreateTransaction(id int, req *payload.CreateTransactionRequest) (resp models.Transaction, err error) {
@@ -23,6 +26,18 @@ func CreateTransaction(id int, req *payload.CreateTransactionRequest) (resp mode
 	EndDate, err := time.Parse("02/01/2006", req.EndDate)
 	if err != nil {
 		return resp, errors.New("Failed to parse start date")
+	}
+
+	if StartDate.Before(time.Now().AddDate(0, 0, -1)) {
+		return resp, errors.New("Start date must be after today")
+	}
+
+	if StartDate == EndDate {
+		return resp, errors.New("Start date cannot be the same as end date")
+	}
+
+	if StartDate.After(EndDate) {
+		return resp, errors.New("Start date must be before end date")
 	}
 
 	warehouse, err := database.GetWarehouseByID(uint64(req.WarehouseID))
@@ -47,46 +62,43 @@ func CreateTransaction(id int, req *payload.CreateTransactionRequest) (resp mode
 
 	countDate := EndDate.Sub(StartDate)
 
-	orderId := "TRX-" + time.Now().Format("20060102150405")
-
-	newTransaction := models.Transaction{
-		OrderID:        orderId,
-		UserID:         user.ID,
-		LockerID:       locker.ID,
-		ItemCategoryID: itemCategory.ID,
-		Amount:         uint(countDate.Hours()/24) * lockerType.Price,
-		StartDate:      StartDate,
-		EndDate:        EndDate,
-		PaymentStatus:  "Unpaid",
-	}
-
-	paymentURL, err := utils.GetPaymentURL(&newTransaction, user)
-	if err != nil {
-		return newTransaction, err
-	}
+	uuid := uuid.New()
 
 	if user.FirstName == "" || user.LastName == "" || user.PhoneNumber == "" || user.Address == "" || user.Gender == "" || user.BirthDate == nil {
 		return resp, errors.New("Please complete your profile first")
 	}
 
-	resp = models.Transaction{
-		OrderID:        newTransaction.OrderID,
-		UserID:         newTransaction.UserID,
+	newTransaction := models.Transaction{
+		OrderID:        "TRX-" + uuid.String(),
+		UserID:         user.ID,
 		User:           *user,
-		LockerID:       newTransaction.LockerID,
+		LockerID:       locker.ID,
 		Locker:         *locker,
-		ItemCategoryID: newTransaction.ItemCategoryID,
+		ItemCategoryID: itemCategory.ID,
 		ItemCategory:   *itemCategory,
-		Amount:         newTransaction.Amount,
-		StartDate:      newTransaction.StartDate,
-		EndDate:        newTransaction.EndDate,
-		PaymentStatus:  newTransaction.PaymentStatus,
-		PaymentUrl:     paymentURL,
+		Amount:         uint(countDate.Hours()/24) * lockerType.Price,
+		StartDate:      StartDate,
+		EndDate:        EndDate,
+		Status:         "Waiting for Payment",
+		PaymentStatus:  "Unpaid",
 	}
 
-	err = database.CreateTransaction(&resp)
+	err = database.CreateTransaction(&newTransaction)
 	if err != nil {
 		return resp, err
+	}
+
+	responseMidtrans, err := utils.GetPaymentURL(&newTransaction, user)
+	if err != nil {
+		return newTransaction, err
+	}
+
+	newTransaction.PaymentUrl = responseMidtrans.RedirectURL
+
+	err = database.UpdateTransaction(&newTransaction)
+	if err != nil {
+		fmt.Println("Failed to update transaction")
+		return
 	}
 
 	warehouse.Capacity -= 1
@@ -103,7 +115,7 @@ func CreateTransaction(id int, req *payload.CreateTransactionRequest) (resp mode
 		return resp, errors.New("Failed to update locker status")
 	}
 
-	return
+	return newTransaction, nil
 }
 
 func GetTransactionsByUserId(id int) (resp []*models.Transaction, err error) {
@@ -113,4 +125,39 @@ func GetTransactionsByUserId(id int) (resp []*models.Transaction, err error) {
 	}
 
 	return
+}
+
+func ProcessPayemnt(req *payload.TransactionNotificationInput) error {
+	transaction, err := database.GetTransactionByOrderId(req.OrderID)
+	if err != nil {
+		fmt.Println("Failed to get transactions with unpaid payment status")
+		return err
+	}
+
+	transaction.PaymentMethod = req.PaymentType
+
+	if req.TransactionStatus == "settlement" || req.TransactionStatus == "capture" {
+		transaction.PaymentStatus = "Paid"
+		transaction.Status = "On Going"
+
+		date, _ := time.Parse("2006-01-02 15:04:05", req.TransactionTime)
+
+		transaction.PaymentDate = &date
+		err = database.UpdateTransaction(transaction)
+		if err != nil {
+			fmt.Println("Failed to update transaction")
+			return err
+		}
+	} else if req.TransactionStatus != "pending" {
+		transaction.PaymentStatus = "Canceled"
+		transaction.Status = "Canceled" // new
+		err = database.UpdateTransaction(transaction)
+		if err != nil {
+			fmt.Println("Failed to update transaction")
+			return err
+		}
+	}
+
+	return nil
+
 }
