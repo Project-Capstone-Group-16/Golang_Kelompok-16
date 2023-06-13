@@ -116,4 +116,48 @@ func CreateTransaction(id int, req *payload.CreateTransactionRequest) (resp mode
 	}
 
 	return newTransaction, nil
-} // new
+}
+
+func GetTransactionsByUserId(id int) (resp []*models.Transaction, err error) {
+	resp, err = database.GetTransactionByUserId(uint(id))
+	if err != nil {
+		return resp, err
+	}
+
+	return
+}
+
+func ProcessPayemnt(req *payload.TransactionNotificationInput) error {
+	transaction, err := database.GetTransactionByOrderId(req.OrderID)
+	if err != nil {
+		fmt.Println("Failed to get transactions with unpaid payment status")
+		return err
+	}
+
+	transaction.PaymentMethod = req.PaymentType
+
+	if req.TransactionStatus == "settlement" || req.TransactionStatus == "capture" {
+		transaction.PaymentStatus = "Paid"
+		transaction.Status = "On Going"
+
+		date, _ := time.Parse("2006-01-02 15:04:05", req.TransactionTime)
+
+		transaction.PaymentDate = &date
+		err = database.UpdateTransaction(transaction)
+		if err != nil {
+			fmt.Println("Failed to update transaction")
+			return err
+		}
+	} else if req.TransactionStatus != "pending" {
+		transaction.PaymentStatus = "Canceled"
+		transaction.Status = "Canceled" // new
+		err = database.UpdateTransaction(transaction)
+		if err != nil {
+			fmt.Println("Failed to update transaction")
+			return err
+		}
+	}
+
+	return nil
+
+}
