@@ -15,11 +15,6 @@ type Locker struct {
 
 type LockerType struct {
 	gorm.Model
-	Name       string `json:"name" form:"name" gorm:"type:enum('Small','Medium','Large')"`
-	PriceDay   uint   `json:"price_day" form:"price_day"`
-	PriceMonth uint   `json:"price_month" form:"price_month"`
-	PriceYear  uint   `json:"price_year" form:"price_year"`
-	Height     uint   `json:"height" form:"height"`
-	Width      uint   `json:"width" form:"width"`
-	Length     uint   `json:"length" form:"length"`
+	Name  string `json:"name" form:"name" gorm:"type:enum('Small','Medium','Large')"`
+	Price uint   `json:"price" form:"price"`
 }

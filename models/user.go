@@ -18,7 +18,6 @@ type User struct {
 	Address     string     `json:"address" form:"address"`
 	ImageUrl    string     `json:"image_url" form:"image_url"`
 	OTP         string     `json:"-" form:"-"`
-	Favorite    []Favorite
-	Token       string `json:"-" form:"-" gorm:"-"`
-	Role        string `json:"role" form:"role" gorm:"type:enum('USER', 'ADMIN');default:'USER'"`
+	Token       string     `json:"-" form:"-" gorm:"-"`
+	Role        string     `json:"role" form:"role" gorm:"type:enum('USER', 'ADMIN');default:'USER'"`
 }
