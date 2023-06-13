@@ -24,7 +24,7 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	e.POST("/login", controllers.LoginUserController)
 	e.POST("/login/admin", controllers.LoginAdminController)
 	e.POST("/transaction", controllers.CreateTransactionController, middleware.IsLoggedIn)
-	e.POST("/notification",controllers.GetNotificationController)
+	e.POST("/notification", controllers.GetNotificationController)
 
 	// generete otp routes
 	fp := e.Group("/forgot-password")

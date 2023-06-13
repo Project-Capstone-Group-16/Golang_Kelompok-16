@@ -22,6 +22,24 @@ func GetLockers() (locker []models.Locker, err error) {
 	return locker, nil
 }
 
+func GetLockerByStatus(idWarehouse, idLockerType uint) (locker *models.Locker, err error) {
+	err = config.DB.Preload("Warehouse").Preload("LockerType").Where("warehouse_id = ? AND locker_type_id = ? AND Availability = ?", idWarehouse, idLockerType, "Available").First(&locker).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return locker, nil
+}
+
+func GetLockerById(lockerId uint) (locker *models.Locker, err error) {
+	err = config.DB.Preload("Warehouse").Preload("LockerType").Where("id = ?", lockerId).First(&locker).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return locker, nil
+} // new
+
 func GetLockerSmall(warehouseId uint) (locker []models.Locker, err error) {
 	err = config.DB.Preload("Warehouse").Preload("LockerType").Where("locker_type_id = ? AND warehouse_id = ?", 1, warehouseId).Find(&locker).Error
 	if err != nil {
@@ -43,15 +61,6 @@ func GetLockerLarge(warehouseId uint) (locker []models.Locker, err error) {
 	if err != nil {
 		return nil, err
 	}
-	return locker, nil
-}
-
-func GetLockerByStatus(idWarehouse, idLockerType uint) (locker *models.Locker, err error) {
-	err = config.DB.Preload("Warehouse").Preload("LockerType").Where("warehouse_id = ? AND locker_type_id = ? AND Availability = ?", idWarehouse, idLockerType, "Available").First(&locker).Error
-	if err != nil {
-		return nil, err
-	}
-
 	return locker, nil
 }
 
