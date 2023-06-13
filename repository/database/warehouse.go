@@ -3,25 +3,41 @@ package database
 import (
 	"Capstone/config"
 	"Capstone/models"
+
+	"gorm.io/gorm/clause"
 )
 
 // get all warehouse query database
-func GetAllWarehouses() (warehouse []models.Warehouse, err error) {
-	if err := config.DB.Find(&warehouse).Error; err != nil {
-		return nil, err
-	}
-
-	return warehouse, nil
-}
-
-func GetAllAvailableWarehouses(warehouseParam *models.Warehouse) (warehouse []models.Warehouse, err error) {
+func GetWarehouses(warehouseParam *models.Warehouse) (warehouse []models.Warehouse, err error) {
 	db := config.DB
 
 	if warehouseParam.Status != "" {
 		db = db.Where("status = ?", warehouseParam.Status)
 	}
 
-	if err := db.Find(&warehouse).Error; err != nil {
+	if warehouseParam.City != "" || warehouseParam.Province != "" {
+		db = db.Where("city = ? OR province = ?", warehouseParam.City, warehouseParam.Province)
+	}
+
+	if err := db.Order("capacity desc").Find(&warehouse).Error; err != nil {
+		return nil, err
+	}
+
+	return warehouse, nil
+}
+
+func GetRecomendedWarehouses(warehouseParam *models.Warehouse) (warehouse []models.Warehouse, err error) {
+	db := config.DB
+
+	if warehouseParam.Status != "" {
+		db = db.Where("status = ?", warehouseParam.Status)
+	}
+
+	if warehouseParam.City != "" || warehouseParam.Province != "" {
+		db = db.Where("city = ? OR province = ?", warehouseParam.City, warehouseParam.Province)
+	}
+
+	if err := db.Order("favorites desc").Find(&warehouse).Error; err != nil {
 		return nil, err
 	}
 
@@ -39,7 +55,7 @@ func DeleteWarehouse(warehouse *models.Warehouse) error {
 
 // create warehouse query database
 func CreateWarehouse(warehouse *models.Warehouse) error {
-	if err := config.DB.Create(warehouse).Error; err != nil {
+	if err := config.DB.Clauses(clause.Returning{}).Create(warehouse).Error; err != nil {
 		return err
 	}
 
@@ -48,7 +64,7 @@ func CreateWarehouse(warehouse *models.Warehouse) error {
 
 // update warehouse query database
 func UpdateWarehouse(warehouse *models.Warehouse) error {
-	if err := config.DB.Model(&warehouse).Updates(&warehouse).Error; err != nil {
+	if err := config.DB.Model(&warehouse).Save(&warehouse).Error; err != nil {
 		return err
 	}
 

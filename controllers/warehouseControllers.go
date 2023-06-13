@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"Capstone/constants"
 	"Capstone/middleware"
 	"Capstone/models"
 	"Capstone/models/payload"
@@ -9,9 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"os"
 	"strconv"
-	"strings"
 
 	"github.com/labstack/echo"
 )
@@ -24,17 +21,9 @@ func CreateWarehouseController(c echo.Context) error {
 		})
 	}
 
-	file, err := c.FormFile("warehouse_image")
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]interface{}{
-			"message": "error payload create warehouse",
-			"error":   "Warehouse image can't be empty",
-		})
-	}
-
 	payloadWarehouse := payload.CreateWarehouseRequest{}
+
 	c.Bind(&payloadWarehouse)
-	payloadWarehouse.WarehouseImage = file.Filename
 
 	if err := c.Validate(payloadWarehouse); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
@@ -43,7 +32,7 @@ func CreateWarehouseController(c echo.Context) error {
 		})
 	}
 
-	response, err := usecase.CreateWarehouse(file, &payloadWarehouse)
+	response, err := usecase.CreateWarehouse(&payloadWarehouse)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"messages": "error create warehouse",
@@ -72,22 +61,6 @@ func UpdateWarehouseController(c echo.Context) error {
 		return errors.New("Warehouse not found")
 	}
 
-	file, _ := c.FormFile("warehouse_image")
-
-	c.Bind(warehouse)
-
-	if file != nil {
-		rmPath := strings.TrimLeft(warehouse.ImageURL, constants.Base_Url+"/")
-		if err := os.Remove(rmPath); err != nil {
-			return err
-		}
-		warehouseImage, _ := usecase.UploadImage(file, warehouse.Name)
-		path := fmt.Sprintf("%s/%s", constants.Base_Url, warehouseImage)
-		if warehouseImage != "" {
-			warehouse.ImageURL = path
-		}
-	}
-
 	response, err := usecase.UpdateWarehouse(warehouse)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
@@ -111,11 +84,7 @@ func DeleteWarehouseController(c echo.Context) error {
 
 	warehouse, err := usecase.GetWarehouseByID(id)
 	if err != nil {
-		return err
-	}
-	rmPath := strings.TrimLeft(warehouse.ImageURL, constants.Base_Url+"/")
-	if err := os.Remove(rmPath); err != nil {
-		return err
+		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
 	err = usecase.DeleteWarehouse(warehouse)
@@ -127,37 +96,39 @@ func DeleteWarehouseController(c echo.Context) error {
 }
 
 // Get all warehouse
-func GetAllWarehouseController(c echo.Context) error {
-	if _, err := middleware.IsAdmin(c); err != nil {
-		return c.JSON(http.StatusUnauthorized, map[string]string{
-			"Message": "this route only for admin",
-		})
+// get all warehouse by status
+func GetWarehousesController(c echo.Context) error {
+	warehouseParams := models.Warehouse{
+		Status:   c.QueryParam("status"),
+		City:     c.QueryParam("city"),
+		Province: c.QueryParam("province"),
 	}
 
-	response, err := usecase.GetAllWarehouse()
+	response, err := usecase.GetWarehouses(&warehouseParams)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
 	return c.JSON(http.StatusOK, payload.Response{
-		Message: "Succes get all warehouse",
+		Message: fmt.Sprintf("Succes get all warehouse by status %s", warehouseParams.Status),
 		Data:    response,
 	})
 }
 
-// get all warehouse by status
-func GetStatusWarehouseController(c echo.Context) error {
+func GetRecomendedWarehouseController(c echo.Context) error {
 	warehouseParams := models.Warehouse{
-		Status: c.QueryParam("status"),
+		Status:   c.QueryParam("status"),
+		City:     c.QueryParam("city"),
+		Province: c.QueryParam("province"),
 	}
 
-	response, err := usecase.GetAllByStatusWarehouse(&warehouseParams)
+	response, err := usecase.GetRecomendedWarehouse(&warehouseParams)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
 	return c.JSON(http.StatusOK, payload.Response{
-		Message: "Succes get all warehouse by status",
+		Message: "Succes get all recomended warehouse",
 		Data:    response,
 	})
 }

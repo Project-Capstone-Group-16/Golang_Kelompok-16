@@ -12,6 +12,7 @@ func CreateUser(user *models.User) error {
 	if err := config.DB.Create(user).Error; err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -22,10 +23,11 @@ func IsEmailAvailable(email string) bool {
 		echo.NewHTTPError(http.StatusNotFound, err.Error())
 		return false
 	}
+
 	return count == 0
 }
 
-func GetuserByEmail(email string) (user models.User, err error) {
+func GetUserByEmail(email string) (user models.User, err error) {
 	if err := config.DB.Where("email = ?", email).First(&user).Error; err != nil {
 		return user, err
 	}
@@ -34,9 +36,10 @@ func GetuserByEmail(email string) (user models.User, err error) {
 }
 
 func GetUsers() (users []models.User, err error) {
-	if err = config.DB.Model(&models.User{}).Find(&users).Error; err != nil {
+	if err = config.DB.Model(&models.User{}).Preload("Favorite.Warehouse").Find(&users).Error; err != nil {
 		return
 	}
+
 	return
 }
 
@@ -45,6 +48,7 @@ func UpdateUser(user *models.User) error {
 	if err := config.DB.Updates(&user).Error; err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -53,6 +57,7 @@ func DeleteUser(user *models.User) error {
 	if err := config.DB.Delete(user).Error; err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -61,13 +66,15 @@ func LoginUser(user *models.User) error {
 	if err := config.DB.Where("email = ? AND password = ?", user.Email, user.Password).First(&user).Error; err != nil {
 		return err
 	}
+
 	return nil
 }
 
 // get user by id query database
 func GetuserByID(id int) (user *models.User, err error) {
-	if err := config.DB.Preload("Favorite").Where("id = ?", id).First(&user).Error; err != nil {
+	if err := config.DB.Preload("Favorite.Warehouse").Where("id = ?", id).First(&user).Error; err != nil {
 		return nil, err
 	}
+
 	return user, nil
 }

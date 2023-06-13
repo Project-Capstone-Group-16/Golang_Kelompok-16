@@ -10,9 +10,10 @@ type User struct {
 	gorm.Model
 	Email       string     `json:"email" form:"email" gorm:"unique"`
 	Password    string     `json:"password" form:"password"`
-	Fullname    string     `json:"fullname" form:"fullname"`
+	FirstName   string     `json:"first_name" form:"first_name"`
+	LastName    string     `json:"last_name" form:"last_name"`
 	BirthDate   *time.Time `json:"birth_date" form:"birth_date"`
-	Gender      string     `json:"gender" form:"gender" gorm:"type:enum('MALE', 'FEMALE', '');default:''"`
+	Gender      string     `json:"gender" form:"gender" gorm:"type:enum('PRIA', 'WANITA', '');default:''"`
 	PhoneNumber string     `json:"phone_number" form:"phone_number"`
 	Address     string     `json:"address" form:"address"`
 	ImageUrl    string     `json:"image_url" form:"image_url"`

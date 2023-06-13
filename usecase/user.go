@@ -6,9 +6,8 @@ import (
 	"Capstone/models/payload"
 	"Capstone/repository/database"
 	"errors"
-	"net/http"
+	"time"
 
-	"github.com/labstack/echo"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -61,7 +60,8 @@ func CreateAdmin(req *payload.CreateAdminRequest) (resp payload.CreateAdminRespo
 	}
 
 	newUser := &models.User{
-		Fullname:    req.Fullname,
+		FirstName:   req.FirstName,
+		LastName:    req.LastName,
 		Email:       req.Email,
 		PhoneNumber: "0" + req.PhoneNumber, // masih bimbang apakah +62 atau 0
 		Password:    string(passwordHash),
@@ -74,7 +74,8 @@ func CreateAdmin(req *payload.CreateAdminRequest) (resp payload.CreateAdminRespo
 	}
 
 	resp = payload.CreateAdminResponse{
-		Fullname:    newUser.Fullname,
+		FirstName:   newUser.FirstName,
+		LastName:    newUser.LastName,
 		Email:       newUser.Email,
 		PhoneNumber: newUser.PhoneNumber,
 		Password:    newUser.Password,
@@ -109,7 +110,8 @@ func UpdatePassword(id int, req *payload.UpdatePasswordRequest) error {
 	return nil
 }
 
-func CreateFavoriteWarehouse(id int, req *payload.CreateFavoriteRequest) (resp payload.CreateFavoriteResponse, err error) {
+// Add Favorite Warehouse
+func CreateFavoriteWarehouse(id int, req *payload.CreateFavoriteRequest) (resp any, err error) {
 	user, err := database.GetuserByID(id)
 	if err != nil {
 		return resp, errors.New("User not found")
@@ -131,13 +133,21 @@ func CreateFavoriteWarehouse(id int, req *payload.CreateFavoriteRequest) (resp p
 		if err != nil {
 			return resp, errors.New("Can't Create Favorite")
 		}
+		warehouse.Favorites += 1
+		err = database.UpdateWarehouse(warehouse)
+		if err != nil {
+			return resp, errors.New("Can't Update Warehouse")
+		}
 
 		resp = payload.CreateFavoriteResponse{
 			WarehouseID: newFavorite.WarehouseID,
 			Warehouse: payload.GetAllWarehouseResponse{
 				ID:       warehouse.ID,
 				Name:     warehouse.Name,
-				Location: warehouse.Location,
+				City:     warehouse.City,
+				Province: warehouse.Province,
+				Capacity: warehouse.Capacity,
+				Favorite: warehouse.Favorites,
 				Status:   warehouse.Status,
 				ImageURL: warehouse.ImageURL,
 			},
@@ -150,7 +160,54 @@ func CreateFavoriteWarehouse(id int, req *payload.CreateFavoriteRequest) (resp p
 			return resp, errors.New("Can't Delete Favorite")
 		}
 
-		return resp, echo.NewHTTPError(http.StatusOK, "Succes Delete Favorite")
+		warehouse.Favorites -= 1
+		err = database.UpdateWarehouse(warehouse)
+		if err != nil {
+			return resp, errors.New("Can't Update Warehouse")
+		}
+
+		resp = "Success Delete Favorite"
+
+		return
+	}
+
+	return
+}
+
+func GetUser(id int) (user *models.User, err error) {
+	user, err = database.GetuserByID(id)
+	if err != nil {
+		return nil, errors.New("User not found")
+	}
+
+	return user, nil
+}
+
+func UpdateProfile(user *models.User, req *payload.UpdateProfileUser) (res payload.UpdateProfileUserResponse, err error) {
+	birthDate, err := time.Parse("02/01/2006", req.BirthDate)
+	if err != nil {
+		return
+	}
+
+	user.FirstName = req.FirstName
+	user.LastName = req.LastName
+	user.BirthDate = &birthDate
+	user.Gender = req.Gender
+	user.PhoneNumber = "0" + req.PhoneNumber
+	user.Address = req.Address
+
+	err = database.UpdateUser(user)
+	if err != nil {
+		return res, errors.New("Can't update profile user")
+	}
+
+	res = payload.UpdateProfileUserResponse{
+		FirstName:   user.FirstName,
+		LastName:    user.LastName,
+		BirthDate:   user.BirthDate,
+		Gender:      user.Gender,
+		PhoneNumber: user.PhoneNumber,
+		Address:     user.Address,
 	}
 
 	return

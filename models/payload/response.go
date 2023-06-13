@@ -22,18 +22,30 @@ type CreateFavoriteResponse struct {
 	Warehouse   GetAllWarehouseResponse
 }
 
+type UpdateProfileUserResponse struct {
+	FirstName   string     `json:"first_name"`
+	LastName    string     `json:"last_name"`
+	BirthDate   *time.Time `json:"birth_date"`
+	Gender      string     `json:"gender"`
+	PhoneNumber string     `json:"phone_number"`
+	Address     string     `json:"address"`
+}
+
 // Admin Response
 type GetAllWarehouseResponse struct {
 	ID       uint   `json:"id"`
 	Name     string `json:"name"`
-	Location string `json:"location"`
+	City     string `json:"city"`
+	Province string `json:"province"`
 	Status   string `json:"status"`
-	Favorite uint   `json:"favorite"`
+	Capacity uint   `json:"capacity"`
+	Favorite int    `json:"favorite"`
 	ImageURL string `json:"image_url"`
 }
 
 type CreateAdminResponse struct {
-	Fullname    string `json:"fullname"`
+	FirstName   string `json:"first_name"`
+	LastName    string `json:"last_name"`
 	Email       string `json:"email"`
 	PhoneNumber string `json:"phone_number"`
 	Password    string `json:"password"`
@@ -45,21 +57,35 @@ type LoginAdminResponse struct {
 
 type CreateWarehouseResponse struct {
 	Name     string `json:"name"`
-	Location string `json:"location"`
+	City     string `json:"city"`
+	Province string `json:"province"`
 	Status   string `json:"status"`
 	ImageURL string `json:"image_url"`
 }
 
 type UpdateWarehouseResponse struct {
 	Name     string `json:"name" form:"name"`
-	Location string `json:"location" form:"location"`
+	City     string `json:"city"`
+	Province string `json:"province"`
 	Status   string `json:"status" form:"status"`
 	ImageURL string `json:"image_url" form:"image_url"`
 }
 
 type ManageStaffResponse struct {
-	FullName    string    `json:"full_name"`
-	WarehouseID uint      `json:"warehouse_id"`
+	WarehouseID uint       `json:"warehouse_id"`
+	FullName    string     `json:"full_name"`
+	Occupation  string     `json:"occupation" form:"occupation"`
 	BirthDate   *time.Time `json:"birth_date"`
-	PhoneNumber string    `json:"phone_number"`
+	PhoneNumber string     `json:"phone_number"`
+	Address     string     `json:"address"`
+}
+
+type GetAllStaffsResponse struct {
+	ID          uint       `json:"id"`
+	WarehouseID uint       `json:"warehouse_id"`
+	FullName    string     `json:"full_name"`
+	Occupation  string     `json:"occupation" form:"occupation"`
+	BirthDate   *time.Time `json:"birth_date"`
+	PhoneNumber string     `json:"phone_number"`
+	Address     string     `json:"address"`
 }

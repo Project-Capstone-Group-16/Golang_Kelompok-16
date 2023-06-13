@@ -6,63 +6,28 @@ import (
 	"Capstone/models/payload"
 	"Capstone/repository/database"
 	"errors"
-	"fmt"
-	"io"
-	"mime/multipart"
-	"os"
-
-	"github.com/gosimple/slug"
 )
 
-// Login Upload Image Warehouse
-func UploadImage(file *multipart.FileHeader, warehouseName string) (string, error) {
-	slugWarehouse := slug.Make(warehouseName)
-	slugFileName := slug.Make(file.Filename)
-	path := fmt.Sprintf("images/warehouse/%s-%s.png", slugWarehouse, slugFileName)
-
-	//upload the avatar
-	src, err := file.Open()
-	if err != nil {
-		return "", err
-	}
-	defer src.Close()
-	// Create a new file on disk
-	dst, err := os.Create(path)
-	if err != nil {
-		return "", err
-	}
-	defer dst.Close()
-	// Copy the uploaded file to the destination file
-	if _, err = io.Copy(dst, src); err != nil {
-		return "", err
-	}
-	return path, nil
-}
-
 // logic create new warehouse
-func CreateWarehouse(file *multipart.FileHeader, req *payload.CreateWarehouseRequest) (resp payload.CreateWarehouseResponse, err error) {
-	req.WarehouseImage, err = UploadImage(file, req.Name)
-	if err != nil {
-		return
-	}
+func CreateWarehouse(req *payload.CreateWarehouseRequest) (resp payload.CreateWarehouseResponse, err error) {
 
-	path := fmt.Sprintf("%s/%s", constants.Base_Url, req.WarehouseImage)
-
-	newWarehouse := &models.Warehouse{
+	newWarehouse := models.Warehouse{
 		Name:     req.Name,
-		Location: req.Location,
+		City:     req.City,
+		Province: req.Province,
 		Status:   constants.Available,
-		ImageURL: path,
+		ImageURL: req.WarehouseImage,
 	}
 
-	err = database.CreateWarehouse(newWarehouse)
+	err = database.CreateWarehouse(&newWarehouse)
 	if err != nil {
 		return
 	}
 
 	resp = payload.CreateWarehouseResponse{
 		Name:     newWarehouse.Name,
-		Location: newWarehouse.Location,
+		City:     newWarehouse.City,
+		Province: newWarehouse.Province,
 		Status:   newWarehouse.Status,
 		ImageURL: newWarehouse.ImageURL,
 	}
@@ -72,6 +37,7 @@ func CreateWarehouse(file *multipart.FileHeader, req *payload.CreateWarehouseReq
 
 // Logic Delete Warahouse
 func DeleteWarehouse(warehouses *models.Warehouse) error {
+
 	err := database.DeleteWarehouse(warehouses)
 	if err != nil {
 		return err
@@ -80,8 +46,10 @@ func DeleteWarehouse(warehouses *models.Warehouse) error {
 }
 
 // Logic Get All Warehouse
-func GetAllWarehouse() (resp []payload.GetAllWarehouseResponse, err error) {
-	warehouses, err := database.GetAllWarehouses()
+
+// logic by status warehouse
+func GetWarehouses(warehouse *models.Warehouse) (resp []payload.GetAllWarehouseResponse, err error) {
+	warehouses, err := database.GetWarehouses(warehouse)
 	if err != nil {
 		return resp, err
 	}
@@ -93,24 +61,25 @@ func GetAllWarehouse() (resp []payload.GetAllWarehouseResponse, err error) {
 		totalFavorite = append(totalFavorite, int(totalCount))
 	}
 
-	// resp = make([]payload.GetAllWarehouseResponse, len(warehouses))
 	resp = []payload.GetAllWarehouseResponse{}
 	for i, warehouse := range warehouses {
 		resp = append(resp, payload.GetAllWarehouseResponse{
 			ID:       warehouse.ID,
 			Name:     warehouse.Name,
-			Location: warehouse.Location,
+			City:     warehouse.City,
+			Province: warehouse.Province,
+			Favorite: totalFavorite[i],
 			Status:   warehouse.Status,
-			Favorite: uint(totalFavorite[i]),
+			Capacity: warehouse.Capacity,
 			ImageURL: warehouse.ImageURL,
 		})
 	}
+
 	return
 }
 
-// logic by status warehouse
-func GetAllByStatusWarehouse(warehouse *models.Warehouse) (resp []payload.GetAllWarehouseResponse, err error) {
-	warehouses, err := database.GetAllAvailableWarehouses(warehouse)
+func GetRecomendedWarehouse(warehouse *models.Warehouse) (resp []payload.GetAllWarehouseResponse, err error) {
+	warehouses, err := database.GetRecomendedWarehouses(warehouse)
 	if err != nil {
 		return resp, err
 	}
@@ -127,9 +96,11 @@ func GetAllByStatusWarehouse(warehouse *models.Warehouse) (resp []payload.GetAll
 		resp = append(resp, payload.GetAllWarehouseResponse{
 			ID:       warehouse.ID,
 			Name:     warehouse.Name,
-			Location: warehouse.Location,
-			Favorite: uint(totalFavorite[i]),
+			City:     warehouse.City,
+			Province: warehouse.Province,
+			Favorite: totalFavorite[i],
 			Status:   warehouse.Status,
+			Capacity: warehouse.Capacity,
 			ImageURL: warehouse.ImageURL,
 		})
 	}
@@ -140,6 +111,12 @@ func GetAllByStatusWarehouse(warehouse *models.Warehouse) (resp []payload.GetAll
 // logic update warehouse
 func UpdateWarehouse(warehouse *models.Warehouse) (resp payload.UpdateWarehouseResponse, err error) {
 
+	// warehouse.Name = req.Name
+	// warehouse.City = req.City
+	// warehouse.Province = req.Province
+	// warehouse.Status = req.Status
+	// warehouse.ImageURL = req.WarehouseImage
+
 	err = database.UpdateWarehouse(warehouse)
 	if err != nil {
 		return resp, errors.New("Can't update warehouse")
@@ -147,7 +124,8 @@ func UpdateWarehouse(warehouse *models.Warehouse) (resp payload.UpdateWarehouseR
 
 	resp = payload.UpdateWarehouseResponse{
 		Name:     warehouse.Name,
-		Location: warehouse.Location,
+		City:     warehouse.City,
+		Province: warehouse.Province,
 		Status:   warehouse.Status,
 		ImageURL: warehouse.ImageURL,
 	}
