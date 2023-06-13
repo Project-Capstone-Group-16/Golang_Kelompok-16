@@ -154,11 +154,30 @@ func UpdateProfile(user *models.User, req *payload.UpdateProfileUser) (res paylo
 }
 
 // Logic Get All Users
-func GetUsers() (users []models.User, err error) {
-	users, err = database.GetUsers()
+func GetUsers() (resp []payload.GetAllUserResponse, err error) {
+	users, err := database.GetUsers()
 	if err != nil {
 		return nil, errors.New("Error getting users")
 	}
 
-	return users, nil
+	var totalTransaction []int
+	for _, v := range users {
+		totalCount := database.CountTransactionByUserId(v.ID)
+		totalTransaction = append(totalTransaction, int(totalCount))
+	}
+
+	resp = []payload.GetAllUserResponse{}
+	for i, user := range users {
+		resp = append(resp, payload.GetAllUserResponse{
+			ID:                   user.ID,
+			Fullname:             user.FirstName + " " + user.LastName,
+			PhoneNumber:          user.PhoneNumber,
+			Gender:               user.Gender,
+			Address:              user.Address,
+			ImageURL:             user.ImageUrl,
+			TransactionHistroies: totalTransaction[i],
+		})
+	}
+
+	return
 }

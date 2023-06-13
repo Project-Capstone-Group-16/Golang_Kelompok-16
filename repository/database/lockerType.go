@@ -21,4 +21,3 @@ func GetLockerTypeById(id uint64) (lockerType *models.LockerType, err error) {
 
 	return lockerType, nil
 } // new
-

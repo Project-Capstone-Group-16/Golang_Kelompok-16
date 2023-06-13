@@ -116,7 +116,6 @@ func GenerateOTPEndpoint(req *payload.ForgotPasswordRequest) (res payload.Genera
 		return res, errors.New("Failed to send OTP")
 	}
 
-	
 	err = database.UpdateUser(&user)
 	if err != nil {
 		return res, errors.New("Failed to update user")

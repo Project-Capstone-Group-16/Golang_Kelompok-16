@@ -13,7 +13,7 @@ func GetTransactions() (transaction []models.Transaction, err error) {
 	}
 
 	return transaction, nil
-}
+} // new
 
 func GetTransactionsPaymentStatus(status string) (transaction *[]models.Transaction, err error) {
 	if err = config.DB.Where("payment_status = ?", status).Find(&transaction).Error; err != nil {
@@ -29,7 +29,7 @@ func GetTransactionByOrderId(orderId string) (transaction *models.Transaction, e
 	}
 
 	return transaction, nil
-}
+} // new
 
 func GetTransactionByUserId(id uint) (transaction []*models.Transaction, err error) {
 	if err = config.DB.Preload("User").Preload("Locker.Warehouse").Preload("Locker.LockerType").Preload("ItemCategory").Where("user_id = ?", id).Find(&transaction).Error; err != nil {
@@ -37,6 +37,16 @@ func GetTransactionByUserId(id uint) (transaction []*models.Transaction, err err
 	}
 
 	return transaction, nil
+} // new
+
+func CountTransactionByUserId(id uint) (count int64) {
+	count = 0
+	transaction := []models.Transaction{}
+	if err := config.DB.Model(&transaction).Where("user_id = ?", id).Count(&count).Error; err != nil {
+		return 0
+	}
+
+	return count
 }
 
 func CreateTransaction(transaction *models.Transaction) error {
@@ -45,7 +55,7 @@ func CreateTransaction(transaction *models.Transaction) error {
 	}
 
 	return nil
-}
+} // new
 
 func UpdateTransaction(transaction *models.Transaction) error {
 	if err := config.DB.Clauses(clause.Returning{}).Model(transaction).Where("order_id = ?", transaction.OrderID).Updates(&transaction).Error; err != nil {
@@ -61,7 +71,7 @@ func UpdateTransactionDone(transaction *models.Transaction) error {
 	}
 
 	return nil
-}
+} // new
 
 func DeleteTransaction(transaction *models.Transaction) error {
 	if err := config.DB.Delete(&transaction).Error; err != nil {
@@ -69,4 +79,4 @@ func DeleteTransaction(transaction *models.Transaction) error {
 	}
 
 	return nil
-}
+} // new
