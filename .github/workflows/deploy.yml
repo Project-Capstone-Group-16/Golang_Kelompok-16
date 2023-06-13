@@ -27,19 +27,19 @@ jobs:
         uses: docker/setup-buildx-action@v2
  
       - name: Build Docker image
-        run: docker build -t subaruputra13/capstone:productions .
+        run: docker build -t subaruputra13/capstone:production .
  
       - name: Push Docker image to Droplet
         run: |
-            docker push ${{ secrets.DOCKERHUB_USERNAME }}/capstone:productions
+            docker push ${{ secrets.DOCKERHUB_USERNAME }}/capstone:production
  
       - name: Deploy to DigitalOcean
         uses: appleboy/ssh-action@v0.1.2
         with:
           host: ${{ secrets.SSH_HOST }}
-          key: ${{ secrets.SSH_KEY }}
           username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
           script : |
                 sudo docker stop inventron || true
                 sudo docker rm inventron || true
-                sudo docker run -d --name inventron -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/capstone:productions
+                sudo docker run -d --name inventron -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/capstone:production
