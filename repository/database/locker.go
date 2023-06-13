@@ -64,15 +64,6 @@ func GetLockerLarge(warehouseId uint) (locker []models.Locker, err error) {
 	return locker, nil
 }
 
-func GetLockerByStatus(idWarehouse, idLockerType uint) (locker *models.Locker, err error) {
-	err = config.DB.Preload("Warehouse").Preload("LockerType").Where("warehouse_id = ? AND locker_type_id = ? AND Availability = ?", idWarehouse, idLockerType, "Available").First(&locker).Error
-	if err != nil {
-		return nil, err
-	}
-
-	return locker, nil
-}
-
 func UpdateLockerStatus(locker *models.Locker) error {
 	err := config.DB.Updates(&locker).Error
 	if err != nil {

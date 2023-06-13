@@ -44,6 +44,17 @@ type FavoriteListUserResponse struct {
 	Warehouse []models.Warehouse
 }
 
+type GetAllUserResponse struct {
+	ID                   uint       `json:"id"`
+	Fullname             string     `json:"fullname"`
+	BirthDate            *time.Time `json:"birth_date"`
+	PhoneNumber          string     `json:"phone_number"`
+	Address              string     `json:"address"`
+	Gender               string     `json:"gender"`
+	TransactionHistroies int        `json:"transaction_histroies"`
+	ImageURL             string     `json:"image_url"`
+}
+
 // Admin Response
 type GetAllWarehouseResponse struct {
 	ID          uint   `json:"id"`
@@ -55,6 +66,7 @@ type GetAllWarehouseResponse struct {
 	Favorite    int    `json:"favorite"`
 	Description string `json:"description"`
 	ImageURL    string `json:"image_url"`
+	Locker      []models.Locker
 }
 
 type CreateAdminResponse struct {
