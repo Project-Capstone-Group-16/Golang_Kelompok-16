@@ -116,7 +116,7 @@ func CreateTransaction(id int, req *payload.CreateTransactionRequest) (resp mode
 	}
 
 	return newTransaction, nil
-} // new
+}
 
 func GetTransactionsByUserId(id int) (resp []*models.Transaction, err error) {
 	resp, err = database.GetTransactionByUserId(uint(id))

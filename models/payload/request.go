@@ -95,7 +95,6 @@ type UpdateStaffRequest struct {
 }
 
 //  Transaction Request
-
 type CreateTransactionRequest struct {
 	UserID         uint   `json:"user_id" form:"user_id"`
 	LockerTypeID   uint   `json:"locker_type_id" form:"locker_type_id" validate:"required"`

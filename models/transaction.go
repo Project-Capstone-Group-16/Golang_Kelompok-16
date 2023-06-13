@@ -23,4 +23,4 @@ type Transaction struct {
 	PaymentDate    *time.Time `json:"payment_date" form:"payment_date"`
 	PaymentStatus  string     `json:"payment_status" form:"payment_status" gorm:"type:enum('Paid','Unpaid','Canceled')"`
 	PaymentUrl     string     `json:"payment_url" form:"payment_url"`
-} // new
+}
