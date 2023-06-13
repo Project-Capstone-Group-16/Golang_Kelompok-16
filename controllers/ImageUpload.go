@@ -8,7 +8,7 @@ import (
 	"github.com/labstack/echo"
 )
 
-func UploadImage(c echo.Context) error {
+func UploadImageController(c echo.Context) error {
 
 	file, err := c.FormFile("image_url")
 	if err != nil {
