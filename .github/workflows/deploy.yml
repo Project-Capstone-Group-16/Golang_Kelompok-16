@@ -41,6 +41,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script : |
+            sudo docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/capstone:productions || true
             sudo docker stop inventron || true
             sudo docker rm inventron || true
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/capstone:productions
