@@ -27,8 +27,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
  
       - name: Build Docker image
-        run: |
-            cp ${{secrets.ENV_FILE}} .env
+        run: |     
             docker build -t subaruputra13/capstone:productions .
  
       - name: Push Docker image to Droplet
@@ -44,4 +43,4 @@ jobs:
           script : |
                 sudo docker stop inventron || true
                 sudo docker rm inventron || true
-                sudo docker run -d --name inventron -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/capstone:productions
+                sudo docker run -d --name inventron -p 8080:8080 --env-file .env ${{ secrets.DOCKERHUB_USERNAME }}/capstone:productions
