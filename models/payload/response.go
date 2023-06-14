@@ -46,6 +46,7 @@ type FavoriteListUserResponse struct {
 
 type GetAllUserResponse struct {
 	ID                   uint       `json:"id"`
+	Email                string     `json:"email"`
 	Fullname             string     `json:"fullname"`
 	BirthDate            *time.Time `json:"birth_date"`
 	PhoneNumber          string     `json:"phone_number"`

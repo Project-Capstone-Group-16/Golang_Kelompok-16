@@ -170,6 +170,7 @@ func GetUsers() (resp []payload.GetAllUserResponse, err error) {
 	for i, user := range users {
 		resp = append(resp, payload.GetAllUserResponse{
 			ID:                   user.ID,
+			Email:                user.Email,
 			Fullname:             user.FirstName + " " + user.LastName,
 			PhoneNumber:          user.PhoneNumber,
 			Gender:               user.Gender,
