@@ -136,7 +136,16 @@ func ProcessPayemnt(req *payload.TransactionNotificationInput) error {
 		transaction.PaymentStatus = "Paid"
 		transaction.Status = "On Going"
 
-		warehouse.Capacity -= 1
+		date, _ := time.Parse("2006-01-02 15:04:05", req.TransactionTime)
+
+		transaction.PaymentDate = &date
+		err = database.UpdateTransaction(transaction)
+		if err != nil {
+			fmt.Println("Failed to update transaction")
+			return err
+		}
+
+		warehouse.Capacity = warehouse.Capacity - 1
 		err = database.UpdateWarehouse(warehouse)
 		if err != nil {
 			return errors.New("Failed to update warehouse capacity")
@@ -146,15 +155,6 @@ func ProcessPayemnt(req *payload.TransactionNotificationInput) error {
 		err = database.UpdateLockerStatus(locker)
 		if err != nil {
 			return errors.New("Failed to update locker status")
-		}
-
-		date, _ := time.Parse("2006-01-02 15:04:05", req.TransactionTime)
-
-		transaction.PaymentDate = &date
-		err = database.UpdateTransaction(transaction)
-		if err != nil {
-			fmt.Println("Failed to update transaction")
-			return err
 		}
 	} else if req.TransactionStatus != "pending" {
 		transaction.PaymentStatus = "Canceled"
