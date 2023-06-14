@@ -43,6 +43,14 @@ func GetUsers() (users []models.User, err error) {
 	return
 }
 
+func CountUsers() (count int64, err error) {
+	if err := config.DB.Model(&models.User{}).Where("role = ?", "USER").Count(&count).Error; err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}
+
 // update user query database
 func UpdateUser(user *models.User) error {
 	if err := config.DB.Updates(&user).Error; err != nil {

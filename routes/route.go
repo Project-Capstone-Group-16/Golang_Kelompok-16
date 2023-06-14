@@ -51,6 +51,7 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	adm.GET("/locker/large/:id", controllers.GetLockerLargeController)
 	adm.GET("/lockertypes", controllers.GetLockerTypesController)
 	adm.GET("/transactions", controllers.GetTransactionsController)
+	adm.GET("/dashboards", controllers.DashboardAdminController) // new
 
 	wh := e.Group("/warehouse", middleware.IsLoggedIn)
 	wh.GET("", controllers.GetWarehousesController)
