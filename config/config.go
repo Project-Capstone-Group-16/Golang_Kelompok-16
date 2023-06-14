@@ -26,7 +26,7 @@ func InitDB() *gorm.DB {
 		DB_Port:     os.Getenv("DB_PORT"),
 		DB_Host:     os.Getenv("DB_HOST"),
 		DB_Name:     "inventron",
-	} // cicd
+	}
 
 	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
 		config.DB_Username,
