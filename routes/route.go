@@ -25,6 +25,8 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	e.POST("/login/admin", controllers.LoginAdminController)
 	e.POST("/transaction", controllers.CreateTransactionController, middleware.IsLoggedIn)
 	e.POST("/notification", controllers.GetNotificationController)
+	e.GET("/lockertypes", controllers.GetLockerTypesController)
+	e.GET("/itemcategorys", controllers.GetItemCategorysController)
 
 	// generete otp routes
 	fp := e.Group("/forgot-password")
@@ -47,6 +49,9 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	adm.GET("/locker/small/:id", controllers.GetLockerSmallController)
 	adm.GET("/locker/medium/:id", controllers.GetLockerMediumController)
 	adm.GET("/locker/large/:id", controllers.GetLockerLargeController)
+	adm.GET("/lockertypes", controllers.GetLockerTypesController)
+	adm.GET("/transactions", controllers.GetTransactionsController)
+	adm.GET("/dashboard", controllers.DashboardAdminController)
 
 	wh := e.Group("/warehouse", middleware.IsLoggedIn)
 	wh.GET("", controllers.GetWarehousesController)

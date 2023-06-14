@@ -72,3 +72,19 @@ func UpdateLockerStatus(locker *models.Locker) error {
 
 	return nil
 }
+
+func CountAllLockers() (countedLockers int64, err error) {
+	lockers := []models.Locker{}
+	if err := config.DB.Model(&lockers).Count(&countedLockers).Error; err != nil {
+		return 0, err
+	}
+	return
+}
+
+func CountUsedLockers() (countUsed int64, err error) {
+	lockers := []models.Locker{}
+	if err := config.DB.Model(&lockers).Where("Availability = ?", "Not Available").Count(&countUsed).Error; err != nil {
+		return 0, err
+	}
+	return
+}
