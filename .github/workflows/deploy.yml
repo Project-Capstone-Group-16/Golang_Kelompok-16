@@ -27,7 +27,9 @@ jobs:
         uses: docker/setup-buildx-action@v2
  
       - name: Build Docker image
-        run: docker build -t subaruputra13/capstone:productions .
+        run: |
+            cp ${{secrets.ENV_FILE}} .env
+            docker build -t subaruputra13/capstone:productions .
  
       - name: Push Docker image to Droplet
         run: |
