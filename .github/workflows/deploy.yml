@@ -49,5 +49,5 @@ jobs:
               -e DB_PORT=${{secrets.DB_PORT}} \
               -e DB_PASSWORD=${{secrets.DB_PASSWORD}} \
               -p 8080:8080 \
-              --name demo \
-              ${{ secrets.DOCKERHUB_USERNAME }}/capstone:1.2
+              --name inventron \
+              ${{ secrets.DOCKERHUB_USERNAME }}/productions
