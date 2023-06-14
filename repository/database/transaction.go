@@ -80,3 +80,11 @@ func DeleteTransaction(transaction *models.Transaction) error {
 
 	return nil
 } // new
+
+func SumTransactionsAmount() (income int, err error) {
+	if err := config.DB.Table("transactions").Select("sum(amount)").Where("payment_status = ?", "Paid").Row().Scan(&income); err != nil {
+		return income, err
+	}
+
+	return income, nil
+}

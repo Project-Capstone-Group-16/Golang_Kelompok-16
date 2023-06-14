@@ -37,3 +37,11 @@ func GetLockerLarge(warehouseId uint) (locker []models.Locker, err error) {
 	return locker, nil
 }
 
+func GetAllLockerTypes() ([]models.LockerType, error) {
+	lockers, err := database.GetLockerTypes()
+	if err != nil {
+		return nil, err
+	}
+	return lockers, nil
+} //new
+

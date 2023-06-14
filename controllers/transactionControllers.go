@@ -58,6 +58,21 @@ func GetTransactionByUserIDController(c echo.Context) error {
 	})
 }
 
+func GetTransactionsController(c echo.Context) error {
+	response, err := usecase.GetAllTransactions()
+	if err != nil {
+		return c.JSON(400, map[string]interface{}{
+			"message": "error",
+			"error":   err.Error(),
+		})
+	}
+
+	return c.JSON(200, payload.Response{
+		Message: "success get all transactions",
+		Data:    response,
+	})
+} //new
+
 func GetNotificationController(c echo.Context) error {
 	payloadNotification := payload.TransactionNotificationInput{}
 

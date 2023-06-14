@@ -181,3 +181,34 @@ func GetUsers() (resp []payload.GetAllUserResponse, err error) {
 
 	return
 }
+
+func DashboardAdmin() (resp payload.DashboardAdminResponse, err error) {
+	totalLockers, err := database.CountAllLockers()
+	if err != nil {
+		return resp, errors.New("Failed to count lockers")
+	}
+
+	totalUsedLockers, err := database.CountUsedLockers()
+	if err != nil {
+		return resp, errors.New("Failed to count used lockers")
+	}
+
+	totalUsers, err := database.CountUsers()
+	if err != nil {
+		return resp, errors.New("Failed to count users")
+	}
+
+	totalIncome, err := database.SumTransactionsAmount()
+	if err != nil {
+		return resp, errors.New("Failed to get total income")
+	}
+
+	resp = payload.DashboardAdminResponse{
+		Todey:            time.Now(),
+		TotalLockers:     uint(totalLockers),
+		TotalUsedLockers: uint(totalUsedLockers),
+		TotalUsers:       uint(totalUsers),
+		TotalIncome:      uint(totalIncome),
+	}
+	return
+}

@@ -130,3 +130,13 @@ type MidtransStatusResponse struct {
 	TransactionTime   string `json:"transaction_time"`
 	TransactionStatus string `json:"transaction_status"`
 }
+
+//Dashboard admin Response
+
+type DashboardAdminResponse struct {
+	Todey            time.Time `json:"todey"`
+	TotalLockers     uint      `json:"total_lockers"`
+	TotalUsedLockers uint      `json:"total_used_lockers"`
+	TotalUsers       uint      `json:"total_users"`
+	TotalIncome      uint      `json:"total_income"`
+}
