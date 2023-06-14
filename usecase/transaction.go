@@ -101,20 +101,6 @@ func CreateTransaction(id int, req *payload.CreateTransactionRequest) (resp mode
 		return
 	}
 
-	warehouse.Capacity -= 1
-
-	err = database.UpdateWarehouse(warehouse)
-	if err != nil {
-		return resp, errors.New("Failed to update warehouse capacity")
-	}
-
-	locker.Availability = "Not Available"
-
-	err = database.UpdateLockerStatus(locker)
-	if err != nil {
-		return resp, errors.New("Failed to update locker status")
-	}
-
 	return newTransaction, nil
 }
 
@@ -142,6 +128,16 @@ func ProcessPayemnt(req *payload.TransactionNotificationInput) error {
 		return err
 	}
 
+	locker, err := database.GetLockerById(transaction.LockerID)
+	if err != nil {
+		return errors.New("Locker not found")
+	}
+
+	warehouse, err := database.GetWarehouseByID(uint64(locker.WarehouseID))
+	if err != nil {
+		return errors.New("Warehouse not found")
+	}
+
 	transaction.PaymentMethod = req.PaymentType
 
 	if req.TransactionStatus == "settlement" || req.TransactionStatus == "capture" {
@@ -155,6 +151,18 @@ func ProcessPayemnt(req *payload.TransactionNotificationInput) error {
 		if err != nil {
 			fmt.Println("Failed to update transaction")
 			return err
+		}
+
+		warehouse.Capacity = warehouse.Capacity - 1
+		err = database.UpdateWarehouse(warehouse)
+		if err != nil {
+			return errors.New("Failed to update warehouse capacity")
+		}
+
+		locker.Availability = "Not Available"
+		err = database.UpdateLockerStatus(locker)
+		if err != nil {
+			return errors.New("Failed to update locker status")
 		}
 	} else if req.TransactionStatus != "pending" {
 		transaction.PaymentStatus = "Canceled"
