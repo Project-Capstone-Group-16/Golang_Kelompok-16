@@ -50,4 +50,4 @@ jobs:
               -e DB_PASSWORD=${{secrets.DB_PASSWORD}} \
               -p 8080:8080 \
               --name inventron \
-              ${{ secrets.DOCKERHUB_USERNAME }}/productions
+              ${{ secrets.DOCKERHUB_USERNAME }}/capstone:productions
