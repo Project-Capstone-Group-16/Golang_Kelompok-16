@@ -127,6 +127,14 @@ func GetTransactionsByUserId(id int) (resp []*models.Transaction, err error) {
 	return
 }
 
+func GetAllTransactions() ([]models.Transaction, error) {
+	transactions, err := database.GetTransactions()
+	if err != nil {
+		return nil, err
+	}
+	return transactions, nil
+} //new
+
 func ProcessPayemnt(req *payload.TransactionNotificationInput) error {
 	transaction, err := database.GetTransactionByOrderId(req.OrderID)
 	if err != nil {

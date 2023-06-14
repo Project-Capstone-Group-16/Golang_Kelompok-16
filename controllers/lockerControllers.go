@@ -29,6 +29,21 @@ func GetLockersController(c echo.Context) error {
 	})
 }
 
+func GetLockerTypesController(c echo.Context) error {
+	response, err := usecase.GetAllLockerTypes()
+	if err != nil {
+		return c.JSON(400, map[string]interface{}{
+			"message": "error",
+			"error":   err.Error(),
+		})
+	}
+
+	return c.JSON(200, payload.Response{
+		Message: "success get all locker types",
+		Data:    response,
+	})
+} //new
+
 func GetLockerSmallController(c echo.Context) error {
 	_, err := middleware.IsAdmin(c)
 	if err != nil {
