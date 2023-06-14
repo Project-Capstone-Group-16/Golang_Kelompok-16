@@ -41,6 +41,13 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script : |
-                sudo docker stop inventron || true
-                sudo docker rm inventron || true
-                sudo docker run -d --name inventron -p 8080:8080 --env-file .env ${{ secrets.DOCKERHUB_USERNAME }}/capstone:productions
+            sudo docker stop inventron || true
+            sudo docker rm inventron || true
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/capstone:productions
+            sudo docker run -d \
+              -e DB_HOST=${{secrets.DB_HOST}} \
+              -e DB_PORT=${{secrets.DB_PORT}} \
+              -e DB_PASSWORD=${{secrets.DB_PASSWORD}} \
+              -p 8080:8080 \
+              --name demo \
+              ${{ secrets.DOCKERHUB_USERNAME }}/capstone:1.2
