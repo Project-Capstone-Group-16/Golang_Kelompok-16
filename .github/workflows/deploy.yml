@@ -48,6 +48,12 @@ jobs:
               -e DB_HOST=${{secrets.DB_HOST}} \
               -e DB_PORT=${{secrets.DB_PORT}} \
               -e DB_PASSWORD=${{secrets.DB_PASSWORD}} \
+              -e MJ_FROM_EMAIL=${{secrets.MJ_FROM_EMAIL}} \
+              -e MJ_APIKEY_PUBLIC=${{secrets.MJ_APIKEY_PUBLIC}} \
+              -e MJ_APIKEY_PRIVATE=${{secrets.MJ_APIKEY_PRIVATE}} \
+              -e CLOUDINARY_URL=${{secrets.CLOUDINARY_URL}} \
+              -e Client_Key=${{secrets.Client_Key}} \
+              -e Server_Key=${{secrets.Server_Key}} \
               -p 8080:8080 \
               --name inventron \
               ${{ secrets.DOCKERHUB_USERNAME }}/capstone:productions
