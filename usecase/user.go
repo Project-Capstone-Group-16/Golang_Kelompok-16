@@ -212,3 +212,17 @@ func DashboardAdmin() (resp payload.DashboardAdminResponse, err error) {
 	}
 	return
 }
+
+// func GetBerandaUser(id uint) (resp payload.GetBerandaResponse, err error) {
+// 	totalTransaction, err := database.SumTransactionsByUserId(id)
+// 	if err != nil {
+// 		return resp, errors.New("Failed to count transaction")
+// 	}
+
+// 	resp = payload.GetBerandaResponse{
+// 		CountTransaction: uint(totalTransaction),
+// 		ActiveOrder: ,
+// 	}
+
+// 	return
+// }

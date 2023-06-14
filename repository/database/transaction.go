@@ -88,3 +88,12 @@ func SumTransactionsAmount() (income int, err error) {
 
 	return income, nil
 }
+
+func SumTransactionsByUserId(id uint) (expenditure int, err error) {
+	var transaction = models.Transaction{}
+	if err := config.DB.Table("transactions").Select("sum(amount)").Where("payment_status = ? AND user_id", "Paid", transaction.UserID).Row().Scan(&expenditure); err != nil {
+		return expenditure, err
+	}
+
+	return expenditure, nil
+} // new
