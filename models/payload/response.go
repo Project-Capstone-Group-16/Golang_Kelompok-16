@@ -56,6 +56,11 @@ type GetAllUserResponse struct {
 	ImageURL             string     `json:"image_url"`
 }
 
+type GetExploreResponse struct {
+	ActiveOrder      uint `json:"active_order"`
+	CountTransaction uint `json:"count_transaction"`
+}
+
 // Admin Response
 type GetAllWarehouseResponse struct {
 	ID          uint   `json:"id"`
