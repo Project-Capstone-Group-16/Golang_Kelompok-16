@@ -45,6 +45,10 @@ func CreateTransaction(id int, req *payload.CreateTransactionRequest) (resp mode
 		return resp, errors.New("Warehouse not found")
 	}
 
+	if warehouse.Capacity == 0 {
+		return resp, errors.New("Warehouse is full")
+	}
+
 	lockerType, err := database.GetLockerTypeById(uint64(req.LockerTypeID))
 	if err != nil {
 		return resp, errors.New("Locker type not found")
@@ -154,16 +158,17 @@ func ProcessPayemnt(req *payload.TransactionNotificationInput) error {
 		}
 
 		warehouse.Capacity = warehouse.Capacity - 1
+		err = database.UpdateWarehouse(warehouse)
+		if err != nil {
+			return errors.New("Failed to update warehouse capacity")
+		}
+
 		if warehouse.Capacity == 0 {
 			warehouse.Status = "Not Available"
 			err = database.UpdateWarehouse(warehouse)
 			if err != nil {
 				return errors.New("Failed to update warehouse status")
 			}
-		}
-		err = database.UpdateWarehouse(warehouse)
-		if err != nil {
-			return errors.New("Failed to update warehouse capacity")
 		}
 
 		locker.Availability = "Not Available"
