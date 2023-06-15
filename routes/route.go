@@ -74,4 +74,5 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 
 	picture := e.Group("/upload")
 	picture.POST("/image", controllers.UploadImageController)
+	picture.POST("/imageweb", controllers.UploadImageCloudBase64Controller)
 }
