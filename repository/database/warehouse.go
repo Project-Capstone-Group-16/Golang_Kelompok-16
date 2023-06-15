@@ -37,7 +37,7 @@ func GetRecomendedWarehouses(warehouseParam *models.Warehouse) (warehouse []mode
 		db = db.Where("city = ? ", warehouseParam.City)
 	}
 
-	if err := db.Order("favorites desc").Find(&warehouse).Error; err != nil {
+	if err := db.Where("status = ?", "Available").Order("favorites desc").Find(&warehouse).Error; err != nil {
 		return nil, err
 	}
 

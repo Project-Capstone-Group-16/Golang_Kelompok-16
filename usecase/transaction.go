@@ -154,6 +154,13 @@ func ProcessPayemnt(req *payload.TransactionNotificationInput) error {
 		}
 
 		warehouse.Capacity = warehouse.Capacity - 1
+		if warehouse.Capacity == 0 {
+			warehouse.Status = "Not Available"
+			err = database.UpdateWarehouse(warehouse)
+			if err != nil {
+				return errors.New("Failed to update warehouse status")
+			}
+		}
 		err = database.UpdateWarehouse(warehouse)
 		if err != nil {
 			return errors.New("Failed to update warehouse capacity")
