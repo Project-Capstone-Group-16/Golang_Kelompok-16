@@ -309,3 +309,23 @@ func DashboardAdminController(c echo.Context) error {
 		Data:    payloadDasboard,
 	})
 }
+
+// explore controller 
+func GetExploreController(c echo.Context) error {
+	userId, err := middleware.IsUser(c)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]string{
+			"Message": "this route only for user",
+		})
+	}
+
+	response, err := usecase.GetExploreUser(uint(userId))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, payload.Response{
+		Message: "Succes Get Beranda",
+		Data:    response,
+	})
+}
