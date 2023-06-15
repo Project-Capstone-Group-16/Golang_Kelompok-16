@@ -111,3 +111,7 @@ type TransactionNotificationInput struct {
 	OrderID           string `json:"order_id"`
 	PaymentType       string `json:"payment_type"`
 }
+
+type UploadImageCloudinaryBase64 struct {
+	Image    string `json:"image"`
+}
