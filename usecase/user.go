@@ -154,11 +154,62 @@ func UpdateProfile(user *models.User, req *payload.UpdateProfileUser) (res paylo
 }
 
 // Logic Get All Users
-func GetUsers() (users []models.User, err error) {
-	users, err = database.GetUsers()
+func GetUsers() (resp []payload.GetAllUserResponse, err error) {
+	users, err := database.GetUsers()
 	if err != nil {
 		return nil, errors.New("Error getting users")
 	}
 
-	return users, nil
+	var totalTransaction []int
+	for _, v := range users {
+		totalCount := database.CountTransactionByUserId(v.ID)
+		totalTransaction = append(totalTransaction, int(totalCount))
+	}
+
+	resp = []payload.GetAllUserResponse{}
+	for i, user := range users {
+		resp = append(resp, payload.GetAllUserResponse{
+			ID:                   user.ID,
+			Email:                user.Email,
+			Fullname:             user.FirstName + " " + user.LastName,
+			PhoneNumber:          user.PhoneNumber,
+			Gender:               user.Gender,
+			Address:              user.Address,
+			ImageURL:             user.ImageUrl,
+			TransactionHistroies: totalTransaction[i],
+		})
+	}
+
+	return
+}
+
+func DashboardAdmin() (resp payload.DashboardAdminResponse, err error) {
+	totalLockers, err := database.CountAllLockers()
+	if err != nil {
+		return resp, errors.New("Failed to count lockers")
+	}
+
+	totalUsedLockers, err := database.CountUsedLockers()
+	if err != nil {
+		return resp, errors.New("Failed to count used lockers")
+	}
+
+	totalUsers, err := database.CountUsers()
+	if err != nil {
+		return resp, errors.New("Failed to count users")
+	}
+
+	totalIncome, err := database.SumTransactionsAmount()
+	if err != nil {
+		return resp, errors.New("Failed to get total income")
+	}
+
+	resp = payload.DashboardAdminResponse{
+		Todey:            time.Now(),
+		TotalLockers:     uint(totalLockers),
+		TotalUsedLockers: uint(totalUsedLockers),
+		TotalUsers:       uint(totalUsers),
+		TotalIncome:      uint(totalIncome),
+	}
+	return
 }

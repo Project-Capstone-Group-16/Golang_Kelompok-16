@@ -44,6 +44,18 @@ type FavoriteListUserResponse struct {
 	Warehouse []models.Warehouse
 }
 
+type GetAllUserResponse struct {
+	ID                   uint       `json:"id"`
+	Email                string     `json:"email"`
+	Fullname             string     `json:"fullname"`
+	BirthDate            *time.Time `json:"birth_date"`
+	PhoneNumber          string     `json:"phone_number"`
+	Address              string     `json:"address"`
+	Gender               string     `json:"gender"`
+	TransactionHistroies int        `json:"transaction_histroies"`
+	ImageURL             string     `json:"image_url"`
+}
+
 // Admin Response
 type GetAllWarehouseResponse struct {
 	ID          uint   `json:"id"`
@@ -55,6 +67,7 @@ type GetAllWarehouseResponse struct {
 	Favorite    int    `json:"favorite"`
 	Description string `json:"description"`
 	ImageURL    string `json:"image_url"`
+	Locker      []models.Locker
 }
 
 type CreateAdminResponse struct {
@@ -108,4 +121,23 @@ type GetAllStaffsResponse struct {
 	PhoneNumber string     `json:"phone_number"`
 	Address     string     `json:"address"`
 	ImageURL    string     `json:"image_url"`
+}
+
+// Transaction Response
+
+type MidtransStatusResponse struct {
+	OrderID           string `json:"order_id"`
+	TransactionID     string `json:"transaction_id"`
+	TransactionTime   string `json:"transaction_time"`
+	TransactionStatus string `json:"transaction_status"`
+}
+
+//Dashboard admin Response
+
+type DashboardAdminResponse struct {
+	Todey            time.Time `json:"todey"`
+	TotalLockers     uint      `json:"total_lockers"`
+	TotalUsedLockers uint      `json:"total_used_lockers"`
+	TotalUsers       uint      `json:"total_users"`
+	TotalIncome      uint      `json:"total_income"`
 }

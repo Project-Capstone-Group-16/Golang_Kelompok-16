@@ -289,3 +289,23 @@ func UpdateProfileController(c echo.Context) error {
 		Data:    response,
 	})
 }
+
+//dashboard admin
+
+func DashboardAdminController(c echo.Context) error {
+	if _, err := middleware.IsAdmin(c); err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]string{
+			"Message": "this route only for admin",
+		})
+	}
+
+	payloadDasboard, err := usecase.DashboardAdmin()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, payload.Response{
+		Message: "Succes Get Dashboard",
+		Data:    payloadDasboard,
+	})
+}

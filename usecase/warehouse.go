@@ -120,6 +120,7 @@ func GetWarehouses(warehouse *models.Warehouse) (resp []payload.GetAllWarehouseR
 			Capacity:    warehouse.Capacity,
 			Description: warehouse.Description,
 			ImageURL:    warehouse.ImageURL,
+			Locker:      warehouse.Locker,
 		})
 	}
 

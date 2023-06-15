@@ -19,7 +19,7 @@ func GetWarehouses(warehouseParam *models.Warehouse) (warehouse []models.Warehou
 		db = db.Where("city = ? ", warehouseParam.City)
 	}
 
-	if err := db.Order("capacity desc").Find(&warehouse).Error; err != nil {
+	if err := db.Order("capacity desc").Preload("Locker.LockerType").Find(&warehouse).Error; err != nil {
 		return nil, err
 	}
 

@@ -14,4 +14,5 @@ type Warehouse struct {
 	Favorites   int    `json:"favorites" form:"favorites"`
 	Description string `json:"description" form:"description"`
 	ImageURL    string `json:"image_url" form:"image_url"`
+	Locker      []Locker
 }
