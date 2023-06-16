@@ -216,47 +216,46 @@ func ProcessPayemnt(req *payload.TransactionNotificationInput) error {
 
 }
 
-// func UpdateStatusDone() {
-// 	transaction, err := database.GetTransactions()
-// 	if err != nil {
-// 		fmt.Println("Failed to get transactions")
-// 		return
-// 	}
+func UpdateStatusDone() {
+	transaction, err := database.GetTransactions()
+	if err != nil {
+		fmt.Println("Failed to get transactions")
+		return
+	}
 
-// 	for _, v := range transaction {
-// 		if v.Status == "On Going" && v.EndDate.After(time.Now()) {
-// 			v.Status = "Done"
-// 			err = database.UpdateTransactionDone(&v)
-// 			if err != nil {
-// 				fmt.Println("Failed to update transaction")
-// 				return
-// 			}
+	for _, v := range transaction {
+		if v.Status == "On Going" && v.EndDate.Before(time.Now()) {
+			err = database.UpdateTransactionDone(&v)
+			if err != nil {
+				fmt.Println("Failed to update transaction")
+				return
+			}
 
-// 			locker, err := database.GetLockerById(v.LockerID)
-// 			if err != nil {
-// 				fmt.Println("Failed to get locker")
-// 				return
-// 			}
+			locker, err := database.GetLockerById(v.LockerID)
+			if err != nil {
+				fmt.Println("Failed to get locker")
+				return
+			}
 
-// 			locker.Availability = "Available"
-// 			err = database.UpdateLockerStatus(locker)
-// 			if err != nil {
-// 				fmt.Println("Failed to update locker status")
-// 				return
-// 			}
+			locker.Availability = "Available"
+			err = database.UpdateLockerStatus(nil, locker)
+			if err != nil {
+				fmt.Println("Failed to update locker status")
+				return
+			}
 
-// 			warehouse, err := database.GetWarehouseByID(uint64(locker.WarehouseID))
-// 			if err != nil {
-// 				fmt.Println("Failed to get warehouse")
-// 				return
-// 			}
+			warehouse, err := database.GetWarehouseByID(uint64(locker.WarehouseID))
+			if err != nil {
+				fmt.Println("Failed to get warehouse")
+				return
+			}
 
-// 			warehouse.Capacity += 1
-// 			err = database.UpdateWarehouse(warehouse)
-// 			if err != nil {
-// 				fmt.Println("Failed to update warehouse capacity")
-// 				return
-// 			}
-// 		}
-// 	}
-// } // new
+			warehouse.Capacity += 1
+			err = database.UpdateWarehouse(nil, warehouse)
+			if err != nil {
+				fmt.Println("Failed to update warehouse capacity")
+				return
+			}
+		}
+	}
+}
