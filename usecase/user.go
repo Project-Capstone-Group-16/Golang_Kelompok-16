@@ -170,6 +170,7 @@ func GetUsers() (resp []payload.GetAllUserResponse, err error) {
 	for i, user := range users {
 		resp = append(resp, payload.GetAllUserResponse{
 			ID:                   user.ID,
+			Email:                user.Email,
 			Fullname:             user.FirstName + " " + user.LastName,
 			PhoneNumber:          user.PhoneNumber,
 			Gender:               user.Gender,
@@ -213,16 +214,18 @@ func DashboardAdmin() (resp payload.DashboardAdminResponse, err error) {
 	return
 }
 
-// func GetBerandaUser(id uint) (resp payload.GetBerandaResponse, err error) {
-// 	totalTransaction, err := database.SumTransactionsByUserId(id)
-// 	if err != nil {
-// 		return resp, errors.New("Failed to count transaction")
-// 	}
+func GetExploreUser(id uint) (resp payload.GetExploreResponse, err error) {
+	totalTransactionActive := database.CountTransactionActiveByUserId(id)
 
-// 	resp = payload.GetBerandaResponse{
-// 		CountTransaction: uint(totalTransaction),
-// 		ActiveOrder: ,
-// 	}
+	totalTransaction, err := database.SumTransactionsByUserId(id)
+	if err != nil {
+		return resp, errors.New("Failed to count transaction")
+	}
 
-// 	return
-// }
+	resp = payload.GetExploreResponse{
+		CountTransaction: totalTransaction,
+		ActiveOrder:      uint(totalTransactionActive),
+	}
+
+	return
+}

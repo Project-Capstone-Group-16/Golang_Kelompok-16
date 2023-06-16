@@ -40,12 +40,13 @@ type UpdateProfileUserResponse struct {
 }
 
 type FavoriteListUserResponse struct {
-	ID        uint `json:"id"`
+	ID        uint `json:"ID"`
 	Warehouse []models.Warehouse
 }
 
 type GetAllUserResponse struct {
-	ID                   uint       `json:"id"`
+	ID                   uint       `json:"ID"`
+	Email                string     `json:"email"`
 	Fullname             string     `json:"fullname"`
 	BirthDate            *time.Time `json:"birth_date"`
 	PhoneNumber          string     `json:"phone_number"`
@@ -55,14 +56,14 @@ type GetAllUserResponse struct {
 	ImageURL             string     `json:"image_url"`
 }
 
-type GetBerandaResponse struct {
+type GetExploreResponse struct {
 	ActiveOrder      uint `json:"active_order"`
 	CountTransaction uint `json:"count_transaction"`
 }
 
 // Admin Response
 type GetAllWarehouseResponse struct {
-	ID          uint   `json:"id"`
+	ID          uint   `json:"ID"`
 	Name        string `json:"name"`
 	City        string `json:"city"`
 	Address     string `json:"address"`
@@ -117,7 +118,7 @@ type ManageStaffResponse struct {
 }
 
 type GetAllStaffsResponse struct {
-	ID          uint       `json:"id"`
+	ID          uint       `json:"ID"`
 	FullName    string     `json:"full_name"`
 	Occupation  string     `json:"occupation" form:"occupation"`
 	Gender      string     `json:"gender"`
