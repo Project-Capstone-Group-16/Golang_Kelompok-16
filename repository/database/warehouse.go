@@ -4,6 +4,7 @@ import (
 	"Capstone/config"
 	"Capstone/models"
 
+	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
@@ -63,8 +64,13 @@ func CreateWarehouse(warehouse *models.Warehouse) error {
 }
 
 // update warehouse query database
-func UpdateWarehouse(warehouse *models.Warehouse) error {
-	if err := config.DB.Model(&warehouse).Save(&warehouse).Error; err != nil {
+func UpdateWarehouse(tx *gorm.DB, warehouse *models.Warehouse) error {
+	db := config.DB
+	if tx != nil {
+		db = tx
+	}
+
+	if err := db.Model(&warehouse).Save(&warehouse).Error; err != nil {
 		return err
 	}
 

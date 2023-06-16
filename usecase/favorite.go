@@ -42,7 +42,7 @@ func CreateFavoriteWarehouse(id int, req *payload.CreateFavoriteRequest) (resp a
 			return resp, errors.New("Can't Create Favorite")
 		}
 		warehouse.Favorites += 1
-		err = database.UpdateWarehouse(warehouse)
+		err = database.UpdateWarehouse(nil, warehouse)
 		if err != nil {
 			return resp, errors.New("Can't Update Warehouse")
 		}
@@ -67,7 +67,7 @@ func CreateFavoriteWarehouse(id int, req *payload.CreateFavoriteRequest) (resp a
 		}
 
 		warehouse.Favorites -= 1
-		err = database.UpdateWarehouse(warehouse)
+		err = database.UpdateWarehouse(nil, warehouse)
 		if err != nil {
 			return resp, errors.New("Can't Update Warehouse")
 		}

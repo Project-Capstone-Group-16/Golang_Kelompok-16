@@ -3,6 +3,8 @@ package database
 import (
 	"Capstone/config"
 	"Capstone/models"
+
+	"gorm.io/gorm"
 )
 
 func CreateLocker(locker *models.Locker) (err error) {
@@ -64,8 +66,13 @@ func GetLockerLarge(warehouseId uint) (locker []models.Locker, err error) {
 	return locker, nil
 }
 
-func UpdateLockerStatus(locker *models.Locker) error {
-	err := config.DB.Updates(&locker).Error
+func UpdateLockerStatus(tx *gorm.DB, locker *models.Locker) error {
+	db := config.DB
+	if tx != nil {
+		db = tx
+	}
+
+	err := db.Updates(&locker).Error
 	if err != nil {
 		return err
 	}
