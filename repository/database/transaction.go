@@ -4,6 +4,7 @@ import (
 	"Capstone/config"
 	"Capstone/models"
 
+	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
@@ -49,16 +50,26 @@ func CountTransactionByUserId(id uint) (count int64) {
 	return count
 }
 
-func CreateTransaction(transaction *models.Transaction) error {
-	if err := config.DB.Preload("User").Preload("Locker").Preload("ItemCategory").Create(&transaction).Error; err != nil {
+func CreateTransaction(tx *gorm.DB, transaction *models.Transaction) error {
+	db := config.DB
+	if tx != nil {
+		db = tx
+	}
+
+	if err := db.Preload("User").Preload("Locker").Preload("ItemCategory").Create(&transaction).Error; err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func UpdateTransaction(transaction *models.Transaction) error {
-	if err := config.DB.Clauses(clause.Returning{}).Model(transaction).Where("order_id = ?", transaction.OrderID).Updates(&transaction).Error; err != nil {
+func UpdateTransaction(tx *gorm.DB, transaction *models.Transaction) error {
+	db := config.DB
+	if tx != nil {
+		db = tx
+	}
+
+	if err := db.Clauses(clause.Returning{}).Model(transaction).Where("order_id = ?", transaction.OrderID).Updates(&transaction).Error; err != nil {
 		return err
 	}
 

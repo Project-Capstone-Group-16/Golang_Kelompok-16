@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"Capstone/config"
 	"Capstone/models"
 	"Capstone/models/payload"
 	"Capstone/repository/database"
@@ -87,7 +88,14 @@ func CreateTransaction(id int, req *payload.CreateTransactionRequest) (resp mode
 		PaymentStatus:  "Unpaid",
 	}
 
-	err = database.CreateTransaction(&newTransaction)
+	tx := config.DB.Begin()
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		}
+	}()
+
+	err = database.CreateTransaction(tx, &newTransaction)
 	if err != nil {
 		return resp, err
 	}
@@ -99,9 +107,15 @@ func CreateTransaction(id int, req *payload.CreateTransactionRequest) (resp mode
 
 	newTransaction.PaymentUrl = responseMidtrans.RedirectURL
 
-	err = database.UpdateTransaction(&newTransaction)
+	err = database.UpdateTransaction(tx, &newTransaction)
 	if err != nil {
 		fmt.Println("Failed to update transaction")
+		return
+	}
+
+	err = tx.Commit().Error
+	if err != nil {
+		errors.New("Failed to commit transaction")
 		return
 	}
 
@@ -148,38 +162,50 @@ func ProcessPayemnt(req *payload.TransactionNotificationInput) error {
 		transaction.PaymentStatus = "Paid"
 		transaction.Status = "On Going"
 
+		tx := config.DB.Begin()
+		defer func() {
+			if err != nil {
+				tx.Rollback()
+			}
+		}()
+
 		date, _ := time.Parse("2006-01-02 15:04:05", req.TransactionTime)
 
 		transaction.PaymentDate = &date
-		err = database.UpdateTransaction(transaction)
+		err = database.UpdateTransaction(tx, transaction)
 		if err != nil {
 			fmt.Println("Failed to update transaction")
 			return err
 		}
 
 		warehouse.Capacity = warehouse.Capacity - 1
-		err = database.UpdateWarehouse(warehouse)
+		err = database.UpdateWarehouse(tx, warehouse)
 		if err != nil {
 			return errors.New("Failed to update warehouse capacity")
 		}
 
 		if warehouse.Capacity == 0 {
 			warehouse.Status = "Not Available"
-			err = database.UpdateWarehouse(warehouse)
+			err = database.UpdateWarehouse(tx, warehouse)
 			if err != nil {
 				return errors.New("Failed to update warehouse status")
 			}
 		}
 
 		locker.Availability = "Not Available"
-		err = database.UpdateLockerStatus(locker)
+		err = database.UpdateLockerStatus(tx, locker)
 		if err != nil {
 			return errors.New("Failed to update locker status")
+		}
+
+		err = tx.Commit().Error
+		if err != nil {
+			return errors.New("Failed to commit transaction")
 		}
 	} else if req.TransactionStatus != "pending" {
 		transaction.PaymentStatus = "Canceled"
 		transaction.Status = "Canceled" // new
-		err = database.UpdateTransaction(transaction)
+		err = database.UpdateTransaction(nil, transaction)
 		if err != nil {
 			fmt.Println("Failed to update transaction")
 			return err
