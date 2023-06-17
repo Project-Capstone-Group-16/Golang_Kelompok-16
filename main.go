@@ -47,7 +47,7 @@ func JobUpdateStatusDone() {
 
 	// set task yang akan dijalankan scheduler
 	// gunakan crontab string untuk mengatur jadwal
-	scheduler.AddFunc("0 0 * * 1-7", usecase.UpdateStatusDone)
+	scheduler.AddFunc("* * * * *", usecase.UpdateStatusDone)
 
 	// start scheduler
 	go scheduler.Start()
