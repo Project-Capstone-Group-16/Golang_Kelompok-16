@@ -217,6 +217,8 @@ func ProcessPayemnt(req *payload.TransactionNotificationInput) error {
 }
 
 func UpdateStatusDone() {
+	fmt.Println("Scheduler is running")
+
 	transaction, err := database.GetTransactions()
 	if err != nil {
 		fmt.Println("Failed to get transactions")
