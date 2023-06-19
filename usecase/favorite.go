@@ -50,14 +50,15 @@ func CreateFavoriteWarehouse(id int, req *payload.CreateFavoriteRequest) (resp a
 		resp = payload.CreateFavoriteResponse{
 			WarehouseID: newFavorite.WarehouseID,
 			Warehouse: payload.GetAllWarehouseResponse{
-				ID:       warehouse.ID,
-				Name:     warehouse.Name,
-				City:     warehouse.City,
-				Address:  warehouse.Address,
-				Capacity: warehouse.Capacity,
-				Favorite: warehouse.Favorites,
-				Status:   warehouse.Status,
-				ImageURL: warehouse.ImageURL,
+				ID:          warehouse.ID,
+				Name:        warehouse.Name,
+				City:        warehouse.City,
+				Address:     warehouse.Address,
+				Capacity:    warehouse.Capacity,
+				Favorite:    warehouse.Favorites,
+				Description: warehouse.Description,
+				Status:      warehouse.Status,
+				ImageURL:    warehouse.ImageURL,
 			},
 		}
 	} else {
