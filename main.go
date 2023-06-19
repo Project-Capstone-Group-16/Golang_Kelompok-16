@@ -5,7 +5,6 @@ import (
 	"Capstone/middleware"
 	"Capstone/routes"
 	"Capstone/usecase"
-	"log"
 	"os"
 	"os/signal"
 	"syscall"
