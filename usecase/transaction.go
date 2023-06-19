@@ -252,7 +252,7 @@ func UpdateStatusDone() {
 				return
 			}
 
-			warehouse.Capacity += 1
+			warehouse.Capacity = warehouse.Capacity + 1
 			err = database.UpdateWarehouse(nil, warehouse)
 			if err != nil {
 				fmt.Println("Failed to update warehouse capacity")
