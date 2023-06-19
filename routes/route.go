@@ -60,18 +60,16 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	us := e.Group("/profile", middleware.IsLoggedIn)
 	us.GET("", controllers.GetUserController)
 	us.GET("/favorite", controllers.GetFavoriteUserByIDController)
-	us.GET("/transaction", controllers.GetTransactionByUserIDController)
+	us.GET("/transaction", controllers.GetTransactionByUserIDController) // beranda
 	us.PUT("/update", controllers.UpdateProfileController)
 
 	t := e.Group("/transaction", middleware.IsLoggedIn)
 	t.POST("", controllers.CreateTransactionController)
 
-	// br := e.Group("/beranda", middleware.IsLoggedIn)
-	// br.GET("", controllers.GetBerandaController)
-
-	// ex := e.Group("/exlore", middleware.IsLoggedIn)
-	// ex.GET("", controllers.GetExploreController)
+	ex := e.Group("/exlore", middleware.IsLoggedIn)
+	ex.GET("", controllers.GetExploreController)
 
 	picture := e.Group("/upload")
 	picture.POST("/image", controllers.UploadImageController)
+	picture.POST("/imageweb", controllers.UploadImageCloudBase64Controller)
 }

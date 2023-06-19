@@ -213,3 +213,19 @@ func DashboardAdmin() (resp payload.DashboardAdminResponse, err error) {
 	}
 	return
 }
+
+func GetExploreUser(id uint) (resp payload.GetExploreResponse, err error) {
+	totalTransactionActive := database.CountTransactionActiveByUserId(id)
+
+	totalTransaction, err := database.SumTransactionsByUserId(id)
+	if err != nil {
+		return resp, errors.New("Failed to count transaction")
+	}
+
+	resp = payload.GetExploreResponse{
+		CountTransaction: totalTransaction,
+		ActiveOrder:      uint(totalTransactionActive),
+	}
+
+	return
+}
