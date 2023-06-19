@@ -77,7 +77,7 @@ func UpdateTransaction(tx *gorm.DB, transaction *models.Transaction) error {
 }
 
 func UpdateTransactionDone(transaction *models.Transaction) error {
-	if err := config.DB.Clauses(clause.Returning{}).Exec("UPDATE transactions SET status = 'Done' WHERE end_date < NOW() AND status = 'On Going'").Error; err != nil {
+	if err := config.DB.Model(&models.Transaction{}).Where("id = ?", transaction.ID).Updates(&models.Transaction{Status: "Done"}).Error; err != nil {
 		return err
 	}
 
