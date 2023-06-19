@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo"
 	"github.com/robfig/cron/v3"
 )
@@ -19,6 +20,9 @@ func main() {
 	// if err != nil {
 	// 	log.Fatal("failed to load .env")
 	// }
+
+	loc, _ := time.LoadLocation("Asia/Jakarta")
+	time.Local = loc
 
 	db := config.InitDB()
 	e := echo.New()

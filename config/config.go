@@ -4,6 +4,7 @@ import (
 	"Capstone/models"
 	"fmt"
 	"os"
+	"time"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -20,6 +21,9 @@ type Config struct {
 }
 
 func InitDB() *gorm.DB {
+	loc, _ := time.LoadLocation("Asia/Jakarta")
+	time.Local = loc
+
 	config := Config{
 		DB_Username: "doadmin",
 		DB_Password: os.Getenv("DB_PASSWORD"),
