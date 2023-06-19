@@ -17,10 +17,10 @@ import (
 )
 
 func main() {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatal("failed to load .env")
-	}
+	// err := godotenv.Load(".env")
+	// if err != nil {
+	// 	log.Fatal("failed to load .env")
+	// }
 
 	loc, _ := time.LoadLocation("Asia/Jakarta")
 	time.Local = loc
