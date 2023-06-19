@@ -10,7 +10,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/joho/godotenv"
 	"github.com/labstack/echo"
 	"github.com/robfig/cron/v3"
 )
