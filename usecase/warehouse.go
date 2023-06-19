@@ -161,7 +161,7 @@ func GetRecomendedWarehouse(warehouse *models.Warehouse) (resp []payload.GetAllW
 // logic update warehouse
 func UpdateWarehouse(warehouse *models.Warehouse) (resp payload.UpdateWarehouseResponse, err error) {
 
-	err = database.UpdateWarehouse(warehouse)
+	err = database.UpdateWarehouse(nil, warehouse)
 	if err != nil {
 		return resp, errors.New("Can't update warehouse")
 	}

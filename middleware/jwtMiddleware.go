@@ -19,13 +19,13 @@ func CreateToken(userId int, role string) (string, error) {
 	claims["authorized"] = true
 	claims["userId"] = userId
 	claims["role"] = role
-	claims["exp"] = time.Now().Add(time.Hour * 1).Unix()
+	claims["exp"] = time.Now().Add(time.Hour * 24 * 7).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	byteSecret := []byte(constants.SECRET_JWT)
 	return token.SignedString(byteSecret)
 }
 
-//check role user
+// check role user
 func IsUser(c echo.Context) (int, error) {
 	user := c.Get("user").(*jwt.Token)
 	if !user.Valid {
@@ -40,7 +40,7 @@ func IsUser(c echo.Context) (int, error) {
 	return userId, nil
 }
 
-//check role admin
+// check role admin
 func IsAdmin(c echo.Context) (int, error) {
 	user := c.Get("user").(*jwt.Token)
 	if !user.Valid {
