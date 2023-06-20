@@ -66,7 +66,7 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	t := e.Group("/transaction", middleware.IsLoggedIn)
 	t.POST("", controllers.CreateTransactionController)
 
-	ex := e.Group("/exlore", middleware.IsLoggedIn)
+	ex := e.Group("/explore", middleware.IsLoggedIn)
 	ex.GET("", controllers.GetExploreController)
 
 	picture := e.Group("/upload")
