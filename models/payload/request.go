@@ -32,13 +32,13 @@ type CreateFavoriteRequest struct {
 }
 
 type UpdateProfileUser struct {
-	FirstName   string `json:"first_name" form:"first_name"`
-	LastName    string `json:"last_name" form:"last_name"`
-	BirthDate   string `json:"birth_date" form:"birth_date"`
+	FirstName   string `json:"first_name" form:"first_name" validate:"required"`
+	LastName    string `json:"last_name" form:"last_name" validate:"required"`
+	BirthDate   string `json:"birth_date" form:"birth_date" validate:"required"`
 	Gender      string `json:"gender" form:"gender" gorm:"type:enum('PRIA', 'WANITA', '');default:''"`
 	PhoneNumber string `json:"phone_number" form:"phone_number" validate:"max=11,min=10,number"`
-	Address     string `json:"address" form:"address"`
-	ImageURL    string `json:"image_url" form:"image_url"`
+	Address     string `json:"address" form:"address" validate:"required"`
+	ImageURL    string `json:"image_url" form:"image_url" validate:"required"`
 }
 
 // admin request
@@ -113,5 +113,5 @@ type TransactionNotificationInput struct {
 }
 
 type UploadImageCloudinaryBase64 struct {
-	Image    string `json:"image"`
+	Image string `json:"image"`
 }

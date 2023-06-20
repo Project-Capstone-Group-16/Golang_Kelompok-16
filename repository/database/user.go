@@ -36,7 +36,7 @@ func GetUserByEmail(email string) (user models.User, err error) {
 }
 
 func GetUsers() (users []models.User, err error) {
-	if err = config.DB.Model(&models.User{}).Where("role = ? AND first_name IS NOT NULL", "USER").Find(&users).Error; err != nil {
+	if err = config.DB.Model(&models.User{}).Where("role = ? AND image_url IS NOT NULL", "USER").Find(&users).Error; err != nil {
 		return
 	}
 
