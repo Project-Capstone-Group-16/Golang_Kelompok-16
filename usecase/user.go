@@ -172,6 +172,7 @@ func GetUsers() (resp []payload.GetAllUserResponse, err error) {
 			ID:                   user.ID,
 			Email:                user.Email,
 			Fullname:             user.FirstName + " " + user.LastName,
+			BirthDate:            user.BirthDate,
 			PhoneNumber:          user.PhoneNumber,
 			Gender:               user.Gender,
 			Address:              user.Address,
