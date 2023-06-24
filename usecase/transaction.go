@@ -161,18 +161,18 @@ func ProcessPayemnt(req *payload.TransactionNotificationInput) error {
 		return errors.New("Warehouse not found")
 	}
 
+	tx := config.DB.Begin()
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		}
+	}()
+
 	transaction.PaymentMethod = req.PaymentType
 
 	if req.TransactionStatus == "settlement" || req.TransactionStatus == "capture" {
 		transaction.PaymentStatus = "Paid"
 		transaction.Status = "On Going"
-
-		tx := config.DB.Begin()
-		defer func() {
-			if err != nil {
-				tx.Rollback()
-			}
-		}()
 
 		date, _ := time.Parse("2006-01-02 15:04:05", req.TransactionTime)
 
@@ -203,18 +203,24 @@ func ProcessPayemnt(req *payload.TransactionNotificationInput) error {
 			return errors.New("Failed to update locker status")
 		}
 
-		err = tx.Commit().Error
-		if err != nil {
-			return errors.New("Failed to commit transaction")
-		}
 	} else if req.TransactionStatus != "pending" {
+		locker.Availability = "Available"
+		err = database.UpdateLockerStatus(tx, locker)
+		if err != nil {
+			return errors.New("Failed to update status locker")
+		}
+
 		transaction.PaymentStatus = "Canceled"
 		transaction.Status = "Canceled" // new
-		err = database.UpdateTransaction(nil, transaction)
+		err = database.UpdateTransaction(tx, transaction)
 		if err != nil {
-			fmt.Println("Failed to update transaction")
-			return err
+			return errors.New("Failed to update transaction")
 		}
+	}
+
+	err = tx.Commit().Error
+	if err != nil {
+		return errors.New("Failed to commit transaction")
 	}
 
 	return nil
