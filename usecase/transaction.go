@@ -106,10 +106,15 @@ func CreateTransaction(id int, req *payload.CreateTransactionRequest) (resp mode
 	}
 
 	newTransaction.PaymentUrl = responseMidtrans.RedirectURL
-
 	err = database.UpdateTransaction(tx, &newTransaction)
 	if err != nil {
 		fmt.Println("Failed to update transaction")
+		return
+	}
+
+	locker.Availability = "Not Available"
+	err = database.UpdateLockerStatus(tx, locker)
+	if err != nil {
 		return
 	}
 
